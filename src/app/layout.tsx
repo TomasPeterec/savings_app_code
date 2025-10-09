@@ -10,9 +10,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="sk">
       <body className="bg-gray-100 font-sans min-h-screen">
-        <header className="bg-blue-600 text-white p-4 shadow-md">
-          <h1 className="text-xl font-bold">Savings App</h1>
-        </header>
 
         <main className="p-4">{children}</main>
 
