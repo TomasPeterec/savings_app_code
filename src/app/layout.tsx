@@ -1,10 +1,10 @@
-import './globals.css';
-import { ReactNode } from 'react';
+import './globals.css'
+import { ReactNode } from 'react'
 
 export const metadata = {
   title: 'Savings App',
-  description: 'Miniaplikácia na dedikované sporenie',
-};
+  description: 'Mini application for dedicated saving',
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -21,5 +21,5 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </footer>
       </body>
     </html>
-  );
+  )
 }
