@@ -1,5 +1,7 @@
+'use client'
+
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { User } from 'firebase/auth'
 
 interface AuthState {
@@ -16,8 +18,8 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null }),
     }),
     {
-      name: 'auth-storage', // key in localStorage
-      storage: typeof window !== 'undefined' ? localStorage : undefined, // only use on client
+      name: 'auth-storage',
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : undefined)),
     }
   )
 )
