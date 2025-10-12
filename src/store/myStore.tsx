@@ -2,25 +2,23 @@
 
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { User } from 'firebase/auth'
 
-interface AuthState {
-  user: User | null
-  setUser: (user: User | null) => void
-  logout: () => void
+
+interface MyState {
+  myNumber: number | null
+  setMyNumber: (myNumber: number | null) => void
 }
 
 const isClient = typeof window !== 'undefined'
 
-export const useAuthStore = create<AuthState>()(
+export const useMyStore = create<MyState>()(
   persist(
     (set) => ({
-      user: null,
-      setUser: (user) => set({ user }),
-      logout: () => set({ user: null }),
+      myNumber: null,
+      setMyNumber: (myNumber) => set({ myNumber }),
     }),
     {
-      name: 'auth-storage',
+      name: 'my-storage',
       // only use storage on client
       storage: isClient ? createJSONStorage(() => localStorage) : undefined,
     }

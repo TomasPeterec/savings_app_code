@@ -7,6 +7,7 @@ import Header from '@/components/Header'
 import { auth, googleProvider } from '@/firebase/firebase'
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
 import { useAuthStore } from '@/store/authStore'
+import { useMyStore } from '@/store/myStore'
 
 export default function Home() {
   const router = useRouter() // router for navigation
@@ -14,6 +15,7 @@ export default function Home() {
   const [password, setPassword] = useState('')
 
   const setUser = useAuthStore((state) => state.setUser)
+  const setMyNumber = useMyStore((state) => state.setMyNumber)
 
   // Handle Google sign-in
   const handleGoogleSignIn = async () => {
@@ -30,6 +32,7 @@ export default function Home() {
   const login = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      setMyNumber(666)
       setUser(userCredential.user)
       router.push('/dashboard') // redirect after successful email login
     } catch (error) {
