@@ -17,7 +17,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage', // key in localStorage
-      getStorage: () => localStorage, // uses localStorage for persistence
+      storage: typeof window !== 'undefined' ? localStorage : undefined, // only use on client
     }
   )
 )
