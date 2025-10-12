@@ -10,6 +10,8 @@ interface AuthState {
   logout: () => void
 }
 
+const isClient = typeof window !== 'undefined'
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -19,7 +21,8 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : undefined)),
+      // only use storage on client
+      storage: isClient ? createJSONStorage(() => localStorage) : undefined,
     }
   )
 )
