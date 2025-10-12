@@ -16,8 +16,8 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null }),
     }),
     {
-      name: 'auth-storage', // kľúč v localStorage
-      getStorage: () => localStorage, // používa localStorage na persistenciu   
+      name: 'auth-storage', // key in localStorage
+      getStorage: () => localStorage, // uses localStorage for persistence
     }
   )
 )
