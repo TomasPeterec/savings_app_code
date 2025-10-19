@@ -1,62 +1,80 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Header from '@/components/Header'
-import { auth } from '@/firebase/firebase'
-import { useAuthStore } from '@/store/authStore'
-import { useMyStore } from '@/store/myStore'
-import { onAuthStateChanged } from 'firebase/auth'
+import { useEffect, useState } from "react"
+import Header from "@/components/Header"
+import { auth } from "@/firebase/firebase"
+import { onAuthStateChanged } from "firebase/auth"
+import { useAuthStore } from "@/store/authStore"
+import { 
+  container, 
+  mainContent, 
+  heading, 
+  paragraph, 
+  highlight 
+} from "@/styles/ui"
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
-  const setUser = useAuthStore((state) => state.setUser)
-  const myNumber = useMyStore((state) => state.myNumber)
   const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
-    // Firebase listener sleduje zmeny prihlasenia
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser) // uloží používateľa do Zustand store
-        const idToken = await currentUser.getIdToken()
-        setToken(idToken)
-      } else {
-        setUser(null)
+      if (!currentUser) {
         setToken(null)
+        return
+      }
+
+      const idToken = await currentUser.getIdToken()
+      setToken(idToken)
+
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            email: currentUser.email,
+            display_name: currentUser.displayName || "Anonymous", // fallback if null
+          }),
+        })
+
+        if (!res.ok) {
+          const text = await res.text()
+          console.error("Backend returned error:", text)
+          return
+        }
+
+        const data = await res.json()
+        console.log("User from backend:", data.user)
+      } catch (err) {
+        console.error("Backend error:", err)
       }
     })
 
-    return () => unsubscribe() // cleanup listener pri unmount
-  }, [setUser])
+    return () => unsubscribe()
+  }, [user])
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className={container}>
       <Header />
-
-      <main className="flex flex-col items-center justify-center py-20 px-4 space-y-4">
-        <h1 className="text-3xl font-bold text-blue-600 mb-4">
-          Welcome to your dashboard
-        </h1>
+      <main className={mainContent}>
+        <h1 className={heading}>Welcome to your dashboard</h1>
 
         {user && (
-          <p className="text-gray-700">
-            Hello, <span className="font-semibold">{user.displayName || user.email}</span>!
+          <p className={paragraph}>
+            Hello, <span className={highlight}>{user.displayName || user.email}</span>!
           </p>
         )}
 
-        {token && (
-          <p className="text-gray-500 break-all max-w-md">
-            Your current token: {token}
-          </p>
-        )}
-
-        <p className="text-gray-700 text-center max-w-md">
+        <p className={paragraph}>
           Here you will see your savings, goals, and monthly summaries.
         </p>
 
-        {myNumber && (
-          <p className="text-gray-500 break-all max-w-md">
-            My current number: {myNumber}
+        {token && (
+          <p className={paragraph}>
+            Token: <span className={highlight}>{token}</span>
           </p>
         )}
       </main>
