@@ -30,3 +30,7 @@ export const loginSection = "mt-8 w-full max-w-md flex flex-col space-y-4"
 // Header-specific constants
 export const header = "w-full bg-white shadow py-4 px-6 flex items-center justify-center"
 export const headerTitle = "text-2xl font-bold text-blue-600"
+
+// Header-specific constants
+export const headerButton = "ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+
