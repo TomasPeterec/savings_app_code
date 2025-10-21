@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Header from "@/components/Header"
 import { auth, googleProvider } from "@/firebase/firebase"
@@ -66,13 +65,6 @@ export default function Home() {
         <p className={paragraph}>
           Track your goals as they grow and set priorities as needed
         </p>
-      </div>
-
-      {/* Quick link */}
-      <div className="mt-4">
-        <Link href="/dashboard" className={link}>
-          Go to dashboard
-        </Link>
       </div>
 
       {/* Login / Register */}
