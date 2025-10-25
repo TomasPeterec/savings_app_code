@@ -1,23 +1,74 @@
 'use client' // required for React interactivity
 
 import Header from '@/components/Header'
-import { inputField, buttonRegister } from "@/styles/ui"
-import { useState } from 'react'
+import { inputField, buttonRegister, buttonRegisterMuted } from "@/styles/ui"
+import { useState, useEffect } from 'react'
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
+
+import { auth } from "@/firebase/firebase"
 
 
-export default function Dashboard() {
-  const [email, setEmail] = useState<string>('')
+
+
+export default function RegistrationPage() {
+  const [ email, setEmail ] = useState<string>('')
   const [ password, setPassword ] = useState<string>('')
   const [ confirmpassword, setConfirmpassword ] = useState<string>('')
   const [ displayname, setDisplayname ] = useState<string>('')
+  const [ samePassword, setSamePassword] = useState<boolean>(false)
+  const [ regButtonMuted, setRegButtonMuted ] = useState<boolean>(true)
 
-  const handleRegister = () => {
-    console.log("Email:", email)
-    console.log("Display Name:", displayname)
-    console.log("Password:", password)
-    console.log("Confirm Password:", confirmpassword)
+  const checkAllFields = () => {
+    const allFieldsFilled = email !== '' && password !== '' && confirmpassword !== '' && displayname !== ''
+    setRegButtonMuted(!(allFieldsFilled && samePassword))
   }
-  
+
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value)
+    setSamePassword(value === confirmpassword)
+  }
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setConfirmpassword(value)
+    setSamePassword(password === value)
+  }
+
+  const handleRegister = async () => {
+    if (!regButtonMuted) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await updateProfile(user, {
+          displayName: displayname,
+        });
+
+        console.log("User created successfully:", user);
+        alert(`User ${displayname} registered successfully!`);
+
+        await sendEmailVerification(user);
+
+        // clean form
+        setEmail('');
+        setPassword('');
+        setConfirmpassword('');
+        setDisplayname('');
+      } catch (error: any) {
+        console.error("Registration error:", error.message);
+        alert(error.message);
+      }
+    } else {
+      console.log("Can't be registered");
+    }
+  };
+
+
+
+  useEffect(() => {
+    checkAllFields();
+  }, [email, password, confirmpassword, displayname, samePassword]);
+
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -44,7 +95,7 @@ export default function Dashboard() {
           <input 
             placeholder='Password'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handlePasswordChange(e.target.value)}
             className={inputField}
           />
           Confirm your password
@@ -52,9 +103,11 @@ export default function Dashboard() {
           <input
             placeholder='Confirm Password'
             value={confirmpassword}
-            onChange={(e) => setConfirmpassword(e.target.value)}
+            onChange={(e) => handleConfirmPasswordChange(e.target.value)}
             className={inputField}
           />
+          {samePassword ? "both passwords are the same" : "both passwords must be the same"}
+          <br/>
           Display name
           {/* email input */}
           <input
@@ -63,9 +116,11 @@ export default function Dashboard() {
             onChange={(e) => setDisplayname(e.target.value)}
             className={inputField}
           />
+          <br/>
+          <br/>
           <button
             onClick={handleRegister}
-            className={buttonRegister}
+            className={!regButtonMuted ? buttonRegister : buttonRegisterMuted}
           >
             Register
           </button>
