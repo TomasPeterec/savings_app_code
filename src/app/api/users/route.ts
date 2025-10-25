@@ -1,6 +1,6 @@
 // src/app/api/users/route.ts
 import { NextResponse } from "next/server"
-import { PrismaClient, User } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
 import { adminAuth } from "@/firebase/admin"
 
 const prisma = new PrismaClient()
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const { email, display_name } = (await req.json()) as RequestBody
 
     // 5. Upsert user in PostgreSQL via Prisma (display_name can be null)
-    const user: User = await prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { firebase_uid },
       update: { email, display_name },
       create: { firebase_uid, email, display_name },
