@@ -12,7 +12,6 @@ import {
   heroSection,
   heading,
   paragraph,
-  link,
   buttonPrimary,
   buttonGoogle,
   buttonRegister,
@@ -90,6 +89,7 @@ export default function Home() {
             onChange={(e) => setPassword(e.target.value)}
             className={inputField}
           />
+          
           <button onClick={() => login(email, password)} className={buttonPrimary}>
             Sign in
           </button>

@@ -1,9 +1,14 @@
 // src/app/api/users/route.ts
 import { NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, User } from "@prisma/client"
 import { adminAuth } from "@/firebase/admin"
 
 const prisma = new PrismaClient()
+
+interface RequestBody {
+  email: string
+  display_name?: string | null
+}
 
 export async function POST(req: Request) {
   try {
@@ -24,10 +29,10 @@ export async function POST(req: Request) {
     const firebase_uid = decodedToken.uid
 
     // 4. Parse request body
-    const { email, display_name } = await req.json()
+    const { email, display_name } = (await req.json()) as RequestBody
 
     // 5. Upsert user in PostgreSQL via Prisma (display_name can be null)
-    const user = await prisma.user.upsert({
+    const user: User = await prisma.user.upsert({
       where: { firebase_uid },
       update: { email, display_name },
       create: { firebase_uid, email, display_name },
@@ -35,10 +40,10 @@ export async function POST(req: Request) {
 
     // 6. Return the user as JSON
     return NextResponse.json({ user })
-  } catch (error: any) {
-    // Log full error for debugging
-    console.error("Error in /api/users:", error.message)
-    console.error(error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error: unknown) {
+    // Safety: narrow unknown error
+    const message = error instanceof Error ? error.message : String(error)
+    console.error("Error in /api/users:", message)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
