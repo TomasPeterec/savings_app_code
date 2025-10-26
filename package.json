@@ -14,6 +14,7 @@
     "firebase": "^12.4.0",
     "firebase-admin": "^13.5.0",
     "next": "15.5.4",
+    "preline": "^3.2.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zustand": "^5.0.8"

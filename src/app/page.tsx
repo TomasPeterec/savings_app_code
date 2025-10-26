@@ -18,6 +18,7 @@ import {
   inputField,
   formCard,
   loginSection,
+  mainContent
 } from "@/styles/ui"
 
 export default function Home() {
