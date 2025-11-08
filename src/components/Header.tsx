@@ -1,10 +1,11 @@
 'use client' // required for React interactivity
 
-import { header, headerTitle, headerButton } from "@/styles/ui"
 import { useAuthStore } from "@/store/authStore"
 import { auth, } from "@/firebase/firebase"
 import { signOut as firebaseSignOut } from "firebase/auth"
 import { useRouter } from "next/navigation"
+import "@/styles/theme.css" // import noveho CSS
+
 
 export default function Header() {
 
@@ -27,16 +28,29 @@ export default function Header() {
   }
 
   return (
-    <header className={header}>
+    <header className="header">
       {/* Logo or app name */}
-      <h1 className={headerTitle}>SporenieApp</h1>
-
-      {/* Sign out button, only visible when needed */}
-      {user && (
-        <button onClick={signOut} className={headerButton}>
-          Sign out
-        </button>
-      )}
+      <div className="header-content">
+        <div className="logo-box">
+          <img className="header-logo" 
+          src="/images/DreamSaveLogo.svg" 
+          alt="Dream Save Logo" />
+        </div>
+        <div>
+        </div>
+        <div className="menu-box">
+          {/* Sign out button, only visible when needed */}
+          {user && (
+          <button onClick={signOut} className="header-button">
+            Sign out
+          </button> 
+        )}
+        <img className="burger-menu" 
+          src="/icons/burherMenu.svg" 
+          alt="Dream Save Logo" />
+        </div>
+      </div>
+      <div className="header-separator"></div>
     </header>
   )
 }

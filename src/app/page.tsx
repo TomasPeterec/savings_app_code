@@ -6,28 +6,17 @@ import Header from "@/components/Header"
 import { auth, googleProvider } from "@/firebase/firebase"
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
-import { useMyStore } from "@/store/myStore"
-import {
-  container,
-  heroSection,
-  heading,
-  paragraph,
-  buttonPrimary,
-  buttonGoogle,
-  buttonRegister,
-  inputField,
-  formCard,
-  loginSection,
-  mainContent
-} from "@/styles/ui"
+import { myEmailValidation } from "@/components/lib/emailValidation"
+import "@/styles/theme.css"
 
 export default function Home() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [loginError, setLoginError] = useState("")
 
   const setUser = useAuthStore((state) => state.setUser)
-  const setMyNumber = useMyStore((state) => state.setMyNumber)
 
   // Google login
   const handleGoogleSignIn = async () => {
@@ -37,67 +26,131 @@ export default function Home() {
       router.push("/dashboard")
     } catch (error) {
       console.error("Google sign-in error:", error)
+      setLoginError("Error signing in with Google.")
     }
+  }
+
+  // Email validation
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setEmail(value)
+    setEmailError(myEmailValidation(value))
   }
 
   // Email/password login
   const login = async (email: string, password: string) => {
+    setLoginError("")
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      setMyNumber(666)
       setUser(userCredential.user)
       router.push("/dashboard")
-    } catch (error) {
-      console.error("Login failed", error)
+    } catch (error: any) {
+      console.error("Login failed:", error.code)
+      switch (error.code) {
+        case "auth/invalid-email":
+          setLoginError("Invalid email.")
+          break
+        case "auth/user-disabled":
+          setLoginError("Account is disabled.")
+          break
+        case "auth/user-not-found":
+          setLoginError("Account does not exist.")
+          break
+        case "auth/wrong-password":
+          setLoginError("Incorrect password.")
+          break
+        case "auth/too-many-requests":
+          setLoginError("Too many attempts.")
+          break
+        default:
+          setLoginError("Error signing in.")
+          break
+      }
     }
   }
 
-  // Navigate to registration
   const linkToRegister = () => router.push("/register")
 
   return (
-    <div className={container}>
+    <div className="base-container">
       <Header />
 
-      {/* Hero section */}
-      <div className={heroSection}>
-        <h1 className={heading}>Manage your savings easily</h1>
-        <p className={paragraph}>
+      <div className="hero-section">
+        <h1 className="heading">Manage your savings easily</h1>
+        <p className="perex">
           Track your goals as they grow and set priorities as needed
         </p>
       </div>
 
-      {/* Login / Register */}
-      <div className={loginSection}>
-        {/* Google login */}
-        <button onClick={handleGoogleSignIn} className={buttonGoogle}>
-          Sign in with Google
-        </button>
-
-        {/* Email login */}
-        <div className={formCard}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={inputField}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputField}
-          />
-          
-          <button onClick={() => login(email, password)} className={buttonPrimary}>
-            Sign in
+      <div className="actions-section">
+        <div className="google-box">
+          <button onClick={handleGoogleSignIn} className="button-secondary">
+            <img
+              className="google-logo"
+              src="/images/google-logo.svg"
+              alt="Google logo"
+            />
+            Sign in with Google
+            <div className="google-logo">
+              <br />
+            </div>
           </button>
         </div>
 
-        {/* Register */}
-        <button onClick={linkToRegister} className={buttonRegister}>
+        <div className="form-card">
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom">
+              {/* EMAIL */}
+              <p className="form-label">Email</p>
+            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              className={`input-field ${emailError ? "error" : ""}`}
+            />
+            <div className="form-half-separator-down">
+              {emailError && <p className="field-message">{emailError}</p>}
+            </div>
+          </label>
+
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom">
+              {/* PASSWORD */}
+              <p className="form-label">Password</p>
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field"
+            />
+            <div className="form-half-separator-down">
+              {loginError && <p className="field-message">{loginError}</p>}
+            </div>
+          </label>
+
+          <div className="form-half-separator-up vertical-align-bottom">
+              <br />
+          </div>
+
+          {/* SIGN IN */}
+          <div className="register-box">
+            <button
+              onClick={() => login(email, password)}
+              className="button-primary"
+            >
+              Sign in
+            </button>
+          </div>
+          <div className="form-half-separator-down">
+            <br/>
+          </div>
+        </div>
+
+        <button onClick={linkToRegister} className="button-secondary">
           Register
         </button>
       </div>

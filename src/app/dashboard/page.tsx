@@ -5,13 +5,7 @@ import Header from "@/components/Header"
 import { auth } from "@/firebase/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
-import { 
-  container, 
-  mainContent, 
-  heading, 
-  paragraph, 
-  highlight 
-} from "@/styles/ui"
+import "@/styles/theme.css" // import noveho CSS
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
@@ -57,24 +51,24 @@ export default function Dashboard() {
   }, [user])
 
   return (
-    <div className={container}>
+    <div className="container">
       <Header />
-      <main className={mainContent}>
-        <h1 className={heading}>Welcome to your dashboard</h1>
+      <main className="main-content">
+        <h1 className="heading">Welcome to your dashboard</h1>
 
         {user && (
-          <p className={paragraph}>
-            Hello, <span className={highlight}>{user.displayName || user.email}</span>!
+          <p className="paragraph">
+            Hello, <span className="highlight">{user.displayName || user.email}</span>!
           </p>
         )}
 
-        <p className={paragraph}>
+        <p className="paragraph">
           Here you will see your savings, goals, and monthly summaries.
         </p>
 
         {token && (
-          <p className={paragraph}>
-            Token: <span className={highlight}>{token}</span>
+          <p className="paragraph">
+            Token: <span className="highlight">{token}</span>
           </p>
         )}
       </main>

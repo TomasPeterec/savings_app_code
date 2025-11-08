@@ -16,7 +16,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve", // Changed from "preserve" for proper JSX support
+    "jsx": "preserve", 
     "baseUrl": "./",
     "paths": {
       "@/*": [
@@ -32,12 +32,11 @@
     "types": [
       "jest",
       "@testing-library/jest-dom"
-    ] // Add Jest & Testing Library types
+    ] 
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
