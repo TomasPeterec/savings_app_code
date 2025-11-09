@@ -94,6 +94,9 @@ export default function Home() {
               alt="Google logo"
             />
             Sign in with Google
+            <div className="google-logo" >
+              <span>&nbsp;</span>
+            </div>
           </button>
         </div>
 

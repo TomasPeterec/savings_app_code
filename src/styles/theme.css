@@ -21,7 +21,8 @@
   --lineHeight: 117.110127%;
   --minRem: 0rem;
   --maxRem: 4.5rem;
-  --headerHeight: 5.8rem;
+  --header-exponent: 0.7;
+  --headerHeight: calc(5.8rem * var(--header-exponent));
 
   /* Headings – dynamic scaling using static CSS calculations */
   --headingMobileExponent: calc(var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS));
@@ -29,10 +30,15 @@
   --headingMobileMin: calc(var(--minRem) * var(--headingMobileExponent));
   --headingMobileMax: calc(var(--maxRem) * var(--headingMobileExponent));
   /**/
-  --headingDesctopExponent: calc(var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS));
-  --headingDesctop: calc(var(--plainTextSize) * var(--headingDesctopExponent));
-  --headingDesctopMin: calc(var(--minRem) * var(--headingDesctopExponent));
-  --headingDesctopMax: calc(var(--maxRem) * var(--headingDesctopExponent));
+  --headingMidExponent: calc(var(--fS) * var(--fS) * var(--fS) * var(--fS));
+  --headingMid: calc(var(--plainTextSize) * var(--headingMidExponent));
+  --headingMidMin: calc(var(--minRem) * var(--headingMidExponent));
+  --headingMidMax: calc(var(--maxRem) * var(--headingMidExponent));
+
+  --headingDesktopExponent: calc(var(--fS));
+  --headingDesktop: calc(var(--plainTextSize) * var(--headingDesktopExponent));
+  --headingDesktopMin: calc(var(--minRem) * var(--headingDesktopExponent));
+  --headingDesktopMax: calc(var(--maxRem) * var(--headingDesktopExponent));
 
   /* Perex – dynamic scaling using static CSS calculations */
   --perexMobileExponent: calc(var(--fS) * var(--fS) * var(--fS));
@@ -40,10 +46,15 @@
   --perexMobileMin: calc(var(--minRem) * var(--perexMobileExponent));
   --perexMobileMax: calc(var(--maxRem) * var(--perexMobileExponent));
   /**/
-  --perexDesctopExponent: calc(var(--fS) * var(--fS) * var(--fS));
-  --perexDesctop: calc(var(--plainTextSize) * var(--perexDesctopExponent));
-  --perexDesctopMin: calc(var(--minRem) * var(--perexDesctopExponent));
-  --perexDesctopMax: calc(var(--maxRem) * var(--perexDesctopExponent));
+  --perexMidExponent: calc(var(--fS) );
+  --perexMid: calc(var(--plainTextSize) * var(--perexMidExponent));
+  --perexMidMin: calc(var(--minRem) * var(--perexMidExponent));
+  --perexMidMax: calc(var(--maxRem) * var(--perexMidExponent));
+
+  --perexDesktopExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS)));
+  --perexDesktop: calc(var(--plainTextSize) * var(--perexDesktopExponent));
+  --perexDesktopMin: calc(var(--minRem) * var(--perexDesktopExponent));
+  --perexDesktopMax: calc(var(--maxRem) * var(--perexDesktopExponent));
 
   /* Buttons – dynamic scaling using static CSS calculations */
   --buttonMobileExponent: calc(1 / var(--fS));
@@ -51,10 +62,15 @@
   --buttonMobileMin: calc(var(--minRem) * var(--buttonMobileExponent));
   --buttonMobileMax: calc(var(--maxRem) * var(--buttonMobileExponent));
   /**/
-  --buttonDesctopExponent: calc(1 / var(--fS));
-  --buttonDesctop: calc(var(--plainTextSize) * var(--buttonDesctopExponent));
-  --buttonDesctopMin: calc(var(--minRem) * var(--buttonDesctopExponent));
-  --buttonDesctopMax: calc(var(--maxRem) * var(--buttonDesctopExponent));
+  --buttonMidExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS) * var(--fS)  ) );
+  --buttonMid: calc(var(--plainTextSize) * var(--buttonMidExponent));
+  --buttonMidMin: calc(var(--minRem) * var(--buttonMidExponent));
+  --buttonMidMax: calc(var(--maxRem) * var(--buttonMidExponent));
+
+  --buttonDesktopExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS) *var(--fS)*var(--fS)*var(--fS)*var(--fS)) );
+  --buttonDesktop: calc(var(--plainTextSize) * var(--buttonDesktopExponent));
+  --buttonDesktopMin: calc(var(--minRem) * var(--buttonDesktopExponent));
+  --buttonDesktopMax: calc(var(--maxRem) * var(--buttonDesktopExponent));
 
   /* Form labels – dynamic scaling using static CSS calculations */
   --formLabelMobileExponent: calc((1 / var(--fS)) / var(--fS));
@@ -62,10 +78,15 @@
   --formLabelMobileMin: calc(var(--minRem) * var(--formLabelMobileExponent));
   --formLabelMobileMax: calc(var(--maxRem) * var(--formLabelMobileExponent));
   /**/
-  --formLabelDesctopExponent: calc((1 / var(--fS)) / var(--fS));
-  --formLabelDesctop: calc(var(--plainTextSize) * var(--formLabelDesctopExponent));
-  --formLabelDesctopMin: calc(var(--minRem) * var(--formLabelDesctopExponent));
-  --formLabelDesctopMax: calc(var(--maxRem) * var(--formLabelDesctopExponent));
+  --formLabelMidExponent: calc((((1 / var(--fS)) / var(--fS)) / var(--fS)) / var(--fS));
+  --formLabelMid: calc(var(--plainTextSize) * var(--formLabelMidExponent));
+  --formLabelMidMin: calc(var(--minRem) * var(--formLabelMidExponent));
+  --formLabelMidMax: calc(var(--maxRem) * var(--formLabelMidExponent));
+
+  --formLabelDesktopExponent: calc((((1 / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))) / var(--fS)) / var(--fS)) / var(--fS));
+  --formLabelDesktop: calc(var(--plainTextSize) * var(--formLabelDesktopExponent));
+  --formLabelDesktopMin: calc(var(--minRem) * var(--formLabelDesktopExponent));
+  --formLabelDesktopMax: calc(var(--maxRem) * var(--formLabelDesktopExponent));
 
   /* Field messages – dynamic scaling using static CSS calculations */
   --fieldMessageMobileExponent: calc(((1 / var(--fS)) / var(--fS)) / var(--fS));
@@ -73,10 +94,15 @@
   --fieldMessageMobileMin: calc(var(--minRem) * var(--fieldMessageMobileExponent));
   --fieldMessageMobileMax: calc(var(--maxRem) * var(--fieldMessageMobileExponent));
   /**/
-  --fieldMessageDesctopExponent: calc((1 / var(--fS)) / var(--fS));
-  --fieldMessageDesctop: calc(var(--plainTextSize) * var(--fieldMessageDesctopExponent));
-  --fieldMessageDesctopMin: calc(var(--minRem) * var(--fieldMessageDesctopExponent));
-  --fieldMessageDesctopMax: calc(var(--maxRem) * var(--fieldMessageDesctopExponent));
+  --fieldMessageMidExponent: calc(((1 / var(--fS)) / var(--fS)) / var(--fS));
+  --fieldMessageMid: calc(var(--plainTextSize) * var(--fieldMessageMidExponent));
+  --fieldMessageMidMin: calc(var(--minRem) * var(--fieldMessageMidExponent));
+  --fieldMessageMidMax: calc(var(--maxRem) * var(--fieldMessageMidExponent)); 
+
+  --fieldMessageDesktopExponent: calc(((1 / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))) / var(--fS)) / var(--fS));
+  --fieldMessageDesktop: calc(var(--plainTextSize) * var(--fieldMessageDesktopExponent));
+  --fieldMessageDesktopMin: calc(var(--minRem) * var(--fieldMessageDesktopExponent));
+  --fieldMessageDesktopMax: calc(var(--maxRem) * var(--fieldMessageDesktopExponent));
 }
 
 body {
@@ -187,14 +213,6 @@ body {
   font-size: clamp(var(--perexMobileMin), var(--perexMobile), var(--perexMobileMax));
 }
 
-@media (min-width: 768px) {
-  .heading {
-    font-size: clamp(var(--headingMobileMin), var(--headingMobile), var(--headingMobileMax));
-  }
-  .perex {
-    font-size: clamp(var(--perexMobileMin), var(--perexMobile), var(--perexMobileMax));
-  }
-}
 
 .hero-section {
   padding-top: 5.1vw;
@@ -288,13 +306,13 @@ body {
 }
 
 .header-logo {
-  height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));
-  width: clamp(0rem, calc(142vw * var(--pixToVw)), calc(142rem * 0.115));
+  height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115 * var(--header-exponent)));
+  width: clamp(0rem, calc(142vw * var(--pixToVw)), calc(142rem * 0.115 * var(--header-exponent)));
 }
 
 .burger-menu {
-  height: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
-  width: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  height: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115 * var(--header-exponent)));
+  width: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115 * var(--header-exponent)));
 }
 
 .header-title {
@@ -350,11 +368,11 @@ button {
   
 }
 
-.button-secondary:hover, .button-google:hover {
+.button-secondary:hover{
   border-color: rgba(146, 219, 255, 0.4)
 }
 
-.button-secondary:active, .button-google:active {
+.button-secondary:active{
   border-color: rgba(146, 219, 255, 0.1)
 }
 
@@ -460,4 +478,95 @@ html, body {
   width: clamp(0rem, calc(25vw * var(--pixToVw)), calc(25rem * 0.115));
 }
 
+@media (min-width: 768px) {
+  .heading {
+    font-size: clamp(var(--headingMidMin), var(--headingMid), var(--headingMidMax));
+    padding-right:2vw;
+    padding-left: 2vw;
+
+  }
+  .perex {
+    font-size: clamp(var(--perexMidMin), var(--perexMid), var(--perexMidMax));
+    padding-right: 4vw;
+    padding-left: 4vw;
+  }
+  .input-field {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    padding: 0.5rem 0.75rem;
+    font-size: clamp(var(--fieldMessageMidMin), var(--fieldMessageMid), var(--fieldMessageMidMax));
+  }
+  button {
+    height: clamp(0rem, calc(((46vw * var(--pixToVw))) / (var(--fS) * var(--fS))), calc((46rem * 0.115) / (var(--fS) * var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    font-size: clamp(var(--buttonMidMin), var(--buttonMid), var(--buttonMidMax));
+  }
+  .field-message {
+    font-size: clamp(var(--fieldMessageMidMin / (var(--fS)*var(--fS))), var(--fieldMessageMid / (var(--fS)*var(--fS))), var(--fieldMessageMidMax / (var(--fS)*var(--fS))));
+    top: calc(0.67vw / (var(--fS)*var(--fS))); /* visually moves text down without changing parent flow */
+  }
+  .form-label {
+    font-size: clamp(var(--formLabelMidMin), var(--formLabelMid), var(--formLabelMidMax));
+  }
+  .google-logo {
+    height: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS))));
+    width: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS))));
+  }
+  .form-half-separator-up,  .form-half-separator-down {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS))), calc((36rem * 0.115/2) / (var(--fS))));
+  }
+  .actions-section {
+    width: calc(50% * var(--fS));
+  }
+  .hero-section {
+    padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS)));
+    padding-bottom: 0vw;
+  }
+}
+
+
+@media (min-width: 992px) {
+  .heading {
+    font-size: clamp(var(--headingDesktopMin), var(--headingDesktop), var(--headingDesktopMax));
+    padding-right:2vw;
+    padding-left: 2vw;
+  }
+  .perex {
+    font-size: clamp(var(--perexDesktopMin), var(--perexDesktop), var(--perexDesktopMax));
+    padding-right: 4vw;
+    padding-left: 4vw;
+  }
+  .input-field {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    padding: 0.5rem 0.75rem;
+    font-size: clamp(var(--fieldMessageDesktopMin), var(--fieldMessageDesktop), var(--fieldMessageDesktopMax));
+  }
+  button {
+    height: clamp(0rem, calc(((46vw * var(--pixToVw))) / (var(--fS))), calc((46rem * 0.115) / (var(--fS) * var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    font-size: clamp(var(--buttonDesktopMin), var(--buttonDesktop), var(--buttonDesktopMax));
+  }
+  .field-message {
+    font-size: clamp(var(--fieldMessageDesktopMin), var(--fieldMessageDesktop), var(--fieldMessageDesktopMax));
+    top: calc(0.67vw / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))); /* visually moves text down without changing parent flow */
+  }
+  .form-label {
+    font-size: clamp(var(--formLabelDesktopMin), var(--formLabelDesktop), var(--formLabelDesktopMax));
+  }
+  .google-logo {
+    height: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS)*var(--fS))));
+    width: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS)*var(--fS))));
+  }
+  .form-half-separator-up,  .form-half-separator-down {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS)*var(--fS))), calc((36rem * 0.115/2) / (var(--fS)*var(--fS))));
+  }
+  .actions-section {
+    width: calc(50% / (var(--fS)*var(--fS)*var(--fS)));
+  }
+  .hero-section {
+    padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS)));
+    padding-bottom: 0vw;
+  }
+}
 
