@@ -1,5 +1,6 @@
-/* Import only Raleway */
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+/* Import only Onest */
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
+
 
 /* CSS variables */
 :root {
@@ -9,12 +10,12 @@
   --color-dreamyellow: #FFB743;
   --color-dreamyellow-hower: #FFC261;
   --color-dreamyellow-active: #CF9537;
-  --font-raleway: 'Raleway', sans-serif;
+  --font-onest: 'Onest', sans-serif;  /* Raleway, Onest */
 
   --pixToVw: (1 / 375) * 100; /*0.267vw;*/
 
   /* Plain text size in vw units */
-  --plainTextSize: 5.1vw;
+  --plainTextSize: calc(5.1vw * 1.015);
 
   /* Factor for dynamic heading scaling */
   --fS: 1.171101207; /* The cube root of the golden ratio */
@@ -151,7 +152,7 @@ body {
   background-color: var(--color-bgblue);
   display: flex;
   flex-direction: column;
-  font-family: var(--font-raleway);
+  font-family: var(--font-onest);
 }
 
 .main {
@@ -194,7 +195,7 @@ body {
   color: white;
   margin-bottom: 1vw;
   text-align: center;
-  font-family: var(--font-raleway);
+  font-family: var(--font-onest);
   font-size: clamp(var(--headingMobileMin), var(--headingMobile), var(--headingMobileMax));
   padding-right:5vw;
   padding-left: 5vw;
@@ -203,7 +204,7 @@ body {
 /* Perex / Intro text */
 .perex {
   font-weight: 300; /* light */
-  font-family: var(--font-raleway);
+  font-family: var(--font-onest);
   color: var(--color-dreamyellow);
   line-height: var(--lineHeight);
   text-align: center;

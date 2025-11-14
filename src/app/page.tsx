@@ -79,7 +79,7 @@ export default function Home() {
       <div className="hero-section">
         <h1 className="heading">Manage your savings easily</h1>
         <p className="perex">
-          Track your goals as they grow and set priorities as needed
+          Track your goals as they grow and set priorities as needed  
         </p>
       </div>
 
