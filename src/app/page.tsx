@@ -1,111 +1,154 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import { auth, googleProvider } from '@/firebase/firebase'
-import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithPopup, signInWithEmailAndPassword, AuthError } from 'firebase/auth'
 import { useAuthStore } from '@/store/authStore'
-import { useMyStore } from '@/store/myStore'
+import { myEmailValidation } from '@/components/lib/emailValidation'
+import '@/styles/theme.css'
 
 export default function Home() {
-  const router = useRouter() // router for navigation
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [loginError, setLoginError] = useState('')
 
   const setUser = useAuthStore((state) => state.setUser)
-  const setMyNumber = useMyStore((state) => state.setMyNumber)
 
-  // Handle Google sign-in
+  // Google login
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
       setUser(result.user)
-      router.push('/dashboard') // redirect after successful Google login
-    } catch (error) {
+      router.push('/dashboard')
+    } catch (error: unknown) {
       console.error('Google sign-in error:', error)
+      setLoginError('Error signing in with Google.')
     }
   }
 
-  // Handle email/password login
+  // Email validation
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setEmail(value)
+    setEmailError(myEmailValidation(value))
+  }
+
+  // Email/password login
   const login = async (email: string, password: string) => {
+    setLoginError('')
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      setMyNumber(666)
       setUser(userCredential.user)
-      router.push('/dashboard') // redirect after successful email login
-    } catch (error) {
-      console.error('Login failed', error)
+      router.push('/dashboard')
+    } catch (error: unknown) {
+      const e = error as AuthError
+      console.error('Login failed:', e.code)
+      switch (e.code) {
+        case 'auth/invalid-email':
+          setLoginError('Invalid email.')
+          break
+        case 'auth/user-disabled':
+          setLoginError('Account is disabled.')
+          break
+        case 'auth/user-not-found':
+          setLoginError('Account does not exist.')
+          break
+        case 'auth/wrong-password':
+          setLoginError('Incorrect password.')
+          break
+        case 'auth/too-many-requests':
+          setLoginError('Too many attempts.')
+          break
+        default:
+          setLoginError('Error signing in.')
+          break
+      }
     }
   }
 
-  // Navigate to registration page
-  const linkToRegister = async () => router.push('/register')
+  const linkToRegister = () => router.push('/register')
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-4">
+    <div className="base-container">
       <Header />
-      
-      {/* Main content */}
-      <div className="text-center mt-8 space-y-2 max-w-md">
-        <h1 className="text-3xl font-bold text-blue-600">
-          Manage your savings easily
-        </h1>
-        <p className="text-gray-700 text-lg">
-          Track your goals as they grow and set priorities as needed
+
+      <div className="hero-section">
+        <h1 className="heading">Manage your savings easily</h1>
+        <p className="perex">
+          Track your goals as they grow and set priorities as needed  
         </p>
       </div>
 
-      {/* Test link to dashboard */}
-      <div className="mt-4">
-        <Link
-          href="/dashboard"
-          className="text-blue-500 underline hover:text-blue-700"
-        >
-          Go to dashboard
-        </Link>
-      </div>
-
-      {/* Login and register section */}
-      <div className="mt-8 w-full max-w-md flex flex-col space-y-4">
-        {/* Google login */}
-        <button
-          onClick={handleGoogleSignIn}
-          className="w-full px-4 py-3 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Sign in with Google
-        </button>
-
-        {/* Email login */}
-        <div className="bg-white p-4 rounded shadow space-y-3">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <button
-            onClick={() => login(email, password)}
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Sign in
+      {/* Action / Form section */}
+      <div className="actions-section">
+        {/* Google Sign In */}
+        <div className="google-box">
+          <button onClick={handleGoogleSignIn} className="button-secondary">
+            <img
+              className="google-logo"
+              src="/images/google-logo.svg"
+              alt="Google logo"
+            />
+            Sign in with Google
+            <div className="google-logo" >
+              <span>&nbsp;</span>
+            </div>
           </button>
         </div>
 
-        {/* Navigate to register page */}
-        <button
-          onClick={linkToRegister}
-          className="w-full px-4 py-3 bg-green-500 text-white rounded hover:bg-green-600"
-        >
+        {/* Email/Password Sign In */}
+        <div className="form-card">
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom">
+              <p className="form-label">Email</p>
+            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              className={`input-field ${emailError ? 'error' : ''}`}
+            />
+            <div className="form-half-separator-down">
+              {emailError && <p className="field-message">{emailError}</p>}
+            </div>
+          </label>
+
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom">
+              <p className="form-label">Password</p>
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field"
+            />
+            <div className="form-half-separator-down">
+              {loginError && <p className="field-message">{loginError}</p>}
+            </div>
+          </label>
+
+          <div className="form-half-separator-up vertical-align-bottom">
+            <br />
+          </div>
+
+          <button onClick={() => login(email, password)} className="button-primary">
+            Sign in
+          </button>
+
+          <div className="form-half-separator-down">
+            <br />
+          </div>
+        </div>
+
+        {/* Register redirect */}
+        <button onClick={linkToRegister} className="button-secondary">
           Register
         </button>
       </div>

@@ -1,21 +1,22 @@
-import './globals.css'
-import { ReactNode } from 'react'
+import "./globals.css"
+import { ReactNode } from "react"
+import "@/styles/theme.css"
 
 export const metadata = {
-  title: 'Savings App',
-  description: 'Mini application for dedicated saving',
+  title: "Savings App",
+  description: "Mini application for dedicated saving",
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+interface RootLayoutProps {
+  children: ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="sk">
-      <body className="bg-gray-100 font-sans min-h-screen">
-
-        <main className="p-4">{children}</main>
-
-        <footer className="text-center text-gray-500 text-sm p-4 mt-auto">
-          © 2025 Savings App
-        </footer>
+    <html lang="sk" className="h-full">
+      <body className="app-body">
+        <main className="app-main">{children}</main>
+        <footer className="app-footer">© 2025 Savings App</footer>
       </body>
     </html>
   )

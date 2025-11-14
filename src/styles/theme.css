@@ -1,0 +1,573 @@
+/* Import only Onest */
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
+
+
+/* CSS variables */
+:root {
+  --color-bgblue: #000C32;
+  --color-bgblue-muted: #001351;
+  --color-logoblue: #0072AB;
+  --color-dreamyellow: #FFB743;
+  --color-dreamyellow-hower: #FFC261;
+  --color-dreamyellow-active: #CF9537;
+  --font-onest: 'Onest', sans-serif;  /* Raleway, Onest */
+
+  --pixToVw: (1 / 375) * 100; /*0.267vw;*/
+
+  /* Plain text size in vw units */
+  --plainTextSize: calc(5.1vw * 1.015);
+
+  /* Factor for dynamic heading scaling */
+  --fS: 1.171101207; /* The cube root of the golden ratio */
+  --lineHeight: 117.110127%;
+  --minRem: 0rem;
+  --maxRem: 4.5rem;
+  --header-exponent: 0.7;
+  --headerHeight: calc(5.8rem * var(--header-exponent));
+
+  /* Headings – dynamic scaling using static CSS calculations */
+  --headingMobileExponent: calc(var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS));
+  --headingMobile: calc(var(--plainTextSize) * var(--headingMobileExponent));
+  --headingMobileMin: calc(var(--minRem) * var(--headingMobileExponent));
+  --headingMobileMax: calc(var(--maxRem) * var(--headingMobileExponent));
+  /**/
+  --headingMidExponent: calc(var(--fS) * var(--fS) * var(--fS) * var(--fS));
+  --headingMid: calc(var(--plainTextSize) * var(--headingMidExponent));
+  --headingMidMin: calc(var(--minRem) * var(--headingMidExponent));
+  --headingMidMax: calc(var(--maxRem) * var(--headingMidExponent));
+
+  --headingDesktopExponent: calc(var(--fS));
+  --headingDesktop: calc(var(--plainTextSize) * var(--headingDesktopExponent));
+  --headingDesktopMin: calc(var(--minRem) * var(--headingDesktopExponent));
+  --headingDesktopMax: calc(var(--maxRem) * var(--headingDesktopExponent));
+
+  /* Perex – dynamic scaling using static CSS calculations */
+  --perexMobileExponent: calc(var(--fS) * var(--fS) * var(--fS));
+  --perexMobile: calc(var(--plainTextSize) * var(--perexMobileExponent));
+  --perexMobileMin: calc(var(--minRem) * var(--perexMobileExponent));
+  --perexMobileMax: calc(var(--maxRem) * var(--perexMobileExponent));
+  /**/
+  --perexMidExponent: calc(var(--fS) );
+  --perexMid: calc(var(--plainTextSize) * var(--perexMidExponent));
+  --perexMidMin: calc(var(--minRem) * var(--perexMidExponent));
+  --perexMidMax: calc(var(--maxRem) * var(--perexMidExponent));
+
+  --perexDesktopExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS)));
+  --perexDesktop: calc(var(--plainTextSize) * var(--perexDesktopExponent));
+  --perexDesktopMin: calc(var(--minRem) * var(--perexDesktopExponent));
+  --perexDesktopMax: calc(var(--maxRem) * var(--perexDesktopExponent));
+
+  /* Buttons – dynamic scaling using static CSS calculations */
+  --buttonMobileExponent: calc(1 / var(--fS));
+  --buttonMobile: calc(var(--plainTextSize) * var(--buttonMobileExponent));
+  --buttonMobileMin: calc(var(--minRem) * var(--buttonMobileExponent));
+  --buttonMobileMax: calc(var(--maxRem) * var(--buttonMobileExponent));
+  /**/
+  --buttonMidExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS) * var(--fS)  ) );
+  --buttonMid: calc(var(--plainTextSize) * var(--buttonMidExponent));
+  --buttonMidMin: calc(var(--minRem) * var(--buttonMidExponent));
+  --buttonMidMax: calc(var(--maxRem) * var(--buttonMidExponent));
+
+  --buttonDesktopExponent: calc(1 / (var(--fS) * var(--fS) * var(--fS) *var(--fS)*var(--fS)*var(--fS)*var(--fS)) );
+  --buttonDesktop: calc(var(--plainTextSize) * var(--buttonDesktopExponent));
+  --buttonDesktopMin: calc(var(--minRem) * var(--buttonDesktopExponent));
+  --buttonDesktopMax: calc(var(--maxRem) * var(--buttonDesktopExponent));
+
+  /* Form labels – dynamic scaling using static CSS calculations */
+  --formLabelMobileExponent: calc((1 / var(--fS)) / var(--fS));
+  --formLabelMobile: calc(var(--plainTextSize) * var(--formLabelMobileExponent));
+  --formLabelMobileMin: calc(var(--minRem) * var(--formLabelMobileExponent));
+  --formLabelMobileMax: calc(var(--maxRem) * var(--formLabelMobileExponent));
+  /**/
+  --formLabelMidExponent: calc((((1 / var(--fS)) / var(--fS)) / var(--fS)) / var(--fS));
+  --formLabelMid: calc(var(--plainTextSize) * var(--formLabelMidExponent));
+  --formLabelMidMin: calc(var(--minRem) * var(--formLabelMidExponent));
+  --formLabelMidMax: calc(var(--maxRem) * var(--formLabelMidExponent));
+
+  --formLabelDesktopExponent: calc((((1 / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))) / var(--fS)) / var(--fS)) / var(--fS));
+  --formLabelDesktop: calc(var(--plainTextSize) * var(--formLabelDesktopExponent));
+  --formLabelDesktopMin: calc(var(--minRem) * var(--formLabelDesktopExponent));
+  --formLabelDesktopMax: calc(var(--maxRem) * var(--formLabelDesktopExponent));
+
+  /* Field messages – dynamic scaling using static CSS calculations */
+  --fieldMessageMobileExponent: calc(((1 / var(--fS)) / var(--fS)) / var(--fS));
+  --fieldMessageMobile: calc(var(--plainTextSize) * var(--fieldMessageMobileExponent));
+  --fieldMessageMobileMin: calc(var(--minRem) * var(--fieldMessageMobileExponent));
+  --fieldMessageMobileMax: calc(var(--maxRem) * var(--fieldMessageMobileExponent));
+  /**/
+  --fieldMessageMidExponent: calc(((1 / var(--fS)) / var(--fS)) / var(--fS));
+  --fieldMessageMid: calc(var(--plainTextSize) * var(--fieldMessageMidExponent));
+  --fieldMessageMidMin: calc(var(--minRem) * var(--fieldMessageMidExponent));
+  --fieldMessageMidMax: calc(var(--maxRem) * var(--fieldMessageMidExponent)); 
+
+  --fieldMessageDesktopExponent: calc(((1 / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))) / var(--fS)) / var(--fS));
+  --fieldMessageDesktop: calc(var(--plainTextSize) * var(--fieldMessageDesktopExponent));
+  --fieldMessageDesktopMin: calc(var(--minRem) * var(--fieldMessageDesktopExponent));
+  --fieldMessageDesktopMax: calc(var(--maxRem) * var(--fieldMessageDesktopExponent));
+}
+
+body {
+  background-color: #000C32; /* dark blue */
+}
+
+/* Base containers */
+.base-container {
+  height: 100%;
+  width: clamp(0vw, 100vw, 1400px);
+  background-color: var(--color-bgblue);
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  align-items: center;
+}
+
+.base-container2 {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.centered-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.start-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.content-padding {
+  padding: 1rem; /* Tailwind p-4 */
+}
+
+/* Layout-specific */
+.body {
+  min-height: 100vh;
+  background-color: var(--color-bgblue);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-onest);
+}
+
+.main {
+  flex-grow: 1;
+  padding: 0;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 1rem 0;
+  margin-top: auto;
+}
+
+/* Page/UI elements */
+.container {
+  min-height: 100vh;
+  background-color: var(--color-bgblue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.main-content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1rem;
+  gap: 1rem;
+}
+
+/* Heading with dynamic font */
+.heading {
+  font-weight: 800; /* extrabold */
+  line-height: var(--lineHeight);
+  color: white;
+  margin-bottom: 1vw;
+  text-align: center;
+  font-family: var(--font-onest);
+  font-size: clamp(var(--headingMobileMin), var(--headingMobile), var(--headingMobileMax));
+  padding-right:5vw;
+  padding-left: 5vw;
+}
+
+/* Perex / Intro text */
+.perex {
+  font-weight: 300; /* light */
+  font-family: var(--font-onest);
+  color: var(--color-dreamyellow);
+  line-height: var(--lineHeight);
+  text-align: center;
+  max-width: 100vw;
+  padding-right: 10vw;
+  padding-left: 10vw;
+  font-size: clamp(var(--perexMobileMin), var(--perexMobile), var(--perexMobileMax));
+}
+
+
+.hero-section {
+  padding-top: 5.1vw;
+  padding-bottom: 0vw;
+}
+
+/* Highlight */
+.highlight {
+  font-weight: 600;
+}
+
+.google-box {
+  width: 100%;
+}
+
+.register-box {
+  width: 100%;
+}
+
+/* Inputs */
+.input-field {
+  height: clamp(0rem, calc(36vw * var(--pixToVw)), calc(36rem * 0.115));
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  color: black;
+  outline: none;
+  background-color: #FFFFFF;
+  font-size: clamp(var(--fieldMessageMobileMin), var(--fieldMessageMobile), var(--fieldMessageMobileMax));
+}
+
+.input-field:focus {
+  border-color: var(--color-logoblue);
+  box-shadow: 0 0 0 2px rgba(0, 99, 148, 0.5);
+}
+
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:hover,
+.input-field:-webkit-autofill:focus {
+  -webkit-text-fill-color: black; /* nastav farbu textu */
+  -webkit-box-shadow: 0 0 0px 1000px white inset; /* prepíše žlté autofill pozadie */
+  font-size: clamp(var(--fieldMessageMobileMin), var(--fieldMessageMobile), var(--fieldMessageMobileMax)) !important;
+  font-family: inherit !important;
+}
+
+/* Cards */
+.form-card {  
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  flex: 0;  
+}
+
+.actions-section {
+  width: 70%;
+  margin: 0px;
+  flex: 1;  
+  display: flex;
+  flex-direction: column; /* column layout */
+  justify-content: space-evenly; /* vertical centering */  
+}
+
+/* Header */
+.header {
+  width: 100%;
+  height: clamp(0px, calc(52vw * var(--pixToVw)), var(--headerHeight));
+  background-color: var(--color-bgblue);
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  justify-content: center;
+} 
+
+.logo-box {
+  height: 100%;
+  display: flex;
+  align-items: center;       /* vertical centering */
+  justify-content: flex-start; /* align content to the left */
+}
+
+.menu-box {
+  height: 100%;
+  display: flex;
+  align-items: center;      /* vertical centering */
+  justify-content: flex-end; /* align content to the right */
+}
+
+.header-logo {
+  height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115 * var(--header-exponent)));
+  width: clamp(0rem, calc(142vw * var(--pixToVw)), calc(142rem * 0.115 * var(--header-exponent)));
+}
+
+.burger-menu {
+  height: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115 * var(--header-exponent)));
+  width: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115 * var(--header-exponent)));
+}
+
+.header-title {
+  font-size: clamp(0rem, 4vw, 100rem);
+  font-weight: 500;
+  color: white;
+  text-align: left;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  height: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  font-weight: 500;
+  font-size: clamp(var(--buttonMobileMin), var(--buttonMobile), var(--buttonMobileMax));
+}
+
+.button-primary {
+  padding: 0;
+  background-color: var(--color-dreamyellow);
+  color: var(--color-bgblue);
+  text-align: center;
+  cursor: pointer;
+}
+
+.button-primary-muted {
+  padding: 0;
+  background-color: var(--color-bgblue-muted);
+  color: var(--color-bgblue);
+  text-align: center;
+  cursor: pointer;
+}
+
+.button-primary:hover {
+  background-color: var(--color-dreamyellow-hower);
+}
+
+.button-primary:active {
+  background-color: var(--color-dreamyellow-active);
+}
+
+.button-secondary {
+  padding: 0;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  border-width: 2px;
+  border-color: rgba(146, 219, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  
+}
+
+.button-secondary:hover{
+  border-color: rgba(146, 219, 255, 0.4)
+}
+
+.button-secondary:active{
+  border-color: rgba(146, 219, 255, 0.1)
+}
+
+.header-button {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-logoblue);
+  color: white;
+}
+
+.header-button:hover {
+  background-color: #004e7c;
+}
+
+.header-content {
+  height: clamp(0px, calc(51vw * var(--pixToVw)), calc(var(--headerHeight) - 1px));
+  width: 100%;
+  display: flex;
+  align-items: center; /* keeps them vertically centered */
+  justify-content: space-between; /* evenly spreads children */
+  padding-left: clamp(0rem, 11vw * var(--pixToVw), calc(11rem * 0.115));
+  padding-right: clamp(0rem,15vw * var(--pixToVw), calc(15rem * 0.115));
+}
+
+.header-separator {
+  height: 1px;
+  background-color: rgba(255, 225, 255, 0.2);
+  width: 100%;
+}
+
+@media (min-width: 1460px) {
+  .header-content {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* prevents global scroll */
+}
+
+.app-body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* exact viewport height */
+  overflow: hidden; /* prevents double scrolling */
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto; /* scrolls only the main content if long */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.app-footer {
+  background-color: #001244; /* subtle color */
+  color: #ccc;
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 0.3rem 0;
+}
+
+.form-separator {
+  height: clamp(0rem, calc(36vw * var(--pixToVw)), calc(36rem * 0.115));
+  width: 100%;
+}
+
+.form-half-separator-up,  .form-half-separator-down {
+  height: clamp(0rem, calc(36vw * var(--pixToVw)/2), calc(36rem * 0.115/2));
+  width: 100%;
+}
+
+
+.form-label {
+  font-size: clamp(var(--formLabelMobileMin), var(--formLabelMobile), var(--formLabelMobileMax));
+  color: white;
+  font-weight: 500;
+}
+
+.vertical-align-bottom {
+  display: flex;
+  flex-direction: column; /* default, can omit */
+  justify-content: flex-end; /* pushes children to the bottom */
+}
+
+.field-message {
+  font-size: clamp(var(--fieldMessageMobileMin), var(--fieldMessageMobile), var(--fieldMessageMobileMax));
+  color: var(--color-dreamyellow);
+  text-align: center;
+  font-weight: 300; /* light */
+  position: relative;
+  top: 0.67vw; /* visually moves text down without changing parent flow */
+}
+
+.google-logo {
+  height: clamp(0rem, calc(25vw * var(--pixToVw)), calc(25rem * 0.115));
+  width: clamp(0rem, calc(25vw * var(--pixToVw)), calc(25rem * 0.115));
+}
+
+@media (min-width: 768px) {
+  .heading {
+    font-size: clamp(var(--headingMidMin), var(--headingMid), var(--headingMidMax));
+    padding-right:2vw;
+    padding-left: 2vw;
+
+  }
+  .perex {
+    font-size: clamp(var(--perexMidMin), var(--perexMid), var(--perexMidMax));
+    padding-right: 4vw;
+    padding-left: 4vw;
+  }
+  .input-field {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    padding: 0.5rem 0.75rem;
+    font-size: clamp(var(--fieldMessageMidMin), var(--fieldMessageMid), var(--fieldMessageMidMax));
+  }
+  button {
+    height: clamp(0rem, calc(((46vw * var(--pixToVw))) / (var(--fS) * var(--fS))), calc((46rem * 0.115) / (var(--fS) * var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    font-size: clamp(var(--buttonMidMin), var(--buttonMid), var(--buttonMidMax));
+  }
+  .field-message {
+    font-size: clamp(var(--fieldMessageMidMin / (var(--fS)*var(--fS))), var(--fieldMessageMid / (var(--fS)*var(--fS))), var(--fieldMessageMidMax / (var(--fS)*var(--fS))));
+    top: calc(0.67vw / (var(--fS)*var(--fS))); /* visually moves text down without changing parent flow */
+  }
+  .form-label {
+    font-size: clamp(var(--formLabelMidMin), var(--formLabelMid), var(--formLabelMidMax));
+  }
+  .google-logo {
+    height: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS))));
+    width: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS))));
+  }
+  .form-half-separator-up,  .form-half-separator-down {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS))), calc((36rem * 0.115/2) / (var(--fS))));
+  }
+  .actions-section {
+    width: calc(50% * var(--fS));
+  }
+  .hero-section {
+    padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS)));
+    padding-bottom: 0vw;
+  }
+}
+
+
+@media (min-width: 992px) {
+  .heading {
+    font-size: clamp(var(--headingDesktopMin), var(--headingDesktop), var(--headingDesktopMax));
+    padding-right:2vw;
+    padding-left: 2vw;
+  }
+  .perex {
+    font-size: clamp(var(--perexDesktopMin), var(--perexDesktop), var(--perexDesktopMax));
+    padding-right: 4vw;
+    padding-left: 4vw;
+  }
+  .input-field {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    padding: 0.5rem 0.75rem;
+    font-size: clamp(var(--fieldMessageDesktopMin), var(--fieldMessageDesktop), var(--fieldMessageDesktopMax));
+  }
+  button {
+    height: clamp(0rem, calc(((46vw * var(--pixToVw))) / (var(--fS))), calc((46rem * 0.115) / (var(--fS) * var(--fS))));
+    border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
+    font-size: clamp(var(--buttonDesktopMin), var(--buttonDesktop), var(--buttonDesktopMax));
+  }
+  .field-message {
+    font-size: clamp(var(--fieldMessageDesktopMin), var(--fieldMessageDesktop), var(--fieldMessageDesktopMax));
+    top: calc(0.67vw / (var(--fS)*var(--fS)*var(--fS)*var(--fS)*var(--fS))); /* visually moves text down without changing parent flow */
+  }
+  .form-label {
+    font-size: clamp(var(--formLabelDesktopMin), var(--formLabelDesktop), var(--formLabelDesktopMax));
+  }
+  .google-logo {
+    height: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS)*var(--fS))));
+    width: clamp(0rem, calc((25vw * var(--pixToVw)) / (var(--fS)*var(--fS)*var(--fS))), calc((25rem * 0.115) / (var(--fS)*var(--fS)*var(--fS))));
+  }
+  .form-half-separator-up,  .form-half-separator-down {
+    height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS)*var(--fS))), calc((36rem * 0.115/2) / (var(--fS)*var(--fS))));
+  }
+  .actions-section {
+    width: calc(50% / (var(--fS)*var(--fS)*var(--fS)));
+  }
+  .hero-section {
+    padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS)));
+    padding-bottom: 0vw;
+  }
+}
+
