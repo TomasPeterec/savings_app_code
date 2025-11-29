@@ -21,7 +21,7 @@ interface SavingData {
   description: string | null
   totalSaved: number | null
   monthlyDeposited: number | null
-  nextCounting: Timestamp | null
+  nextCounting: string | null
   currency: string | null
   signedAllowedUsers: AllowedUser[] | null
 }
@@ -31,7 +31,7 @@ interface ItemData {
   itemName: string | null
   link: string | null
   price: number | null
-  endDate: string | null  // alebo Date, ak konvertuješ z ISO
+  endDate: string | null  
   saved: number | null
   priority: number | null
 }
@@ -42,7 +42,7 @@ interface ItemData {
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
 
-  const [token, setToken] = useState<string | null>(null)
+ 
   const [savingData, setSavingData] = useState<SavingData | null>(null)
   const [itemsData, setItemsData] = useState<ItemData[]>([])
 
@@ -50,13 +50,13 @@ export default function Dashboard() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
-        setToken(null)
+       
         setSavingData(null) // reset all saving data at once
         return
       }
 
       const idToken = await currentUser.getIdToken()
-      setToken(idToken)
+     
 
       try {
         const res = await fetch("/api/savings", {

@@ -13,7 +13,7 @@ interface SavingData {
   description: string | null
   totalSaved: number | null
   monthlyDeposited: number | null
-  nextCounting: any | null
+  nextCounting: string | null
   currency: string | null
   signedAllowedUsers: AllowedUser[] | null
 }

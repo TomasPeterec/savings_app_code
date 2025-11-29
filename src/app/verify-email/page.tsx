@@ -1,7 +1,6 @@
 'use client' // required for React interactivity
 
 import Header from '@/components/Header'
-import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from "next/navigation"
 import '@/styles/theme.css' // import new CSS
 
