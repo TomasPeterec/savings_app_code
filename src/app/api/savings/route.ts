@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 interface RequestBody {
   email: string
-  display_name?: string | null
+  displayName?: string | null
 }
 
 interface AllowedUser {
@@ -43,13 +43,13 @@ export async function POST(req: Request) {
     const firebaseUid = decodedToken.uid
 
     // 4. Parse body
-    const { email, display_name } = (await req.json()) as RequestBody
+    const { email, displayName } = (await req.json()) as RequestBody
 
     // 5. Upsert user
     const user = await prisma.user.upsert({
       where: { firebaseUid },
-      update: { email, displayName: display_name },
-      create: { firebaseUid, email, displayName: display_name },
+      update: { email, displayName: displayName },
+      create: { firebaseUid, email, displayName: displayName },
     })
 
     // 6. Get selected saving for this user

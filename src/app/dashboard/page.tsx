@@ -6,7 +6,6 @@ import { auth } from "@/firebase/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
 import "@/styles/theme.css"
-import { Timestamp } from "next/dist/server/lib/cache-handlers/types"
 import MainSavingsDetails from "@/components/MainSavingsDetails"
 import ItemDetails from "@/components/ItemDetails"
 
