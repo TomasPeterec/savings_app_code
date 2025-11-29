@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 
 interface RequestBody {
   email: string
-  display_name?: string | null
+  displayName?: string | null
 }
 
 export async function POST(req: Request) {
@@ -26,16 +26,16 @@ export async function POST(req: Request) {
 
     // 3. Verify token with Firebase Admin SDK
     const decodedToken = await adminAuth.verifyIdToken(token)
-    const firebase_uid = decodedToken.uid
+    const firebaseUid = decodedToken.uid
 
     // 4. Parse request body
-    const { email, display_name } = (await req.json()) as RequestBody
+    const { email, displayName } = (await req.json()) as RequestBody
 
-    // 5. Upsert user in PostgreSQL via Prisma (display_name can be null)
+    // 5. Upsert user in PostgreSQL via Prisma (displayName can be null)
     const user = await prisma.user.upsert({
-      where: { firebase_uid },
-      update: { email, display_name },
-      create: { firebase_uid, email, display_name },
+      where: { firebaseUid },
+      update: { email, displayName },
+      create: { firebaseUid, email, displayName },
     })
 
     // 6. Return the user as JSON
