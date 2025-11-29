@@ -1,0 +1,139 @@
+/* styles/MainSavingsDetails.css */
+@import "./MainSavingsDetails.css";
+
+
+
+
+
+.saving-details-box {
+  background-color: rgba(255, 255, 255, 0.05);
+  width: 100%;
+  height: clamp(0rem, calc(153vw * var(--pixToVw)), calc(153rem * 0.115));
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  padding: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+
+:root {
+  /* saving-details-heading – dynamic scaling using static CSS calculations */
+  --s-d-headingMobileExponent: calc(1 / var(--fS) );
+  --s-d-headingMobile: calc(var(--plainTextSize) * var(--s-d-headingMobileExponent));
+  --s-d-headingMobileMin: calc(var(--minRem) * var(--s-d-headingMobileExponent));
+  --s-d-headingMobileMax: calc(var(--maxRem) * var(--s-d-headingMobileExponent));
+}
+
+.saving-details-heading {
+    color: white;
+    font-family: var(--font-onest);
+    font-size: clamp(var(--s-d-headingMobileMin), var(--s-d-headingMobile), var(--s-d-headingMobileMax));
+    font-weight: 400;
+    padding: 0px;
+    margin: 0px;
+    margin-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+:root {
+  /* main-savings-details-description – dynamic scaling using static CSS calculations */
+  --s-d--descriptionMobileExponent: calc(1 / (var(--fS) * var(--fS)) );
+  --s-d--descriptionMobile: calc(var(--plainTextSize) * var(--s-d--descriptionMobileExponent));
+  --s-d--descriptionMobileMin: calc(var(--minRem) * var(--s-d--descriptionMobileExponent));
+  --s-d--descriptionMobileMax: calc(var(--maxRem) * var(--s-d--descriptionMobileExponent));
+}
+
+.savings-details-link {
+  color: #80B8D5;
+  font-family: var(--font-onest);
+  font-size: clamp(var(--s-d--descriptionMobileMin), var(--s-d--descriptionMobile), var(--s-d--descriptionMobileMax));
+  font-weight: 200;
+  padding: 0px;
+  margin: 0px;
+  line-height: 100%;
+  margin-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  display: flex;
+  flex-direction: row;
+}
+
+.savings-details-left {
+  width: clamp(0rem, calc(288vw * var(--pixToVw)), calc(288rem * 0.115));
+  height: clamp(0rem, calc(52vw * var(--pixToVw)), calc(52rem * 0.115));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.link-icone {
+  width: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));
+  height: clamp(0rem, calc(20vw * var(--pixToVw)), calc(20rem * 0.115));
+  position: relative;
+  top: -0.75vw;
+  left: -0.4vw;
+}
+
+
+.upper-row {
+  width: 100%;
+  height: clamp(0rem, calc(52vw * var(--pixToVw)), calc(52rem * 0.115));
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.properties-box-2 {
+  width: 100%;
+  height: clamp(0rem, calc(89vw * var(--pixToVw)), calc(89rem * 0.115));
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  row-gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+.property-box-2 {
+  width: clamp(0rem, calc(80.5vw * var(--pixToVw)), calc(80.5rem * 0.115));
+  height: 100%;
+  background-color: rgba(0, 114, 171, 0.2);
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  display: flex;
+  flex-direction: column;
+  padding: clamp(0rem, calc(9vw * var(--pixToVw)), calc(9rem * 0.115));
+  justify-content: flex-start;
+}
+
+:root {
+  /* property-value-2 – dynamic scaling using static CSS calculations */
+  ---s-d--valueMobileExponent: calc(1 / (var(--fS) * var(--fS) ));
+  ---s-d--valueMobile: calc(var(--plainTextSize) * var(---s-d--valueMobileExponent));
+  ---s-d--valueMobileMin: calc(var(--minRem) * var(---s-d--valueMobileExponent));
+  ---s-d--valueMobileMax: calc(var(--maxRem) * var(---s-d--valueMobileExponent));
+}
+
+.property-value-2 {
+  font-family: var(--font-onest);
+  font-size: clamp(var(---s-d--valueMobileMin), var(---s-d--valueMobile), var(---s-d--valueMobileMax));
+  font-weight: 400;
+  line-height: var(--lineHeight);
+  text-align: center;
+  color: var(--color-dreamyellow);
+}
+
+:root {
+  /* property-label-2 – dynamic scaling using static CSS calculations */
+  ---s-d--labelMobileExponent: calc(1 / (var(--fS) * var(--fS) ));
+  ---s-d--labelMobile: calc(var(--plainTextSize) * var(---s-d--labelMobileExponent));
+  ---s-d--labelMobileMin: calc(var(--minRem) * var(---s-d--labelMobileExponent));
+  ---s-d--labelMobileMax: calc(var(--maxRem) * var(---s-d--labelMobileExponent));
+}
+
+.property-label-2 {
+  font-family: var(--font-onest);
+  font-size: clamp(var(---s-d--labelMobileMin), var(---s-d--labelMobile), var(---s-d--labelMobileMax));
+  font-weight: 300;
+  line-height: var(--lineHeight);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.67);
+  margin-top: clamp(0rem, calc(2vw * var(--pixToVw)), calc(2rem * 0.115));
+  margin-bottom: clamp(0rem, calc(2.5vw * var(--pixToVw)), calc(2.5rem * 0.115));
+}

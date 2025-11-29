@@ -182,10 +182,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5rem 1rem;
-  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.main-container-after-loging {
+  width: 94.13333333vw;
 }
 
 /* Heading with dynamic font */
@@ -479,6 +480,9 @@ html, body {
   width: clamp(0rem, calc(25vw * var(--pixToVw)), calc(25rem * 0.115));
 }
 
+
+
+
 @media (min-width: 768px) {
   .heading {
     font-size: clamp(var(--headingMidMin), var(--headingMid), var(--headingMidMax));
@@ -569,5 +573,13 @@ html, body {
     padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS) * var(--fS)));
     padding-bottom: 0vw;
   }
+}
+
+.green {
+  background-color: #00ff22;
+}
+
+.pink {
+  background-color: #ff69f3;
 }
 

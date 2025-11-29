@@ -8,10 +8,51 @@ datasource db {
 }
 
 model User {
-  firebase_uid String   @id
-  email        String
-  display_name String?
-  created_at   DateTime @default(now())  // <-- auto-set timestamp
+  firebaseUid  String          @id @map("firebase_uid") @db.VarChar(128)
+  email        String?         @db.VarChar(255)
+  displayName  String?         @map("display_name") @db.VarChar(255)
+  createdAt    DateTime?       @default(now()) @map("created_at") @db.Timestamp(6)
+  savingAccess SavingAccess[]
+  savings      Savings[]
 
-  @@map("users") // Maps this Prisma model to the existing 'users' table in Neon
+  @@map("users")
 }
+
+model SavingAccess {
+  savingUuid String   @map("savinguuid") @db.Uuid
+  userId     String   @map("userid")
+  editor     Boolean? @default(true)
+  isSelected Boolean? @map("isselected") @default(false)
+  id         Int      @id @default(autoincrement())
+  savings    Savings  @relation(fields: [savingUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  user       User     @relation(fields: [userId], references: [firebaseUid], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("saving_access")
+}
+
+model Savings {
+  uuid          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  description   String
+  userId        String         @map("userid")
+  monthlyDeposited Int         @map("monthly_deposited")
+  totalSaved    Int            @map("total_saved")
+  nextCounting  DateTime       @map("next_counting")
+  currency      String         
+  savingAccess  SavingAccess[]
+  user          User           @relation(fields: [userId], references: [firebaseUid], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("savings")
+}
+
+model items {
+  itemId   String   @id @map("item_id") @db.Uuid
+  savingId String   @map("saving_id") @db.Uuid
+  itemName String?  @map("item_name") @db.VarChar(255)
+  link     String?
+  price    Decimal
+  endDate  DateTime @map("end_date") @db.Date
+  saved    Decimal
+  priority Decimal
+}
+

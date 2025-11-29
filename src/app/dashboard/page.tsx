@@ -5,16 +5,53 @@ import Header from "@/components/Header"
 import { auth } from "@/firebase/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
-import "@/styles/theme.css" // import noveho CSS
+import "@/styles/theme.css"
+import { Timestamp } from "next/dist/server/lib/cache-handlers/types"
+import MainSavingsDetails from "@/components/MainSavingsDetails"
+import ItemDetails from "@/components/ItemDetails"
+
+// Define the shape of the saving data object
+interface AllowedUser {
+  userId: string
+  editor: boolean
+}
+
+interface SavingData {
+  selectedSaving: string | null
+  description: string | null
+  totalSaved: number | null
+  monthlyDeposited: number | null
+  nextCounting: Timestamp | null
+  currency: string | null
+  signedAllowedUsers: AllowedUser[] | null
+}
+
+interface ItemData {
+  itemId: string
+  itemName: string | null
+  link: string | null
+  price: number | null
+  endDate: string | null  // alebo Date, ak konvertuješ z ISO
+  saved: number | null
+  priority: number | null
+}
+
+
+
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
+
   const [token, setToken] = useState<string | null>(null)
+  const [savingData, setSavingData] = useState<SavingData | null>(null)
+  const [itemsData, setItemsData] = useState<ItemData[]>([])
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         setToken(null)
+        setSavingData(null) // reset all saving data at once
         return
       }
 
@@ -22,7 +59,7 @@ export default function Dashboard() {
       setToken(idToken)
 
       try {
-        const res = await fetch("/api/users", {
+        const res = await fetch("/api/savings", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,7 +78,21 @@ export default function Dashboard() {
         }
 
         const data = await res.json()
-        console.log("User from backend:", data.user)
+
+        // set all saving data at once
+        setSavingData({
+          selectedSaving: data.selectedSavingName || null,
+          description: data.description || null,
+          totalSaved: data.totalSaved || null,
+          monthlyDeposited: data.monthlyDeposited || null,
+          nextCounting: data.nextCounting || null,
+          currency: data.currency || null,  // <- tu musí byť čiarka
+          signedAllowedUsers: data.allowedUsers || null
+        })
+
+        setItemsData(data.itemsData || [])
+
+
       } catch (err) {
         console.error("Backend error:", err)
       }
@@ -51,27 +102,14 @@ export default function Dashboard() {
   }, [user])
 
   return (
-    <div className="container">
+    <div className="base-container">
       <Header />
-      <main className="main-content">
-        <h1 className="heading">Welcome to your dashboard</h1>
-
-        {user && (
-          <p className="paragraph">
-            Hello, <span className="highlight">{user.displayName || user.email}</span>!
-          </p>
-        )}
-
-        <p className="paragraph">
-          Here you will see your savings, goals, and monthly summaries.
-        </p>
-
-        {token && (
-          <p className="paragraph">
-            Token: <span className="highlight">{token}</span>
-          </p>
-        )}
-      </main>
+      <div className="main-container-after-loging">
+        <MainSavingsDetails savingData={savingData} />
+        {itemsData.map(item => (
+          <ItemDetails key={item.itemId} item={item} />
+        ))}
+      </div>
     </div>
   )
 }

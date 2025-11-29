@@ -1,0 +1,179 @@
+/* styles/theme.css */
+@import "./theme.css";
+
+
+.main-savings-details-box {
+  background-color: rgba(0, 114, 171, 0.4);
+  width: 100%;
+  height: clamp(0rem, calc(162vw * var(--pixToVw)), calc(162rem * 0.115));
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  padding: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+.main-savings-details-left {
+  width: clamp(0rem, calc(288vw * var(--pixToVw)), calc(288rem * 0.115));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.main-savings-details-right {
+  width: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.users-box {
+  height: clamp(0rem, calc(4vw * var(--pixToVw)), calc(4rem * 0.115));
+  display: flex;
+  flex-direction: row;
+}
+
+.text-box {
+  width: 100%;
+}
+
+.properties-box {
+  width: 100%;
+  height: clamp(0rem, calc(87vw * var(--pixToVw)), calc(87rem * 0.115));
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  row-gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+.property-box {
+  width: clamp(0rem, calc(92vw * var(--pixToVw)), calc(92rem * 0.115));
+  height: 100%;
+  background-color: rgba(0, 114, 171, 0.2);
+  border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
+  display: flex;
+  flex-direction: column;
+  padding: clamp(0rem, calc(9vw * var(--pixToVw)), calc(9rem * 0.115));
+  justify-content:space-evenly;
+}
+
+
+:root {
+  /* property-label – dynamic scaling using static CSS calculations */
+  --m-s-d-labelMobileExponent: calc(1 / (var(--fS) * var(--fS) ));
+  --m-s-d-labelMobile: calc(var(--plainTextSize) * var(--m-s-d-labelMobileExponent));
+  --m-s-d-labelMobileMin: calc(var(--minRem) * var(--m-s-d-labelMobileExponent));
+  --m-s-d-labelMobileMax: calc(var(--maxRem) * var(--m-s-d-labelMobileExponent));
+}
+
+.property-label {
+  font-family: var(--font-onest);
+  font-size: clamp(var(--m-s-d-labelMobileMin), var(--m-s-d-labelMobile), var(--m-s-d-labelMobileMax));
+  font-weight: 300;
+  line-height: var(var(--lineHeight) * var(--fS));
+  text-align: center;
+  color: rgba(255, 255, 255, 0.67);
+}
+
+.smal-button {
+  width: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
+  height: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
+  padding: clamp(0rem, calc(8vw * var(--pixToVw)), calc(8rem * 0.115));
+}
+
+.button-icone {
+  width: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));
+  height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));
+}
+
+.top-indentation {
+  height: clamp(0rem, calc(23vw * var(--pixToVw)), calc(23rem * 0.115));
+}
+
+:root {
+  /* property-userSmal – dynamic scaling using static CSS calculations */
+  --m-s-d-userSmallMobileExponent: calc(1 / (var(--fS) * var(--fS) ));
+  --m-s-d-userSmalMobile: calc(var(--plainTextSize) * var(--m-s-d-userSmallMobileExponent));
+  --m-s-d-userSmalMobileMin: calc(var(--minRem) * var(--m-s-d-userSmallMobileExponent));
+  --m-s-d-userSmalMobileMax: calc(var(--maxRem) * var(--m-s-d-userSmallMobileExponent));
+}
+
+.user-smal {
+  width: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
+  height: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
+  border-radius: clamp(0rem, calc(12vw * var(--pixToVw)), calc(12rem * 0.115));
+  background-color: #005A8E;
+  border-color: rgba(255, 255, 255, 0.2);
+  border-width: clamp(0rem, calc(1.33vw * var(--pixToVw)), calc(1.33rem * 0.115));
+  position: relative;
+  top: -6vw;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 0.4vw;
+  font-family: var(--font-onest);
+  font-size: clamp(var(--m-s-d-userSmalMobileMin), var(--m-s-d-userSmalMobile), var(--m-s-d-userSmalMobileMax));
+}
+
+:root {
+  /* property-value – dynamic scaling using static CSS calculations */
+  --m-s-d-valueMobileExponent: calc(1 / (var(--fS) ));
+  --m-s-d-valueMobile: calc(var(--plainTextSize) * var(--m-s-d-valueMobileExponent));
+  --m-s-d-valueMobileMin: calc(var(--minRem) * var(--m-s-d-valueMobileExponent));
+  --m-s-d-valueMobileMax: calc(var(--maxRem) * var(--m-s-d-valueMobileExponent));
+}
+
+.property-value {
+  font-family: var(--font-onest);
+  font-size: clamp(var(--m-s-d-valueMobileMin), var(--m-s-d-valueMobile), var(--m-s-d-valueMobileMax));
+  font-weight: 400;
+  line-height: var(var(--lineHeight) * var(--fS));
+  text-align: center;
+  color: var(--color-dreamyellow);
+}
+
+:root {
+  /* main-savings-details-heading – dynamic scaling using static CSS calculations */
+  --m-s-d-headingMobileExponent: calc(var(--fS) );
+  --m-s-d-headingMobile: calc(var(--plainTextSize) * var(--m-s-d-headingMobileExponent));
+  --m-s-d-headingMobileMin: calc(var(--minRem) * var(--m-s-d-headingMobileExponent));
+  --m-s-d-headingMobileMax: calc(var(--maxRem) * var(--m-s-d-headingMobileExponent));
+}
+
+.main-savings-details-heading {
+    color: white;
+    font-family: var(--font-onest);
+    font-size: clamp(var(--m-s-d-headingMobileMin), var(--m-s-d-headingMobile), var(--m-s-d-headingMobileMax));
+    font-weight: 500;
+    padding: 0px;
+    margin: 0px;
+    margin-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+
+:root {
+  /* main-savings-details-description – dynamic scaling using static CSS calculations */
+  --m-s-d-descriptionMobileExponent: calc(1 / (var(--fS)) );
+  --m-s-d-descriptionMobile: calc(var(--plainTextSize) * var(--m-s-d-descriptionMobileExponent));
+  --m-s-d-descriptionMobileMin: calc(var(--minRem) * var(--m-s-d-descriptionMobileExponent));
+  --m-s-d-descriptionMobileMax: calc(var(--maxRem) * var(--m-s-d-descriptionMobileExponent));
+}
+
+.main-savings-details-description {
+  color: white;
+  font-family: var(--font-onest);
+  font-size: clamp(var(--m-s-d-descriptionMobileMin), var(--m-s-d-descriptionMobile), var(--m-s-d-descriptionMobileMax));
+  font-weight: 200;
+  padding: 0px;
+  margin: 0px;
+  line-height: 100%;
+  margin-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+}
+
+
