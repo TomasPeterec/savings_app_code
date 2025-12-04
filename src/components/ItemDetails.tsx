@@ -15,11 +15,12 @@ interface ItemData {
 
 interface ItemDetailsProps {
   item: ItemData
+  monthlyDeposited?: number | null
 }
 
 
 
-export default function ItemDetails({ item }: ItemDetailsProps) {
+export default function ItemDetails({ item, monthlyDeposited }: ItemDetailsProps) {
 
   return (
     <>
@@ -92,7 +93,7 @@ export default function ItemDetails({ item }: ItemDetailsProps) {
             </div>
             <div className="property-value-2">
               {item.saved} €<br/>
-              (XX%)
+              ({Math.round((item.saved ?? 0) / (item.price ?? 0) * 10000)/100}%)
             </div>
           </div>
           <div className="property-box-2">
@@ -100,8 +101,8 @@ export default function ItemDetails({ item }: ItemDetailsProps) {
               Priority monthly:
             </div>
             <div className="property-value-2">
-              XX €<br/>
-              ({item.priority}%)
+              {Math.round(((monthlyDeposited ?? 0) * (item.priority ?? 0)) / 100)} €<br/>
+              ({item.priority ?? 0}%)
             </div>
           </div>
         </div>

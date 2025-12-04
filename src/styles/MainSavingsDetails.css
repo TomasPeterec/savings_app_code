@@ -82,6 +82,10 @@
   width: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
   height: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
   padding: clamp(0rem, calc(8vw * var(--pixToVw)), calc(8rem * 0.115));
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .button-icone {

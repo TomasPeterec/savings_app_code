@@ -20,17 +20,19 @@ interface SavingData {
 
 interface MainSavingsDetailsProps {
   savingData: SavingData | null;
+  setNewItemVisible: (visible: boolean) => void;
 }
 
-export default function MainSavingsDetails({ savingData }: MainSavingsDetailsProps) {
-
+export default function MainSavingsDetails(
+  {
+    savingData,
+    setNewItemVisible
+  }: MainSavingsDetailsProps) {
 
   return (
     <>
-      <div className="top-indentation">
-        &nbsp;&nbsp;&nbsp;
-      </div>
-      <div className="main-savings-details-box" >
+      <div className="top-indentation">&nbsp;&nbsp;&nbsp;</div>
+      <div className="main-savings-details-box">
         <div className="main-savings-details-left">
           <div className="text-box">
             <div className="users-box">
@@ -47,9 +49,7 @@ export default function MainSavingsDetails({ savingData }: MainSavingsDetailsPro
           </div>
           <div className="properties-box">
             <div className="property-box">
-              <div className="property-label">
-                Monthly deposited:
-              </div>
+              <div className="property-label">Monthly deposited:</div>
               <div className="property-value">
                 {savingData?.monthlyDeposited
                   ? `${savingData.monthlyDeposited} ${savingData.currency}`
@@ -58,9 +58,7 @@ export default function MainSavingsDetails({ savingData }: MainSavingsDetailsPro
               </div>
             </div>
             <div className="property-box">
-              <div className="property-label">
-                Total&nbsp;<br/>saved:
-              </div>
+              <div className="property-label">Total&nbsp;<br/>saved:</div>
               <div className="property-value">
                 {savingData?.totalSaved
                   ? `${savingData.totalSaved} ${savingData.currency}`
@@ -69,45 +67,29 @@ export default function MainSavingsDetails({ savingData }: MainSavingsDetailsPro
               </div>
             </div>
             <div className="property-box">
-              <div className="property-label">
-                Next counting:
-              </div>
+              <div className="property-label">Next counting:</div>
               <div className="property-value">
                 {savingData?.nextCounting
-                  ? new Date(savingData.nextCounting).toLocaleDateString('en-US', {
-                      day: '2-digit',
-                      month: 'short' // Jan, Feb, Mar...
-                    })
-                  : "No date"}
+                  ? new Date(savingData.nextCounting).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
+                  : "No date"
+                }
               </div>
             </div>
           </div>
         </div>
+
         <div className="main-savings-details-right">
           <button className="button-secondary smal-button">
-            <img
-              className="button-icone"
-              src="/icons/change.svg"
-              alt="change"
-            />
+            <img className="button-icone" src="/icons/change.svg" alt="change" />
           </button>
           <button className="button-secondary smal-button">
-            <img
-              className="button-icone"
-              src="/icons/edit.svg"
-              alt="change"
-            />
+            <img className="button-icone" src="/icons/edit.svg" alt="edit" />
           </button>
-          <button className="button-primary smal-button">
-            <img
-              className="button-icone"
-              src="/icons/cross.svg"
-              alt="change"
-            />
+          <button className="button-primary smal-button" onClick={() => setNewItemVisible(true)}>
+            <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
           </button>
         </div>
       </div>
     </>
-
   )
 }

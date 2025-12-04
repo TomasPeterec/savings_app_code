@@ -481,7 +481,10 @@ html, body {
 }
 
 
-
+.button-inner-space-left-right {
+  padding-left: clamp(0rem, calc(7vw * var(--pixToVw)), calc(7rem * 0.115));
+  padding-right: clamp(0rem, calc(7vw * var(--pixToVw)), calc(7rem * 0.115));
+}
 
 @media (min-width: 768px) {
   .heading {
