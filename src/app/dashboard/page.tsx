@@ -36,7 +36,7 @@ export interface ItemData {
   priority: number | null
 }
 
-export function calculateEndDate(
+function calculateEndDate(
   price: number,
   saved: number,
   monthlyDeposited: number,
@@ -55,7 +55,7 @@ export function calculateEndDate(
         : new Date(endDateMs).toISOString()
 }
 
-export function calculatePriority(
+function calculatePriority(
   newItemPriority: number, // priority of newly added item
   originalPriorityOfExitingItem: number // priority of an currently existing item
 ): number {
