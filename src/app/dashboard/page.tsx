@@ -36,11 +36,36 @@ export interface ItemData {
   priority: number | null
 }
 
+export function calculateEndDate(
+  price: number,
+  saved: number,
+  monthlyDeposited: number,
+  priority: number
+): string {
+  const nowMs = Date.now()
+  const remainingPrice = price - saved
+  const priorityInMoney = (monthlyDeposited * priority) / 100
+  const monthsToAchieve = remainingPrice / priorityInMoney
+  const monthInMs = 2629746000
+  const restMonthsMs = Math.floor(monthInMs * monthsToAchieve)
+  const endDateMs = restMonthsMs + nowMs
+  // new enddate after adding a new item
+  return (restMonthsMs === Infinity || isNaN(restMonthsMs))
+        ? "9999-12-31T23:59:59.999Z"
+        : new Date(endDateMs).toISOString()
+}
+
+export function calculatePriority(
+  newItemPriority: number, // priority of newly added item
+  originalPriorityOfExitingItem: number // priority of an currently existing item
+): number {
+  // new priority of an currently existing item after recalculating after adding a new item
+  return Math.round((100 - newItemPriority) * originalPriorityOfExitingItem) / 100
+}
 
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
-
  
   const [savingData, setSavingData] = useState<SavingData | null>(null)
   const [itemsDataCopy, setItemsDataCopy] = useState<ItemData[]>([])
@@ -48,26 +73,29 @@ export default function Dashboard() {
   const [newItemVisible, setNewItemVisible] = useState<boolean>(false)
   const [newItemToArr, setNewItemToArr] = useState<ItemData | null>(null)
 
-
   useEffect(() => {
     setItemsData(prevItems => {
       const itemsCopy = prevItems.map((item) => ({ ...item }))
-      const newItemPriority = newItemToArr?.priority ?? 0
 
       if (newItemToArr && newItemToArr.priority !== null) {
         itemsCopy.forEach((item, index) => {
-          const originalPriority = itemsDataCopy[index]?.priority ?? 0
-          item.priority = Math.round((100 - newItemPriority) * originalPriority) / 100
+          // new priority of an currently existing item
+          item.priority = calculatePriority(
+            newItemToArr?.priority ?? 0, // priority of newly added item
+            itemsDataCopy[index]?.priority ?? 0 // priority of an old item
+          )
+          // recalculating enddate after adding a new item
+          item.endDate = calculateEndDate(
+            itemsDataCopy[index]?.price ?? 0,
+            itemsDataCopy[index]?.saved ?? 0,
+            savingData?.monthlyDeposited ?? 0,
+            item.priority ?? 0
+          )
         });
       }
-
       return itemsCopy
     })
-  }, [newItemToArr, itemsDataCopy])
-
-
-
-
+  }, [newItemToArr, itemsDataCopy, savingData?.monthlyDeposited])
 
 
   // first load from backend
@@ -117,7 +145,6 @@ export default function Dashboard() {
         setItemsData(data.itemsData || [])
         setItemsDataCopy(data.itemsData || [])
 
-
       } catch (err) {
         console.error("Backend error:", err)
       }
@@ -142,15 +169,16 @@ export default function Dashboard() {
           setNewItemVisible={setNewItemVisible} 
         />
         {newItemVisible ? (<NewItem
-              setNewItemVisible={setNewItemVisible} 
-              writeData={writeData}
-              setNewItemToArr={setNewItemToArr}
-        />) : null
-            
+          setNewItemVisible={setNewItemVisible} 
+          writeData={writeData}
+          setNewItemToArr={setNewItemToArr}
+        />) : null 
         }
-        {itemsData.map(item => (
-          <ItemDetails key={item.itemId} item={item} monthlyDeposited={savingData?.monthlyDeposited} />
-        ))}
+        {itemsData.map(item => (<ItemDetails 
+          key={item.itemId} 
+          item={item} 
+          monthlyDeposited={savingData?.monthlyDeposited} 
+        />))}
       </div>
     </div>
   )

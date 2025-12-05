@@ -19,7 +19,6 @@ interface ItemDetailsProps {
 }
 
 
-
 export default function ItemDetails({ item, monthlyDeposited }: ItemDetailsProps) {
 
   return (
@@ -101,8 +100,9 @@ export default function ItemDetails({ item, monthlyDeposited }: ItemDetailsProps
               Priority monthly:
             </div>
             <div className="property-value-2">
-              {Math.round(((monthlyDeposited ?? 0) * (item.priority ?? 0)) / 100)} €<br/>
-              ({item.priority ?? 0}%)
+              {Math.round(((monthlyDeposited ?? 0) * (item.priority ?? 0)) / 100)} €
+              <br/>
+              ({(item.priority ?? 0).toFixed(2)}%)
             </div>
           </div>
         </div>
