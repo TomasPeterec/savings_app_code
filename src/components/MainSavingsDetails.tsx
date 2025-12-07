@@ -41,10 +41,10 @@ export default function MainSavingsDetails(
               ))}
             </div>
             <h3 className="main-savings-details-heading">
-              {savingData?.selectedSaving ?? "No saving selected"}
+              {savingData?.selectedSaving ?? "Loading..."}
             </h3>
             <p className="main-savings-details-description">
-              {savingData?.description ?? "No description"}
+              {savingData?.description ?? "Wait for data..."}
             </p>
           </div>
           <div className="properties-box">

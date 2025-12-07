@@ -1,60 +1,110 @@
 "use client"
 
 import "@/styles/SavingDetails.css"
-import { useState, useEffect, useCallback } from "react";
-import { ItemData } from "@/app/dashboard/page" // adjust path if needed
+import { useState, useEffect } from "react"
+import { ItemData } from "@/app/dashboard/page"
 
 
 interface NewItemProps {
   setNewItemVisible: (visible: boolean) => void
   writeData: () => void
   setNewItemToArr: (item: ItemData) => void
+  monthlyDeposited?: number | null
+  calculateEndDate: (
+    price: number,
+    saved: number,
+    monthlyDeposited: number,
+    priority: number
+  ) => string
 }
 
-
-export default function NewItem({ setNewItemVisible, writeData, setNewItemToArr }: NewItemProps) {
+export default function NewItem({
+  setNewItemVisible,
+  writeData,
+  setNewItemToArr,
+  monthlyDeposited,
+  calculateEndDate
+}: NewItemProps) {
 
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [desiredSum, setDesiredSum] = useState<number>(0)
   const [itemLink, setItemLink] = useState<string>("")
-  const [priority, setPriority] = useState<number>(50)
+  const [priority, setPriority] = useState<number>(0)
+  const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
 
-  // starts sending new data to backend
-  const writeNevItem = () => {
-    writeData()
-    setNewItemVisible(false)
-  }
-  
-  const addNewItemToArray = useCallback((value: number) => {
-    setPriority(value);
+
+  // ------------------------------
+  // AUTO UPDATE END DATE
+  // ------------------------------
+  useEffect(() => {
+    const newEndDate = calculateEndDate(
+      desiredSum,
+      0,
+      monthlyDeposited ?? 0,
+      priority
+    )
+    setEndDateforNew(newEndDate)
+  }, [desiredSum, priority, monthlyDeposited, calculateEndDate])
+
+
+  // ------------------------------
+  // AUTO UPDATE ITEM ARRAY
+  // ------------------------------
+  useEffect(() => {
     setNewItemToArr({
       itemId: "",
       itemName: name,
       link: itemLink,
       price: desiredSum,
       saved: 0,
-      endDate: "",
-      priority: value
-    });
-  }, [name, itemLink, desiredSum, setNewItemToArr]);
+      endDate: endDateforNew,
+      priority: priority
+    })
+  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToArr])
 
 
-  // start
-  useEffect(() => {
-    addNewItemToArray(50);
-  }, [addNewItemToArray]);
+  // ------------------------------
+  // MANUAL CREATE BTN
+  // ------------------------------
+  const reset = () => {
+    setName("")
+    setDescription("")
+    setDesiredSum(0)
+    setItemLink("")
+    setPriority(0)
+    writeData()
+    setNewItemToArr({
+      itemId: "",
+      itemName: "",
+      link: "",
+      price: 0,
+      saved: 0,
+      endDate: new Date().toISOString(),
+      priority: 0
+    })
+  }
+
+  const writeNevItem = () => {
+    reset()
+    setNewItemVisible(false)
+  }
+
+  const cancelNewItemDialog = () => {
+    reset()
+    setNewItemVisible(false)
+  }
 
 
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading">
-          Create new item
+        Create new item
       </h3>
+
       <div className="form-card form-card-n-i">
-        <div className="form-half-separator-down">
-            &nbsp;
-        </div>
+        <div className="form-half-separator-down">&nbsp;</div>
+
         <label>
           <div className="form-half-separator-up vertical-align-bottom">
             <p className="form-label">Name</p>
@@ -63,14 +113,13 @@ export default function NewItem({ setNewItemVisible, writeData, setNewItemToArr 
             type="text"
             placeholder="Name"
             value={name}
-            onChange={(e) => setName(String(e.target.value))}
-            className={`input-field`}
+            onChange={(e) => setName(e.target.value)}
+            className="input-field"
           />
-          <div className="form-half-separator-down">
-            {/* {emailError && <p className="field-message">{emailError}</p>} */}
-          </div>
+          <div className="form-half-separator-down"></div>
         </label>
-              <label>
+
+        <label>
           <div className="form-half-separator-up vertical-align-bottom">
             <p className="form-label">Short description</p>
           </div>
@@ -78,83 +127,100 @@ export default function NewItem({ setNewItemVisible, writeData, setNewItemToArr 
             type="text"
             placeholder="Short description"
             value={description}
-            onChange={(e) => setDescription(String(e.target.value))}
-            className={`input-field`}
+            onChange={(e) => setDescription(e.target.value)}
+            className="input-field"
           />
-          <div className="form-half-separator-down">
-            {/* {emailError && <p className="field-message">{emailError}</p>} */}
-          </div>
+          <div className="form-half-separator-down"></div>
         </label>
+
+        {/* --- DOUBLE ROW --- */}
+        <div className="twoInRow">
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom halfOfRow">
+              <p className="form-label">Desired sum</p>
+            </div>
+            <input
+              type="number"
+              value={desiredSum === 0 ? "" : desiredSum}
+              onChange={(e) => {
+                const val = e.target.value
+                setDesiredSum(val === "" ? 0 : Number(val))
+              }}
+              placeholder="0"
+              className="input-field halfOfRow"
+            />
+            <div className="form-half-separator-down"></div>
+          </label>
+
+          <label>
+            <div className="form-half-separator-up vertical-align-bottom halfOfRow paddingPlus">
+              <p className="form-label">End date</p>
+            </div>
+            <div className="halfOfRow endDate paddingPlus">
+              {endDateforNew && (() => {
+                const date = new Date(endDateforNew)
+                const month = date.toLocaleString("en-US", { month: "short" })
+                const year = date.getFullYear()
+                return <>{month}&nbsp;{year}</>
+              })()}
+            </div>
+          </label>
+        </div>
+
+        {/* ----------------------------- */}
         <label>
           <div className="form-half-separator-up vertical-align-bottom">
-            <p className="form-label">Desired sum</p>
-          </div>
-          <input
-            type="number"
-            placeholder="Desired sum"
-            value={desiredSum}
-            onChange={(e) => setDesiredSum(Number(e.target.value))}
-            className={`input-field`}
-          />
-          <div className="form-half-separator-down">
-            {/* {emailError && <p className="field-message">{emailError}</p>} */}
-          </div>
-        </label>
-        <label>
-          <div className="form-half-separator-up vertical-align-bottom">
-            <p className="form-label">Link to the item being saved for</p>
+            <p className="form-label">Link to the item</p>
           </div>
           <input
             type="text"
             placeholder="Link to the item"
             value={itemLink}
-            onChange={(e) => setItemLink(String(e.target.value))}
-            className={`input-field`}
+            onChange={(e) => setItemLink(e.target.value)}
+            className="input-field"
           />
-          <div className="form-half-separator-down">
-            {/* {emailError && <p className="field-message">{emailError}</p>} */}
-          </div>
+          <div className="form-half-separator-down"></div>
         </label>
+
         <label>
           <div className="form-half-separator-up vertical-align-bottom">
             <p className="form-label">Priority</p>
           </div>
           <div className="two-buttons">
-            <p>
-              {priority}%
-            </p>
+            <p className="amoutOfpriority">{priority}%</p>
             <input
               type="range"
               min="0"
               max="100"
-              defaultValue={50}
+              value={priority}
               className="input-field"
-              onChange={(e) => addNewItemToArray(Number(e.target.value))}
+              onChange={(e) => setPriority(Number(e.target.value))}
             />
           </div>
         </label>
-        <div className="form-half-separator-up vertical-align-bottom">
-            &nbsp;
-        </div>
+
+        <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
+
         <div className="two-buttons">
           <button
             className="button-secondary"
-            onClick={() => setNewItemVisible(false)}
+            onClick={cancelNewItemDialog}
           >
             Cancel
           </button>
+
           <button
             className="button-primary button-inner-space-left-right"
-            onClick={() => writeNevItem()}
+            onClick={writeNevItem}
           >
             <div className="in-button">
               <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
-                Create
-              <div className="button-icone" >&nbsp;</div>
+              Create
+              <div className="button-icone">&nbsp;</div>
             </div>
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

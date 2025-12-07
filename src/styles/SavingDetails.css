@@ -167,3 +167,33 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.twoInRow {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115)); 
+}
+
+.halfOfRow {
+  width: clamp(0rem, calc(128vw * var(--pixToVw)), calc(128rem * 0.115));
+}
+
+.amoutOfpriority {
+  color: var(--color-dreamyellow);
+  width: clamp(0rem, calc(56vw * var(--pixToVw)), calc(56rem * 0.115));
+  font-size: clamp(var(---s-d--valueMobileMin), calc(var(---s-d--valueMobile) * var(--fS)), calc(var(---s-d--valueMobileMax) * var(--fS)));
+}
+
+.endDate {
+  color: var(--color-dreamyellow);
+  height: clamp(0rem, calc(36vw * var(--pixToVw)), calc(36rem * 0.115));
+  font-size: clamp(var(---s-d--valueMobileMin), calc(var(---s-d--valueMobile) * var(--fS)), calc(var(---s-d--valueMobileMax) * var(--fS)));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.paddingPlus {
+  padding-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115)); 
+}
+
