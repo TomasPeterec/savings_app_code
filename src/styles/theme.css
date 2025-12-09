@@ -509,10 +509,10 @@ html, body {
     border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
     font-size: clamp(var(--buttonMidMin), var(--buttonMid), var(--buttonMidMax));
   }
-  .field-message {
-    font-size: clamp(var(--fieldMessageMidMin / (var(--fS)*var(--fS))), var(--fieldMessageMid / (var(--fS)*var(--fS))), var(--fieldMessageMidMax / (var(--fS)*var(--fS))));
-    top: calc(0.67vw / (var(--fS)*var(--fS))); /* visually moves text down without changing parent flow */
-  }
+ .field-message {
+    font-size: clamp(calc(var(--fieldMessageMidMin) / (var(--fS) * var(--fS))),calc(var(--fieldMessageMid) / (var(--fS) * var(--fS))),calc(var(--fieldMessageMidMax) / (var(--fS) * var(--fS))));
+    top: calc(0.67vw / (var(--fS) * var(--fS))); /* visually moves text down without changing parent flow */
+}
   .form-label {
     font-size: clamp(var(--formLabelMidMin), var(--formLabelMid), var(--formLabelMidMax));
   }
