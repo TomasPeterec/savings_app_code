@@ -15,6 +15,7 @@
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  box-sizing: border-box;
 }
 
 
@@ -91,6 +92,7 @@
   flex-direction: row;
   justify-content: space-between;
   row-gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  box-sizing: border-box;
 }
 
 .property-box-2 {
@@ -102,6 +104,7 @@
   flex-direction: column;
   padding: clamp(0rem, calc(9vw * var(--pixToVw)), calc(9rem * 0.115));
   justify-content: flex-start;
+  box-sizing: border-box;
 }
 
 :root {
@@ -138,6 +141,7 @@
   color: rgba(255, 255, 255, 0.67);
   margin-top: clamp(0rem, calc(2vw * var(--pixToVw)), calc(2rem * 0.115));
   margin-bottom: clamp(0rem, calc(2.5vw * var(--pixToVw)), calc(2.5rem * 0.115));
+  box-sizing: border-box;
 }
 
 
@@ -145,6 +149,7 @@
   padding-left: clamp(0rem, calc(39vw * var(--pixToVw)), calc(39rem * 0.115));
   padding-right: clamp(0rem, calc(39vw * var(--pixToVw)), calc(39rem * 0.115));
   padding-bottom: clamp(0rem, calc(39vw * var(--pixToVw)), calc(39rem * 0.115));
+  box-sizing: border-box;
 }
 
 .two-buttons {
@@ -172,10 +177,12 @@
   display: flex;
   flex-direction: row;
   gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115)); 
+  box-sizing: border-box;
 }
 
 .halfOfRow {
   width: clamp(0rem, calc(128vw * var(--pixToVw)), calc(128rem * 0.115));
+  box-sizing: border-box;
 }
 
 .amoutOfpriority {

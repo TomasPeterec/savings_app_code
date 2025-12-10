@@ -7,7 +7,7 @@ import { auth, googleProvider } from '@/firebase/firebase'
 import { signInWithPopup, signInWithEmailAndPassword, AuthError } from 'firebase/auth'
 import { useAuthStore } from '@/store/authStore'
 import { myEmailValidation } from '@/components/lib/emailValidation'
-import '@/styles/theme.css'
+// import '@/styles/theme.css'
 
 export default function Home() {
   const router = useRouter()

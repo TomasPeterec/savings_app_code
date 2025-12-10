@@ -12,7 +12,8 @@
   --color-dreamyellow-active: #CF9537;
   --font-onest: 'Onest', sans-serif;  /* Raleway, Onest */
 
-  --pixToVw: (1 / 375) * 100; /*0.267vw;*/
+  --pixToVw: calc((1 / 375) * 100);
+
 
   /* Plain text size in vw units */
   --plainTextSize: calc(5.1vw * 1.015);
@@ -143,7 +144,7 @@ body {
 }
 
 .content-padding {
-  padding: 1rem; /* Tailwind p-4 */
+  padding: 1rem; 
 }
 
 /* Layout-specific */
@@ -239,11 +240,13 @@ body {
   height: clamp(0rem, calc(36vw * var(--pixToVw)), calc(36rem * 0.115));
   border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding-left: 3vw;
   color: black;
   outline: none;
   background-color: #FFFFFF;
   font-size: clamp(var(--fieldMessageMobileMin), var(--fieldMessageMobile), var(--fieldMessageMobileMax));
+  border-style: none;
+  box-sizing: border-box; /* <-- makes width exactly fit parent */
 }
 
 .input-field:focus {
@@ -254,8 +257,8 @@ body {
 .input-field:-webkit-autofill,
 .input-field:-webkit-autofill:hover,
 .input-field:-webkit-autofill:focus {
-  -webkit-text-fill-color: black; /* nastav farbu textu */
-  -webkit-box-shadow: 0 0 0px 1000px white inset; /* prepíše žlté autofill pozadie */
+  -webkit-text-fill-color: black; 
+  -webkit-box-shadow: 0 0 0px 1000px white inset; 
   font-size: clamp(var(--fieldMessageMobileMin), var(--fieldMessageMobile), var(--fieldMessageMobileMax)) !important;
   font-family: inherit !important;
 }
@@ -331,7 +334,9 @@ button {
   border-radius: clamp(0rem, calc(18vw * var(--pixToVw)), calc(18rem * 0.115));
   font-weight: 500;
   font-size: clamp(var(--buttonMobileMin), var(--buttonMobile), var(--buttonMobileMax));
+  border-style: none;
 }
+
 
 .button-primary {
   padding: 0;
@@ -339,6 +344,8 @@ button {
   color: var(--color-bgblue);
   text-align: center;
   cursor: pointer;
+  box-shadow: none;
+  outline: none
 }
 
 .button-primary-muted {
@@ -362,12 +369,16 @@ button {
   color: white;
   text-align: center;
   cursor: pointer;
+  border-style: solid;
   border-width: 2px;
   border-color: rgba(146, 219, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  
+  background-color: transparent;
+  box-shadow: none;
+  outline: none;
+  box-sizing: border-box;
 }
 
 .button-secondary:hover{
@@ -395,8 +406,9 @@ button {
   display: flex;
   align-items: center; /* keeps them vertically centered */
   justify-content: space-between; /* evenly spreads children */
-  padding-left: clamp(0rem, 11vw * var(--pixToVw), calc(11rem * 0.115));
-  padding-right: clamp(0rem,15vw * var(--pixToVw), calc(15rem * 0.115));
+  padding-left: calc(11vw * var(--pixToVw));
+  padding-right: calc(15vw * var(--pixToVw));
+  box-sizing: border-box;
 }
 
 .header-separator {
@@ -451,6 +463,7 @@ html, body {
 .form-half-separator-up,  .form-half-separator-down {
   height: clamp(0rem, calc(36vw * var(--pixToVw)/2), calc(36rem * 0.115/2));
   width: 100%;
+  box-sizing: border-box;
 }
 
 
@@ -458,12 +471,13 @@ html, body {
   font-size: clamp(var(--formLabelMobileMin), var(--formLabelMobile), var(--formLabelMobileMax));
   color: white;
   font-weight: 500;
+  box-sizing: border-box;
 }
 
 .vertical-align-bottom {
   display: flex;
-  flex-direction: column; /* default, can omit */
-  justify-content: flex-end; /* pushes children to the bottom */
+  flex-direction: column;
+  justify-content: center;
 }
 
 .field-message {
@@ -498,6 +512,9 @@ html, body {
     padding-right: 4vw;
     padding-left: 4vw;
   }
+
+
+
   .input-field {
     height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
     border-radius: clamp(0rem, calc(((18vw * var(--pixToVw)) / (var(--fS) * var(--fS)))), calc((18rem * 0.115) / (var(--fS) * var(--fS))));
@@ -522,6 +539,7 @@ html, body {
   }
   .form-half-separator-up,  .form-half-separator-down {
     height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS))), calc((36rem * 0.115/2) / (var(--fS))));
+    box-sizing: border-box;
   }
   .actions-section {
     width: calc(50% * var(--fS));
@@ -568,6 +586,7 @@ html, body {
   }
   .form-half-separator-up,  .form-half-separator-down {
     height: clamp(0rem, calc((36vw * var(--pixToVw)/2) / (var(--fS)*var(--fS))), calc((36rem * 0.115/2) / (var(--fS)*var(--fS))));
+    box-sizing: border-box;
   }
   .actions-section {
     width: calc(50% / (var(--fS)*var(--fS)*var(--fS)));

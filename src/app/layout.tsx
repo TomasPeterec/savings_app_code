@@ -1,10 +1,11 @@
 import "./globals.css"
-import { ReactNode } from "react"
 import "@/styles/theme.css"
+
+import { ReactNode } from "react"
 
 export const metadata = {
   title: "Savings App",
-  description: "Mini application for dedicated saving",
+  description: "Mini application for dedicated saving"
 }
 
 interface RootLayoutProps {

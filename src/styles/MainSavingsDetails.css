@@ -12,6 +12,7 @@
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  box-sizing: border-box;
 }
 
 .main-savings-details-left {
@@ -28,16 +29,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .users-box {
   height: clamp(0rem, calc(4vw * var(--pixToVw)), calc(4rem * 0.115));
   display: flex;
   flex-direction: row;
+  box-sizing: border-box;
 }
 
 .text-box {
   width: 100%;
+  box-sizing: border-box;
 }
 
 .properties-box {
@@ -47,6 +51,7 @@
   flex-direction: row;
   justify-content: space-between;
   row-gap: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115));
+  box-sizing: border-box;
 }
 
 .property-box {
@@ -58,6 +63,7 @@
   flex-direction: column;
   padding: clamp(0rem, calc(9vw * var(--pixToVw)), calc(9rem * 0.115));
   justify-content:space-evenly;
+  box-sizing: border-box;
 }
 
 
@@ -108,10 +114,11 @@
 .user-smal {
   width: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
   height: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
-  border-radius: clamp(0rem, calc(12vw * var(--pixToVw)), calc(12rem * 0.115));
+  border-radius: 50%; /* <-- makes it a perfect circle */
   background-color: #005A8E;
   border-color: rgba(255, 255, 255, 0.2);
   border-width: clamp(0rem, calc(1.33vw * var(--pixToVw)), calc(1.33rem * 0.115));
+  border-style: solid;
   position: relative;
   top: -6vw;
   margin-left: 1vw;
@@ -123,7 +130,9 @@
   padding-top: 0.4vw;
   font-family: var(--font-onest);
   font-size: clamp(var(--m-s-d-userSmalMobileMin), var(--m-s-d-userSmalMobile), var(--m-s-d-userSmalMobileMax));
+  box-sizing: border-box;
 }
+
 
 :root {
   /* property-value – dynamic scaling using static CSS calculations */
