@@ -58,6 +58,7 @@ export async function POST(req: Request) {
       select: { savingUuid: true },
     })
 
+    let uuid: string | null = null
     let nameOfSaving: string | null = null
     let savingDescription: string | null = null
     let savingMonthlyDeposited: number | null = null
@@ -82,6 +83,7 @@ export async function POST(req: Request) {
       })
 
       if (saving) {
+        uuid = selectedSavingAccess.savingUuid
         nameOfSaving = saving.name
         savingDescription = saving.description
         savingMonthlyDeposited = saving.monthlyDeposited
@@ -161,6 +163,7 @@ export async function POST(req: Request) {
 
     // 7. Return JSON response
     return NextResponse.json({
+      uuid: uuid,
       user,
       selectedSavingName: nameOfSaving,
       description: savingDescription,

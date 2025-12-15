@@ -115,6 +115,7 @@
   width: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
   height: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
   border-radius: 50%; /* <-- makes it a perfect circle */
+  color: white;
   background-color: #005A8E;
   border-color: rgba(255, 255, 255, 0.2);
   border-width: clamp(0rem, calc(1.33vw * var(--pixToVw)), calc(1.33rem * 0.115));

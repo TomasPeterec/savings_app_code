@@ -9,6 +9,7 @@ interface AllowedUser {
 }
 
 interface SavingData {
+  uuid: string | null
   selectedSaving: string | null
   description: string | null
   totalSaved: number | null

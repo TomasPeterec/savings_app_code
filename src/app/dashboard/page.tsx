@@ -18,6 +18,7 @@ interface AllowedUser {
 
 // Define shape of saving data
 interface SavingData {
+  uuid: string | null
   selectedSaving: string | null
   description: string | null
   totalSaved: number | null
@@ -80,7 +81,7 @@ export default function Dashboard() {
   const [newItemVisible, setNewItemVisible] = useState<boolean>(false)
 
   // State for new item being added
-  const [newItemToArr, setNewItemToArr] = useState<ItemData | null>(null)
+  const [newItemToSave, setNewItemToSave] = useState<ItemData | null>(null)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
@@ -90,11 +91,11 @@ export default function Dashboard() {
       setItemsData(prevItems => {
         const itemsCopy = prevItems.map(item => ({ ...item }))
 
-        if (newItemToArr && newItemToArr.priority !== null) {
+        if (newItemToSave && newItemToSave.priority !== null) {
           itemsCopy.forEach((item, index) => {
             // Recalculate priority for each existing item
             item.priority = calculatePriority(
-              newItemToArr?.priority ?? 0,
+              newItemToSave?.priority ?? 0,
               itemsDataCopy[index]?.priority ?? 0
             )
             // Recalculate end date for each item
@@ -109,10 +110,10 @@ export default function Dashboard() {
         return itemsCopy
       })
     } else {
-      // If new item form is closed, restore original items
+      // If new item form is canceled and closed, restore original items
       setItemsData(itemsDataCopy)
     }
-  }, [newItemToArr, itemsDataCopy, savingData?.monthlyDeposited, newItemVisible])
+  }, [newItemToSave, itemsDataCopy, savingData?.monthlyDeposited, newItemVisible])
 
   // -----------------------------------------
   // Fetch saving data and items on first load
@@ -149,6 +150,7 @@ export default function Dashboard() {
 
         // Set main saving data
         setSavingData({
+          uuid: data.uuid || null,
           selectedSaving: data.selectedSavingName || null,
           description: data.description || null,
           totalSaved: data.totalSaved || null,
@@ -171,11 +173,57 @@ export default function Dashboard() {
   }, [user])
 
   // -----------------------------------------
-  // Function to manually write/save data
+  // Function to send data of new item to backend 
   // -----------------------------------------
-  const writeData = () => {
-    console.log(itemsData)
+  async function sendNewItemToBackend() {
+
+    // Getting the current user from Firebase Auth
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      console.error("No user is signed in.")
+      return
+    }
+
+    try {
+      // Get token (uses cache, doesn't create new one if valid)
+      const idToken = await currentUser.getIdToken()
+
+      // Sending data to the backend
+      const res = await fetch("/api/savings/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          savingUuId: savingData?.uuid ?? "",
+          newItem: newItemToSave,
+          items: itemsData
+        }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        console.error("Backend returned error:", text)
+        return
+      }
+
+      const data = await res.json()
+      console.log("Backend response:", data)
+
+      // You can update your status here if you want.
+      // e.g. add a new item to itemsData or itemsDataCopy
+      if (data.itemsData) {
+
+        setItemsData(data.itemsData) 
+        setItemsDataCopy(data.itemsData)
+      }
+
+    } catch (err) {
+      console.error("Error sending new item:", err)
+    }
   }
+
 
   return (
     <div className="base-container">
@@ -191,10 +239,10 @@ export default function Dashboard() {
         {newItemVisible && (
           <NewItem
             setNewItemVisible={setNewItemVisible} 
-            writeData={writeData}
-            setNewItemToArr={setNewItemToArr}
+            setNewItemToSave={setNewItemToSave}
             calculateEndDate={calculateEndDate}
             monthlyDeposited={savingData?.monthlyDeposited} 
+            sendNewItemToBackend={sendNewItemToBackend}
           />
         )}
 

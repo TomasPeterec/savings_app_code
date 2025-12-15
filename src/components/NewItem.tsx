@@ -7,9 +7,9 @@ import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
   setNewItemVisible: (visible: boolean) => void
-  writeData: () => void
-  setNewItemToArr: (item: ItemData) => void
+  setNewItemToSave: (item: ItemData) => void
   monthlyDeposited?: number | null
+  sendNewItemToBackend: () => void
   calculateEndDate: (
     price: number,
     saved: number,
@@ -20,9 +20,9 @@ interface NewItemProps {
 
 export default function NewItem({
   setNewItemVisible,
-  writeData,
-  setNewItemToArr,
+  setNewItemToSave,
   monthlyDeposited,
+  sendNewItemToBackend,
   calculateEndDate
 }: NewItemProps) {
 
@@ -52,7 +52,7 @@ export default function NewItem({
   // AUTO UPDATE ITEM ARRAY
   // ------------------------------
   useEffect(() => {
-    setNewItemToArr({
+    setNewItemToSave({
       itemId: "",
       itemName: name,
       link: itemLink,
@@ -61,7 +61,7 @@ export default function NewItem({
       endDate: endDateforNew,
       priority: priority
     })
-  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToArr])
+  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToSave])
 
 
   // ------------------------------
@@ -73,8 +73,7 @@ export default function NewItem({
     setDesiredSum(0)
     setItemLink("")
     setPriority(0)
-    writeData()
-    setNewItemToArr({
+    setNewItemToSave({
       itemId: "",
       itemName: "",
       link: "",
@@ -86,6 +85,7 @@ export default function NewItem({
   }
 
   const writeNevItem = () => {
+    sendNewItemToBackend()
     reset()
     setNewItemVisible(false)
   }
