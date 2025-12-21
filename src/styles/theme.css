@@ -370,7 +370,7 @@ button {
   text-align: center;
   cursor: pointer;
   border-style: solid;
-  border-width: 2px;
+  border-width: calc(1.2vw * var(--pixToVw));
   border-color: rgba(146, 219, 255, 0.2);
   display: flex;
   align-items: center;

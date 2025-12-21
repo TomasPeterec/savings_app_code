@@ -48,6 +48,9 @@ export async function POST(req: Request) {
     // 3. Verify token
     const decodedToken = await adminAuth.verifyIdToken(token)
     const firebaseUid = decodedToken.uid
+    if(!firebaseUid){
+      console.log("no valid user token")
+    }
 
     // 4. Parse body
     const { newItem, items, savingUuId } = (await req.json()) as RequestBody
