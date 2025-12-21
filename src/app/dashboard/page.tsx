@@ -39,8 +39,6 @@ export interface ItemData {
   priority: number | null
 }
 
-
-
 // Function to calculate the end date for saving an item
 function calculateEndDate(
   price: number,
@@ -84,6 +82,8 @@ export default function Dashboard() {
 
   // State for new item being added
   const [newItemToSave, setNewItemToSave] = useState<ItemData | null>(null)
+
+  const [bottomSheetogleState, setBottomSheetogleState] = useState<boolean>(true)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
@@ -240,6 +240,7 @@ export default function Dashboard() {
         {/* New Item form */}
         {newItemVisible && (
           <NewItem
+            setBottomSheetogleState={setBottomSheetogleState}
             setNewItemVisible={setNewItemVisible} 
             setNewItemToSave={setNewItemToSave}
             calculateEndDate={calculateEndDate}
@@ -256,6 +257,9 @@ export default function Dashboard() {
             monthlyDeposited={savingData?.monthlyDeposited} 
           />
         ))}
+        {newItemVisible && (<div className={(bottomSheetogleState) ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
+          &nbsp;
+        </div>)}
       </div>
     </div>
   )

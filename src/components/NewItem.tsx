@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  setBottomSheetogleState: (visible: boolean) => void
   setNewItemVisible: (visible: boolean) => void
   setNewItemToSave: (item: ItemData) => void
   monthlyDeposited?: number | null
@@ -18,6 +19,7 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  setBottomSheetogleState,
   setNewItemVisible,
   setNewItemToSave,
   monthlyDeposited,
@@ -32,7 +34,10 @@ export default function NewItem({
   const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
   const [toggle, setToggle] = useState<boolean>(true)
 
-  const toggleColapse = () => setToggle(!toggle)
+  const toggleColapse = () => {
+    setToggle(!toggle)
+    setBottomSheetogleState(!toggle)
+  }
 
   // ------------------------------
   // AUTO UPDATE END DATE

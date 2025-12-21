@@ -597,6 +597,17 @@ html, body {
   }
 }
 
+
+.heightOnBottomColapsed{
+  height: 96vw;
+  display: flex;
+}
+
+.heightOnBottomOpen{
+  height: 128vw;
+  display: flex;
+}
+
 .green {
   background-color: #00ff22;
 }
