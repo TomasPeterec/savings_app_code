@@ -608,6 +608,10 @@ html, body {
   display: flex;
 }
 
+.defaultBottomOffset{
+  height: 20vw;
+}
+
 .green {
   background-color: #00ff22;
 }

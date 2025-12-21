@@ -260,6 +260,7 @@ export default function Dashboard() {
         {newItemVisible && (<div className={(bottomSheetogleState) ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
           &nbsp;
         </div>)}
+        <div className="defaultBottomOffset">&nbsp;</div>
       </div>
     </div>
   )
