@@ -83,7 +83,10 @@ export default function Dashboard() {
   // State for new item being added
   const [newItemToSave, setNewItemToSave] = useState<ItemData | null>(null)
 
-  const [bottomSheetogleState, setBottomSheetogleState] = useState<boolean>(true)
+  // switching the height of bottom offset regarding whether form in bottomseet is colapsed or not
+  const [bottomSheetToogleState, setBottomSheetToogleState] = useState<boolean>(true)
+
+  const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
@@ -233,6 +236,7 @@ export default function Dashboard() {
       <div className="main-container-after-loging">
         {/* Main savings details component */}
         <MainSavingsDetails 
+          setToogleAddOrEdit={setToogleAddOrEdit}
           savingData={savingData} 
           setNewItemVisible={setNewItemVisible} 
         />
@@ -240,7 +244,8 @@ export default function Dashboard() {
         {/* New Item form */}
         {newItemVisible && (
           <NewItem
-            setBottomSheetogleState={setBottomSheetogleState}
+            toogleAddOrEdit={toogleAddOrEdit}
+            setBottomSheetToogleState={setBottomSheetToogleState}
             setNewItemVisible={setNewItemVisible} 
             setNewItemToSave={setNewItemToSave}
             calculateEndDate={calculateEndDate}
@@ -252,12 +257,14 @@ export default function Dashboard() {
         {/* Render list of items */}
         {itemsData.map(item => (
           <ItemDetails 
+            setToogleAddOrEdit={setToogleAddOrEdit}
+            setNewItemVisible={setNewItemVisible}
             key={item.itemId} 
             item={item} 
             monthlyDeposited={savingData?.monthlyDeposited} 
           />
         ))}
-        {newItemVisible && (<div className={(bottomSheetogleState) ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
+        {newItemVisible && (<div className={(bottomSheetToogleState) ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
           &nbsp;
         </div>)}
         <div className="defaultBottomOffset">&nbsp;</div>

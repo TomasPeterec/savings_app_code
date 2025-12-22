@@ -5,7 +5,8 @@ import { useState, useEffect } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
-  setBottomSheetogleState: (visible: boolean) => void
+  toogleAddOrEdit: boolean
+  setBottomSheetToogleState: (visible: boolean) => void
   setNewItemVisible: (visible: boolean) => void
   setNewItemToSave: (item: ItemData) => void
   monthlyDeposited?: number | null
@@ -19,7 +20,8 @@ interface NewItemProps {
 }
 
 export default function NewItem({
-  setBottomSheetogleState,
+  toogleAddOrEdit,
+  setBottomSheetToogleState,
   setNewItemVisible,
   setNewItemToSave,
   monthlyDeposited,
@@ -36,7 +38,7 @@ export default function NewItem({
 
   const toggleColapse = () => {
     setToggle(!toggle)
-    setBottomSheetogleState(!toggle)
+    setBottomSheetToogleState(!toggle)
   }
 
   // ------------------------------
@@ -102,7 +104,7 @@ export default function NewItem({
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading inverseFontColor">
-        Create new item
+        {(toogleAddOrEdit) ? "Create new item" : "Edit existing item"}
       </h3>
 
       <div className="form-card form-card-n-i">

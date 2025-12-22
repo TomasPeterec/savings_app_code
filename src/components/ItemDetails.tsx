@@ -14,12 +14,26 @@ interface ItemData {
 }
 
 interface ItemDetailsProps {
+  setToogleAddOrEdit: (value: boolean) => void
+  setNewItemVisible: (visible: boolean) => void
   item: ItemData
   monthlyDeposited?: number | null
 }
 
 
-export default function ItemDetails({ item, monthlyDeposited }: ItemDetailsProps) {
+export default function ItemDetails({ 
+  item, 
+  monthlyDeposited, 
+  setToogleAddOrEdit,
+  setNewItemVisible 
+}: ItemDetailsProps) {
+
+
+  const openBotomSheet = () => {
+    console.log(item.itemName)
+    setNewItemVisible(true)
+    setToogleAddOrEdit(false)
+  }
 
   return (
     <>
@@ -50,7 +64,9 @@ export default function ItemDetails({ item, monthlyDeposited }: ItemDetailsProps
             </div>
           </div>
           <div className="main-savings-details-right">
-            <button className="button-secondary smal-button">
+            <button className="button-secondary smal-button"
+              onClick={openBotomSheet}
+            >
               <img
                 className="button-icone"
                 src="/icons/edit.svg"
