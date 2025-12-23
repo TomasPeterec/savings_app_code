@@ -282,6 +282,18 @@ export default function NewItem({
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
 
         <div className="two-buttons">
+          {!toogleAddOrEdit && 
+             <button
+              className="button-secondary inverseButton"
+              onClick={() => {
+                if (confirm("Do you really want to delete this item?")) {
+                // user click "OK"
+               cancelNewItemDialog()
+              }}}
+            >
+              Delete
+            </button>
+          }
           <button
             className="button-secondary inverseButton"
             onClick={cancelNewItemDialog}
@@ -293,11 +305,14 @@ export default function NewItem({
             className="button-primary button-inner-space-left-right"
             onClick={writeNevItem}
           >
-            <div className="in-button">
-              <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
-              Create
-              <div className="button-icone">&nbsp;</div>
-            </div>
+            {(toogleAddOrEdit) ? 
+              <div className="in-button">
+                <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
+                Create
+                <div className="button-icone">&nbsp;</div>
+              </div> : 
+              "Update"
+            }
           </button>
         </div>
       </div>
