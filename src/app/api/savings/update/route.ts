@@ -16,6 +16,7 @@ interface NwItemInterface {
 }
 
 interface RequestBody {
+  actionType: string
   newItem: NwItemInterface
   items: NwItemInterface[]
   savingUuId: string | null
@@ -53,32 +54,76 @@ export async function POST(req: Request) {
     }
 
     // 4. Parse body
-    const { newItem, items, savingUuId } = (await req.json()) as RequestBody
+    const { newItem, items, savingUuId, actionType } = (await req.json()) as RequestBody
+
+    console.log("Action Type:", actionType)
 
     if (!savingUuId) {
       return NextResponse.json({ error: "savingUuId is missing" }, { status: 400 })
     }
 
+ 
 
-    // 5. Create new item
-    const fromNewItem = await prisma.items.create({
-      data: {
-        savingId: savingUuId,
-        itemId: newItem.itemId || uuidv4(),
-        itemName: newItem.itemName ?? undefined,
-        link: newItem.link ?? undefined,
-        price: new Prisma.Decimal(newItem.price ?? 0),
-        saved: new Prisma.Decimal(newItem.saved ?? 0),
-        priority: new Prisma.Decimal(newItem.priority ?? 0),
-        endDate: newItem.endDate
-          ? new Date(newItem.endDate)
-          : new Date(),
-      },
-    })
+    if (actionType === "add") {
+         // 5. Create new item
+      const fromNewItem = await prisma.items.create({
+        data: {
+          savingId: savingUuId,
+          itemId: newItem.itemId || uuidv4(),
+          itemName: newItem.itemName ?? undefined,
+          link: newItem.link ?? undefined,
+          price: new Prisma.Decimal(newItem.price ?? 0),
+          saved: new Prisma.Decimal(newItem.saved ?? 0),
+          priority: new Prisma.Decimal(newItem.priority ?? 0),
+          endDate: newItem.endDate
+            ? new Date(newItem.endDate)
+            : new Date(),
+        },
+      })  
 
-    if(!fromNewItem) {
-      console.log("bad response from DB", fromNewItem)
+       if(!fromNewItem) {
+        console.log("bad response from DB", fromNewItem)
+      }
     }
+
+       if (actionType === "edit") {
+         // 5. Create new item
+      const fromNewItem = await prisma.items.update({
+        where: {
+          itemId: newItem.itemId
+        },
+        data: {
+          savingId: savingUuId,
+          itemId: newItem.itemId,
+          itemName: newItem.itemName ?? undefined,
+          link: newItem.link ?? undefined,
+          price: new Prisma.Decimal(newItem.price ?? 0),
+          saved: new Prisma.Decimal(newItem.saved ?? 0),
+          priority: new Prisma.Decimal(newItem.priority ?? 0),
+          endDate: newItem.endDate
+            ? new Date(newItem.endDate)
+            : new Date(),
+        },
+      })  
+
+       if(!fromNewItem) {
+        console.log("bad response from DB", fromNewItem)
+      }
+    }
+
+    if (actionType === "delete") {
+      // Delete item
+      const fromNewItem = await prisma.items.delete({
+        where: {
+          itemId: newItem.itemId
+        },
+      })
+
+       if(!fromNewItem) {
+        console.log("bad response from DB", fromNewItem)
+      }
+    }
+   
 
     // 6. Update existing items
     await Promise.all(

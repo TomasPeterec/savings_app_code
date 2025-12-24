@@ -67,6 +67,16 @@ function calculatePriority(
   return Math.round((100 - newItemPriority) * originalPriorityOfExitingItem) / 100
 }
 
+const EMPTY_ITEM: ItemData = {
+  itemId: "",
+  itemName: "",
+  link: "",
+  price: 0,
+  saved: 0,
+  endDate: new Date().toISOString(),
+  priority: 0,
+}
+
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user)
 
@@ -74,6 +84,7 @@ export default function Dashboard() {
   const [savingData, setSavingData] = useState<SavingData | null>(null)
 
   // State for items (original copy and working copy)
+  const [itemsDataCopy2, setItemsDataCopy2] = useState<ItemData[]>([])
   const [itemsDataCopy, setItemsDataCopy] = useState<ItemData[]>([])
   const [itemsData, setItemsData] = useState<ItemData[]>([])
 
@@ -81,11 +92,12 @@ export default function Dashboard() {
   const [newItemVisible, setNewItemVisible] = useState<boolean>(false)
 
   // State for new item being added
-  const [newItemToSave, setNewItemToSave] = useState<ItemData | null>(null)
+  const [newItemToSave, setNewItemToSave] = useState<ItemData>(EMPTY_ITEM)
 
   // switching the height of bottom offset regarding whether form in bottomseet is colapsed or not
   const [bottomSheetToogleState, setBottomSheetToogleState] = useState<boolean>(true)
 
+  // State to toggle between adding a new item or editing an existing one
   const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
 
   // -----------------------------------------
@@ -116,9 +128,10 @@ export default function Dashboard() {
       })
     } else {
       // If new item form is canceled and closed, restore original items
-      setItemsData(itemsDataCopy)
+      setItemsData(itemsDataCopy2)
+      setItemsDataCopy(itemsDataCopy2)
     }
-  }, [newItemToSave, itemsDataCopy, savingData?.monthlyDeposited, newItemVisible])
+  }, [newItemToSave, itemsDataCopy, savingData?.monthlyDeposited, newItemVisible, itemsDataCopy2])
 
   // -----------------------------------------
   // Fetch saving data and items on first load
@@ -168,6 +181,7 @@ export default function Dashboard() {
         // Set items data
         setItemsData(data.itemsData || [])
         setItemsDataCopy(data.itemsData || [])
+        setItemsDataCopy2(data.itemsData || [])
 
       } catch (err) {
         console.error("Backend error:", err)
@@ -177,11 +191,42 @@ export default function Dashboard() {
     return () => unsubscribe()
   }, [user])
 
+
+  // -------------------------------------------
+  // Function for balancing of values in array
+  // -------------------------------------------
+  function balanceItemsPriorities(balancedArray: ItemData[]): ItemData[] {
+    const totalPriority = balancedArray.reduce((sum, item) => sum + (item.priority ?? 0), 0)
+    let tempArr = [...balancedArray]
+    let ratio = 100 / totalPriority
+
+    tempArr = tempArr.map(item => ({
+      ...item,
+      priority: Math.round((item.priority ?? 0) * ratio)
+    }))
+
+    return tempArr
+  }
+
+
+  // -----------------------------------------
+  // Function for temporary removing an ittem from list
+  // -----------------------------------------
+  function removeItemTemporarily(itemIdToRemove: string) {
+    let temporaryList = itemsData.filter(item => item.itemId !== itemIdToRemove)
+
+    temporaryList = balanceItemsPriorities(temporaryList)
+
+    setItemsData(temporaryList)
+    setItemsDataCopy(temporaryList)
+  }
+  
+
   // -----------------------------------------
   // Function to send data of new item to backend 
   // -----------------------------------------
-  async function sendNewItemToBackend() {
-
+  async function sendNewItemToBackend(actionType: string) {
+ 
     // Getting the current user from Firebase Auth
     const currentUser = auth.currentUser
     if (!currentUser) {
@@ -201,6 +246,7 @@ export default function Dashboard() {
           "Authorization": `Bearer ${idToken}`,
         },
         body: JSON.stringify({
+          actionType: actionType,
           savingUuId: savingData?.uuid ?? "",
           newItem: newItemToSave,
           items: itemsData
@@ -222,6 +268,7 @@ export default function Dashboard() {
 
         setItemsData(data.itemsData) 
         setItemsDataCopy(data.itemsData)
+        setItemsDataCopy2(data.itemsData)
       }
 
     } catch (err) {
@@ -244,6 +291,8 @@ export default function Dashboard() {
         {/* New Item form */}
         {newItemVisible && (
           <NewItem
+            //setActionType={setActionType}
+            newItemToSave={newItemToSave}
             toogleAddOrEdit={toogleAddOrEdit}
             setBottomSheetToogleState={setBottomSheetToogleState}
             setNewItemVisible={setNewItemVisible} 
@@ -257,6 +306,8 @@ export default function Dashboard() {
         {/* Render list of items */}
         {itemsData.map(item => (
           <ItemDetails 
+            removeItemTemporarily={removeItemTemporarily}
+            setNewItemToSave={setNewItemToSave}
             setToogleAddOrEdit={setToogleAddOrEdit}
             setNewItemVisible={setNewItemVisible}
             key={item.itemId} 
@@ -264,7 +315,10 @@ export default function Dashboard() {
             monthlyDeposited={savingData?.monthlyDeposited} 
           />
         ))}
-        {newItemVisible && (<div className={(bottomSheetToogleState) ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
+        {newItemVisible && (<div className={(bottomSheetToogleState) ? 
+          "heightOnBottomOpen" : 
+          "heightOnBottomColapsed"}
+        >
           &nbsp;
         </div>)}
         <div className="defaultBottomOffset">&nbsp;</div>

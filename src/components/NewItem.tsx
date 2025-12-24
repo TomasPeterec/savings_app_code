@@ -1,16 +1,17 @@
 "use client"
 
 import "@/styles/SavingDetails.css"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  newItemToSave: ItemData
   toogleAddOrEdit: boolean
   setBottomSheetToogleState: (visible: boolean) => void
   setNewItemVisible: (visible: boolean) => void
   setNewItemToSave: (item: ItemData) => void
   monthlyDeposited?: number | null
-  sendNewItemToBackend: () => void
+  sendNewItemToBackend: (actionType: string) => void
   calculateEndDate: (
     price: number,
     saved: number,
@@ -20,6 +21,7 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  newItemToSave,
   toogleAddOrEdit,
   setBottomSheetToogleState,
   setNewItemVisible,
@@ -59,7 +61,7 @@ export default function NewItem({
   // ------------------------------
   useEffect(() => {
     setNewItemToSave({
-      itemId: "",
+      itemId: newItemToSave.itemId,
       itemName: name,
       link: itemLink,
       price: desiredSum,
@@ -67,7 +69,7 @@ export default function NewItem({
       endDate: endDateforNew ? new Date(endDateforNew).toISOString() : new Date().toISOString(),
       priority: priority
     })
-  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToSave])
+  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToSave, newItemToSave.itemId])
 
   // ------------------------------
   // MANUAL CREATE BTN
@@ -89,24 +91,47 @@ export default function NewItem({
     })
   }
 
-  const writeNevItem = () => {
-    console.log(endDateforNew)
-    sendNewItemToBackend()
+  // Send data to backend and close the bottom sheet
+  const startActionToBackend = (actionType: string) => {
+    sendNewItemToBackend(actionType)
     reset()
     setNewItemVisible(false)
   }
 
+  // Cancel and close the bottom sheet
   const cancelNewItemDialog = () => {
     reset()
     setNewItemVisible(false)
   }
 
+  //distribute the data of selected item to the form when in edit mode
+  const hasLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (!toogleAddOrEdit && newItemToSave && !hasLoadedRef.current) {
+      setName(newItemToSave.itemName ?? "")
+      setItemLink(newItemToSave.link ?? "")
+      setDesiredSum(newItemToSave.price ?? 0)
+      setPriority(newItemToSave.priority ?? 0)
+      setEndDateforNew(
+        newItemToSave.endDate
+          ? new Date(newItemToSave.endDate).toISOString()
+          : new Date().toISOString()
+      )
+      hasLoadedRef.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toogleAddOrEdit]); 
+
+
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading inverseFontColor">
-        {(toogleAddOrEdit) ? "Create new item" : "Edit existing item"}
+        {(toogleAddOrEdit) ? 
+          "Create new item" : 
+          `Edit item: ${newItemToSave.itemName}`
+        }
       </h3>
-
       <div className="form-card form-card-n-i">
         <div className="form-half-separator-down separatorTuning01"></div>
         <div className="form-half-separator-down separatorTuning01">
@@ -121,14 +146,20 @@ export default function NewItem({
             >
               <img
                 className="chevron-icone"
-                src={`/icons/${toggle ? 'ChevronWideDarkBlueDown' : 'ChevronWideDarkBlueRight'}.svg`}
+                src={`/icons/${toggle ? 
+                  'ChevronWideDarkBlueDown' : 
+                  'ChevronWideDarkBlueRight'}.svg`
+                }
                 alt="colaps decolaps"
               />
             </button>
           </div>
 
           {/* --- START OF OPENED FORM --- */}
-          <div className={toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
+          <div className={toggle ? 
+            "colapsableCenterOpen" : 
+            "colapsableCenterClosed"}
+          >
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
                 <p className="form-label inverseFontColor">Name</p>
@@ -208,7 +239,10 @@ export default function NewItem({
           {/* --- END OF OPENED FORM --- */}
 
           {/* --- START OF COLLAPSED FORM --- */}
-          <div className={toggle ? "colapsableCenterClosed" : "colapsableCenterOpen"}>
+          <div className={toggle ? 
+            "colapsableCenterClosed" : 
+            "colapsableCenterOpen"}
+          >
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Name</p>
             </div>
@@ -249,7 +283,9 @@ export default function NewItem({
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Link to the item</p>
             </div>
-            <p className="amoutColapsed inverseFontColor02">{itemLink || "Link to the item was not set"}</p>
+            <p className="amoutColapsed inverseFontColor02">{
+              itemLink.slice(0, 27)+"..." || "Link to the item was not set"}
+            </p>
             <div className="form-half-separator-down separatorLow"></div>
           </div>
           {/* --- END OF COLLAPSED FORM --- */}
@@ -288,7 +324,7 @@ export default function NewItem({
               onClick={() => {
                 if (confirm("Do you really want to delete this item?")) {
                 // user click "OK"
-               cancelNewItemDialog()
+               startActionToBackend("delete")
               }}}
             >
               Delete
@@ -303,7 +339,7 @@ export default function NewItem({
 
           <button
             className="button-primary button-inner-space-left-right"
-            onClick={writeNevItem}
+            onClick={(toogleAddOrEdit) ? () => startActionToBackend("add") : () => startActionToBackend("edit")}
           >
             {(toogleAddOrEdit) ? 
               <div className="in-button">
