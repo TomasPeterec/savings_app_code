@@ -65,11 +65,20 @@ export default function NewItem({
       itemName: name,
       link: itemLink,
       price: desiredSum,
-      saved: 0,
+      saved: newItemToSave.saved || 0,
       endDate: endDateforNew ? new Date(endDateforNew).toISOString() : new Date().toISOString(),
       priority: priority
     })
-  }, [name, itemLink, desiredSum, endDateforNew, priority, setNewItemToSave, newItemToSave.itemId])
+  }, [
+    name, 
+    itemLink, 
+    desiredSum,
+    endDateforNew, 
+    priority, 
+    setNewItemToSave, 
+    newItemToSave.itemId, 
+    newItemToSave.saved
+  ])
 
   // ------------------------------
   // MANUAL CREATE BTN
@@ -319,12 +328,13 @@ export default function NewItem({
 
         <div className="two-buttons">
           {!toogleAddOrEdit && 
-             <button
+            <button
               className="button-secondary inverseButton"
               onClick={() => {
                 if (confirm("Do you really want to delete this item?")) {
+
                 // user click "OK"
-               startActionToBackend("delete")
+                startActionToBackend("delete")
               }}}
             >
               Delete

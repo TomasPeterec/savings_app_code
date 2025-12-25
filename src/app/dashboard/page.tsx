@@ -226,7 +226,7 @@ export default function Dashboard() {
   // Function to send data of new item to backend 
   // -----------------------------------------
   async function sendNewItemToBackend(actionType: string) {
- 
+
     // Getting the current user from Firebase Auth
     const currentUser = auth.currentUser
     if (!currentUser) {
@@ -249,7 +249,9 @@ export default function Dashboard() {
           actionType: actionType,
           savingUuId: savingData?.uuid ?? "",
           newItem: newItemToSave,
-          items: itemsData
+          items: (actionType === "delete") ? 
+            balanceItemsPriorities(itemsDataCopy) : 
+            itemsData
         }),
       })
 
@@ -260,7 +262,6 @@ export default function Dashboard() {
       }
 
       const data = await res.json()
-      console.log("Backend response:", data)
 
       // You can update your status here if you want.
       // e.g. add a new item to itemsData or itemsDataCopy

@@ -43,7 +43,6 @@ export default function ItemDetails({
     removeItemTemporarily && removeItemTemporarily(item.itemId)
     setNewItemVisible(true)
     setToogleAddOrEdit(false)
-    
   }
 
   return (
