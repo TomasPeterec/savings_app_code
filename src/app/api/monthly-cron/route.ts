@@ -1,32 +1,48 @@
 import { NextResponse } from "next/server"
-import { PrismaClient, Prisma } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
-  // 🔐 ochrana – iba Vercel cron
+  const today = new Date()
+  const dayOfMonth = today.getDate() // returns a number from 1 to 31
+
+  // protection – Vercel cron only
   const auth = req.headers.get("authorization")
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Unauthorized", { status: 401 })
   }
 
-  console.log("CRON RUNNING")
-
-  const result = await prisma.items.updateMany({
-    where: {
-      savingId: "9f4b7d13-0c89-4c3d-bc73-9b0f7b7fa3b7"
-    },
-    data: {
-      saved: {
-        increment: new Prisma.Decimal(10)
-      }
-    }
+  // 1. Find all savings to update today
+  const savingsToUpdate = await prisma.savings.findMany({
+    where: { countingDate: dayOfMonth },
+    select: { uuid: true, monthlyDeposited: true }
   })
 
-  console.log("UPDATED ROWS:", result.count)
+  let totalUpdated = 0
+
+  // 2. Loop through each saving
+  for (const saving of savingsToUpdate) {
+    const items = await prisma.items.findMany({
+      where: { savingId: saving.uuid },
+      select: { itemId: true, saved: true, priority: true }
+    })
+
+    // 3. Update each item individually
+    for (const item of items) {
+      const increment = (saving.monthlyDeposited * Number(item.priority)) / 100
+
+      await prisma.items.update({
+        where: { itemId: item.itemId },
+        data: { saved: Number(item.saved) + increment }
+      })
+
+      totalUpdated++
+    }
+  }
 
   return NextResponse.json({
     ok: true,
-    updated: result.count
+    updated: totalUpdated
   })
 }

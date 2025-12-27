@@ -63,7 +63,6 @@ export async function POST(req: Request) {
     let savingDescription: string | null = null
     let savingMonthlyDeposited: number | null = null
     let savingTotalSaved: number | null = null
-    let savingNextCounting: string | null = null
     let savingCurrency: string | null = null
     let allowedUsers: AllowedUser[] = []
     let itemsData: ItemData[] = []
@@ -77,7 +76,6 @@ export async function POST(req: Request) {
           description: true,
           monthlyDeposited: true,
           totalSaved: true,
-          nextCounting: true,
           currency: true,
         },
       })
@@ -88,7 +86,6 @@ export async function POST(req: Request) {
         savingDescription = saving.description
         savingMonthlyDeposited = saving.monthlyDeposited
         savingTotalSaved = saving.totalSaved
-        savingNextCounting = saving.nextCounting?.toISOString() || null
         savingCurrency = saving.currency
       }
 
@@ -160,7 +157,6 @@ export async function POST(req: Request) {
       }))
     }
 
-
     // 7. Return JSON response
     return NextResponse.json({
       uuid: uuid,
@@ -169,7 +165,6 @@ export async function POST(req: Request) {
       description: savingDescription,
       monthlyDeposited: savingMonthlyDeposited,
       totalSaved: savingTotalSaved,
-      nextCounting: savingNextCounting,
       currency: savingCurrency,
       allowedUsers,
       itemsData
