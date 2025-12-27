@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  setPrevSlidingPriority: (priority: number) => void
   newItemToSave: ItemData
   toogleAddOrEdit: boolean
   setBottomSheetToogleState: (visible: boolean) => void
@@ -21,6 +22,7 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  setPrevSlidingPriority,
   newItemToSave,
   toogleAddOrEdit,
   setBottomSheetToogleState,
@@ -37,6 +39,7 @@ export default function NewItem({
   const [priority, setPriority] = useState<number>(0)
   const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
   const [toggle, setToggle] = useState<boolean>(true)
+
 
   const toggleColapse = () => {
     setToggle(!toggle)
@@ -132,6 +135,10 @@ export default function NewItem({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toogleAddOrEdit]); 
 
+
+  useEffect(() => {
+    setPrevSlidingPriority(priority)
+  }, [priority, setPrevSlidingPriority])
 
   return (
     <div className="saving-details-box s-d-b-new">

@@ -62,9 +62,13 @@ function calculateEndDate(
 // Function to recalculate priority for existing items when adding a new item
 function calculatePriority(
   newItemPriority: number, // priority of the new item
-  originalPriorityOfExitingItem: number // current priority of existing item
+  originalPriorityOfExitingItem: number, // current priority of existing item
+  prevSlidingPriority: number,
+  itemCount: number // previous priority of the new item
 ): number {
-  return Math.round((100 - newItemPriority) * originalPriorityOfExitingItem) / 100
+  return (prevSlidingPriority !== 100) ? 
+  Math.round((100 - newItemPriority) * originalPriorityOfExitingItem) / 100 :
+  Math.round((100 - newItemPriority) / itemCount)
 }
 
 const EMPTY_ITEM: ItemData = {
@@ -100,6 +104,8 @@ export default function Dashboard() {
   // State to toggle between adding a new item or editing an existing one
   const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
 
+  const [prevSlidingPriority, setPrevSlidingPriority] = useState<number>(0)
+
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
@@ -113,8 +119,15 @@ export default function Dashboard() {
             // Recalculate priority for each existing item
             item.priority = calculatePriority(
               newItemToSave?.priority ?? 0,
-              itemsDataCopy[index]?.priority ?? 0
+              itemsDataCopy[index]?.priority ?? 0,
+              (100 - itemsDataCopy.reduce(
+                (sum, item) => sum + (item.priority ?? 0), 0
+              )),
+              itemsDataCopy.length
             )
+
+            setPrevSlidingPriority(newItemToSave?.priority ?? 0)
+
             // Recalculate end date for each item
             item.endDate = calculateEndDate(
               itemsDataCopy[index]?.price ?? 0,
@@ -166,22 +179,26 @@ export default function Dashboard() {
 
         const data = await res.json()
 
+        // Set items data
+        setItemsData(data.itemsData || [])
+        setItemsDataCopy(data.itemsData || [])
+        setItemsDataCopy2(data.itemsData || [])
+        
+        let itemsSum = data.itemsData.reduce(
+          (sum: number, item: ItemData) => sum + (item.saved ?? 0), 0
+        )
+
         // Set main saving data
         setSavingData({
           uuid: data.uuid || null,
           selectedSaving: data.selectedSavingName || null,
           description: data.description || null,
-          totalSaved: data.totalSaved || null,
+          totalSaved: itemsSum,
           monthlyDeposited: data.monthlyDeposited || null,
           nextCounting: data.nextCounting || null,
           currency: data.currency || null,
           signedAllowedUsers: data.allowedUsers || null
         })
-
-        // Set items data
-        setItemsData(data.itemsData || [])
-        setItemsDataCopy(data.itemsData || [])
-        setItemsDataCopy2(data.itemsData || [])
 
       } catch (err) {
         console.error("Backend error:", err)
@@ -196,17 +213,26 @@ export default function Dashboard() {
   // Function for balancing of values in array
   // -------------------------------------------
   function balanceItemsPriorities(balancedArray: ItemData[]): ItemData[] {
-    const totalPriority = balancedArray.reduce((sum, item) => sum + (item.priority ?? 0), 0)
-    let tempArr = [...balancedArray]
-    let ratio = 100 / totalPriority
+    const totalPriority = balancedArray.reduce(
+      (sum, item) => sum + (item.priority ?? 0), 0
+    );
 
-    tempArr = tempArr.map(item => ({
+    // Ak je totalPriority 0, všetky priority necháme 0
+    if (totalPriority === 0) {
+      return balancedArray.map(item => ({
+        ...item,
+        priority: 0
+      }));
+    }
+
+    const ratio = 100 / totalPriority;
+
+    return balancedArray.map(item => ({
       ...item,
       priority: Math.round((item.priority ?? 0) * ratio)
-    }))
-
-    return tempArr
+    }));
   }
+
 
 
   // -----------------------------------------
@@ -292,7 +318,7 @@ export default function Dashboard() {
         {/* New Item form */}
         {newItemVisible && (
           <NewItem
-            //setActionType={setActionType}
+            setPrevSlidingPriority={setPrevSlidingPriority}
             newItemToSave={newItemToSave}
             toogleAddOrEdit={toogleAddOrEdit}
             setBottomSheetToogleState={setBottomSheetToogleState}
