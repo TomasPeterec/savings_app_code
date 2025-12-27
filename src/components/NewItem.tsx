@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
-  setPrevSlidingPriority: (priority: number) => void
   newItemToSave: ItemData
   toogleAddOrEdit: boolean
   setBottomSheetToogleState: (visible: boolean) => void
@@ -22,7 +21,6 @@ interface NewItemProps {
 }
 
 export default function NewItem({
-  setPrevSlidingPriority,
   newItemToSave,
   toogleAddOrEdit,
   setBottomSheetToogleState,
@@ -136,9 +134,7 @@ export default function NewItem({
   }, [toogleAddOrEdit]); 
 
 
-  useEffect(() => {
-    setPrevSlidingPriority(priority)
-  }, [priority, setPrevSlidingPriority])
+
 
   return (
     <div className="saving-details-box s-d-b-new">

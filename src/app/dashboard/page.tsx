@@ -104,8 +104,6 @@ export default function Dashboard() {
   // State to toggle between adding a new item or editing an existing one
   const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
 
-  const [prevSlidingPriority, setPrevSlidingPriority] = useState<number>(0)
-
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
@@ -126,7 +124,6 @@ export default function Dashboard() {
               itemsDataCopy.length
             )
 
-            setPrevSlidingPriority(newItemToSave?.priority ?? 0)
 
             // Recalculate end date for each item
             item.endDate = calculateEndDate(
@@ -318,7 +315,6 @@ export default function Dashboard() {
         {/* New Item form */}
         {newItemVisible && (
           <NewItem
-            setPrevSlidingPriority={setPrevSlidingPriority}
             newItemToSave={newItemToSave}
             toogleAddOrEdit={toogleAddOrEdit}
             setBottomSheetToogleState={setBottomSheetToogleState}
