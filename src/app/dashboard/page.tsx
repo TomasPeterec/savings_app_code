@@ -9,6 +9,7 @@ import "@/styles/theme.css"
 import MainSavingsDetails from "@/components/MainSavingsDetails"
 import ItemDetails from "@/components/ItemDetails"
 import NewItem from "@/components/NewItem"
+import EditSaving from "@/components/EditSaving"
 
 // Define allowed user structure
 interface AllowedUser {
@@ -103,6 +104,8 @@ export default function Dashboard() {
 
   // State to toggle between adding a new item or editing an existing one
   const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
+
+  const [togleEditSaving, setToogleEditSaving] = useState<boolean>(false)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
@@ -307,6 +310,7 @@ export default function Dashboard() {
       <div className="main-container-after-loging">
         {/* Main savings details component */}
         <MainSavingsDetails 
+          setToogleEditSaving={setToogleEditSaving}
           setToogleAddOrEdit={setToogleAddOrEdit}
           savingData={savingData} 
           setNewItemVisible={setNewItemVisible} 
@@ -325,6 +329,11 @@ export default function Dashboard() {
             sendNewItemToBackend={sendNewItemToBackend}
           />
         )}
+
+        {(togleEditSaving) ? 
+          <EditSaving
+            setToogleEditSaving={setToogleEditSaving}
+          /> : ""}
 
         {/* Render list of items */}
         {itemsData.map(item => (

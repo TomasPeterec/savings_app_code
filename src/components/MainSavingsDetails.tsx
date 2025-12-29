@@ -20,6 +20,7 @@ interface SavingData {
 }
 
 interface MainSavingsDetailsProps {
+  setToogleEditSaving?: (value: boolean) => void
   setToogleAddOrEdit: (value: boolean) => void
   savingData: SavingData | null;
   setNewItemVisible: (visible: boolean) => void;
@@ -27,15 +28,22 @@ interface MainSavingsDetailsProps {
 
 export default function MainSavingsDetails(
   {
+    setToogleEditSaving,    
     savingData,
     setToogleAddOrEdit,
     setNewItemVisible
   }: MainSavingsDetailsProps) {
 
 
+
+
   const openBottomSheet = () => {
     setNewItemVisible(true)
     setToogleAddOrEdit(true)
+  }
+
+  const openBottomSheetForEdit = () => {
+    setToogleEditSaving && setToogleEditSaving(true)
   }
 
   return (
@@ -91,10 +99,14 @@ export default function MainSavingsDetails(
           <button className="button-secondary smal-button">
             <img className="button-icone" src="/icons/change.svg" alt="change" />
           </button>
-          <button className="button-secondary smal-button">
+          <button className="button-secondary smal-button"
+            onClick={() => openBottomSheetForEdit()}
+          >
             <img className="button-icone" src="/icons/edit.svg" alt="edit" />
           </button>
-          <button className="button-primary smal-button" onClick={() => openBottomSheet()}>
+          <button className="button-primary smal-button" 
+            onClick={() => openBottomSheet()}
+          >
             <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
           </button>
         </div>
