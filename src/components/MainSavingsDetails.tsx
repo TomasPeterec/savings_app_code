@@ -34,9 +34,6 @@ export default function MainSavingsDetails(
     setNewItemVisible
   }: MainSavingsDetailsProps) {
 
-
-
-
   const openBottomSheet = () => {
     setNewItemVisible(true)
     setToogleAddOrEdit(true)

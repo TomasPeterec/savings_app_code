@@ -18,7 +18,7 @@ interface AllowedUser {
 }
 
 // Define shape of saving data
-interface SavingData {
+export interface SavingData {
   uuid: string | null
   selectedSaving: string | null
   description: string | null
@@ -332,6 +332,7 @@ export default function Dashboard() {
 
         {(togleEditSaving) ? 
           <EditSaving
+            savingData={savingData}
             setToogleEditSaving={setToogleEditSaving}
           /> : ""}
 

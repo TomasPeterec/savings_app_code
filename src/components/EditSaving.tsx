@@ -2,12 +2,15 @@
 
 import "@/styles/SavingDetails.css"
 import { useState } from "react"
+import {  SavingData } from "@/app/dashboard/page"
 
 interface NewItemProps {
-  setToogleEditSaving?: (value: boolean) => void
+  setToogleEditSaving?: (value: boolean) => void,
+  savingData: SavingData | null;   
 }
 
 export default function EditSaving({
+  savingData,
   setToogleEditSaving
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
@@ -23,17 +26,16 @@ export default function EditSaving({
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading inverseFontColor">
-     
+        Edit: {savingData?.selectedSaving || "Loading..."}  
       </h3>
       <div className="form-card form-card-n-i">
         <div className="form-half-separator-down separatorTuning01"></div>
         <div className="form-half-separator-down separatorTuning01">
-          <div className="visualSeparator">&nbsp;</div>
+          <div className="visualSeparator"></div>
         </div>
-
         <div className="colapsable">
           <div className="colapsableSideSpace">
- 
+            
           </div>
 
           {/* --- START OF OPENED FORM --- */}
@@ -163,23 +165,6 @@ export default function EditSaving({
           <div className="visualSeparator">&nbsp;</div>
         </div>
         <div className="form-half-separator-down separatorTuning01"></div>
-
-        <label>
-          <div className="form-half-separator-up vertical-align-bottom fromLeft ">
-            <p className="form-label inverseFontColor">Priority</p>
-          </div>
-          <div className="two-buttons">
-            <p className="amoutOfpriority inverseFontColor02 ">{"priority"}%</p>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={""}
-              className="input-field "
-              onChange={fff}
-            />
-          </div>
-        </label>
 
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
 
