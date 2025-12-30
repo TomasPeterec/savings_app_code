@@ -4,6 +4,7 @@ import { useAuthStore } from "@/store/authStore"
 import { auth, } from "@/firebase/firebase"
 import { signOut as firebaseSignOut } from "firebase/auth"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import "@/styles/theme.css" // import noveho CSS
 
 
@@ -12,6 +13,8 @@ export default function Header() {
   const user = useAuthStore((state) => state.user)
   const setUser = useAuthStore((state) => state.setUser)
   const router = useRouter()
+
+  const [openSliderMenu, setOpenSliderMenu] = useState<boolean>(false)
   
 
   const signOut = async () => {
@@ -39,18 +42,41 @@ export default function Header() {
         <div>
         </div>
         <div className="menu-box">
-          {/* Sign out button, only visible when needed */}
-          {user && (
-          <button onClick={signOut} className="header-button">
-            Sign out
-          </button> 
-        )}
-        <img className="burger-menu" 
-          src="/icons/burherMenu.svg" 
-          alt="Dream Save Logo" />
+          <button 
+            className="burger-menu-button"
+            onClick={() => setOpenSliderMenu(true)}
+          >
+            <img className="burger-menu" 
+              src="/icons/burgerMenu.svg" 
+              alt="Dream Save Logo" 
+            />
+          </button>
         </div>
       </div>
       <div className="header-separator"></div>
+      <div 
+        className={`sliding-menu ${openSliderMenu ? "open" : ""}`}
+      >
+        <button 
+          className="burger-menu-button"
+          onClick={() => setOpenSliderMenu(false)}
+        >
+          <img className="burger-menu" 
+            src="/icons/close.svg" 
+            alt="Dream Save Logo" 
+          />
+        </button>
+        {/* Sign out button, only visible when needed */}
+        {user && (
+          <button onClick={() => {
+            setTimeout(() => signOut(), 300);
+            setOpenSliderMenu(false)}} 
+            className="sign-out-button"
+          >
+            Sign out
+          </button> 
+        )}
+      </div>
     </header>
   )
 }
