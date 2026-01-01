@@ -218,6 +218,10 @@
   align-items: center;
 }
 
+.width-inner{
+  width: calc(260vw * var(--pixToVw));
+}
+
 .paddingPlus {
   padding-left: clamp(0rem, calc(6vw * var(--pixToVw)), calc(6rem * 0.115)); 
 }
@@ -228,6 +232,7 @@
 }
 
 .colapsableCenterOpen{
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -246,7 +251,7 @@
 }
 
 .colapsableSideSpace{
-  width: calc(360vw * var(--pixToVw));
+  width: calc(353vw * var(--pixToVw));
 }
 
 .inverseFontColor{
@@ -290,6 +295,26 @@
 
 .separatorLow{
   height: clamp(0rem, calc(17vw * var(--pixToVw)/4), calc(17rem * 0.115/4));
+}
+
+.imput-plus-nest {
+  display: flex;
+  flex-direction: row;
+  gap: calc(6vw * var(--pixToVw));
+  justify-content: space-between;
+}
+
+.button-nested{
+  border-radius: 50%;
+  background-color: #C4D2FF;
+  width: calc(36vw * var(--pixToVw));
+  height: calc(36vw * var(--pixToVw));
+  padding: calc(8vw * var(--pixToVw));
+}
+
+.plus-icone{
+  width: calc(20vw * var(--pixToVw));
+  height: calc(20vw * var(--pixToVw));
 }
 
 

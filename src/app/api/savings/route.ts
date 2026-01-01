@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import { adminAuth } from "@/firebase/admin"
+import { count } from "console"
 
 const prisma = new PrismaClient()
 
@@ -64,6 +65,7 @@ export async function POST(req: Request) {
     let savingMonthlyDeposited: number | null = null
     let savingTotalSaved: number | null = null
     let savingCurrency: string | null = null
+    let countingDate: number | null = null 
     let allowedUsers: AllowedUser[] = []
     let itemsData: ItemData[] = []
 
@@ -77,6 +79,7 @@ export async function POST(req: Request) {
           monthlyDeposited: true,
           totalSaved: true,
           currency: true,
+          countingDate: true
         },
       })
 
@@ -87,6 +90,7 @@ export async function POST(req: Request) {
         savingMonthlyDeposited = saving.monthlyDeposited
         savingTotalSaved = saving.totalSaved
         savingCurrency = saving.currency
+        countingDate = saving.countingDate 
       }
 
       // 6b. Fetch items for this saving
@@ -166,6 +170,7 @@ export async function POST(req: Request) {
       monthlyDeposited: savingMonthlyDeposited,
       totalSaved: savingTotalSaved,
       currency: savingCurrency,
+      countingDate: countingDate,
       allowedUsers,
       itemsData
     })

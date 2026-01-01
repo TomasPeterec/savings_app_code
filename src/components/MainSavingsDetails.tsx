@@ -14,7 +14,7 @@ interface SavingData {
   description: string | null
   totalSaved: number | null
   monthlyDeposited: number | null
-  nextCounting: string | null
+  countingDate: number | null
   currency: string | null
   signedAllowedUsers: AllowedUser[] | null
 }
@@ -83,8 +83,8 @@ export default function MainSavingsDetails(
             <div className="property-box">
               <div className="property-label">Next counting:</div>
               <div className="property-value">
-                {savingData?.nextCounting
-                  ? new Date(savingData.nextCounting).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
+                {savingData?.countingDate
+                  ? new Date(savingData.countingDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
                   : "No date"
                 }
               </div>

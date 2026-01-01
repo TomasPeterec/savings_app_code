@@ -1,8 +1,8 @@
 "use client"
 
-import "@/styles/SavingDetails.css"
-import { useState } from "react"
-import {  SavingData } from "@/app/dashboard/page"
+import "@/styles/SavingDetails.css" 
+import { useState,useEffect, use } from "react"
+import { SavingData } from "@/app/dashboard/page"
 
 interface NewItemProps {
   setToogleEditSaving?: (value: boolean) => void,
@@ -15,13 +15,31 @@ export default function EditSaving({
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
- 
+  const [totalSaved, setTotalSaved] = useState<number>(0)
+  const [monthlyDeposited, setMonthlyDeposited] = useState<number>(0)
+  const [nextCounting, setNextCounting] = useState<number>(0)
+  const [toggle, setToggle] = useState<boolean>(true)
+
+  const toggleColapse = () => {
+    setToggle(!toggle)
+  }
+
   const fff = () => {}
 
   const closeEditSaving = () => {
     console.log("Closing edit saving")
     setToogleEditSaving && setToogleEditSaving(false)
   }
+
+  useEffect(() => {
+    if (savingData) {
+      setName(savingData.selectedSaving || "")
+      setDescription(savingData.description || "")
+      setTotalSaved(savingData.totalSaved || 0)
+      setMonthlyDeposited(savingData.monthlyDeposited || 0)
+      setNextCounting(savingData.countingDate || 0)
+    }
+  }, [savingData])
 
   return (
     <div className="saving-details-box s-d-b-new">
@@ -35,7 +53,19 @@ export default function EditSaving({
         </div>
         <div className="colapsable">
           <div className="colapsableSideSpace">
-            
+            <button
+              className="button-secondary colapseButton"
+              onClick={toggleColapse}
+            >
+              <img
+                className="chevron-icone"
+                src={`/icons/${toggle ? 
+                  'ChevronWideDarkBlueDown' : 
+                  'ChevronWideDarkBlueRight'}.svg`
+                }
+                alt="colaps decolaps"
+              />
+            </button>
           </div>
 
           {/* --- START OF OPENED FORM --- */}
@@ -44,12 +74,12 @@ export default function EditSaving({
           >
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
-                <p className="form-label inverseFontColor">Name</p>
+                <p className="form-label inverseFontColor">Saving name</p>
               </div>
               <input
                 type="text"
                 placeholder="Name"
-                value={name}
+                value={savingData?.selectedSaving || name }
                 onChange={(e) => setName(e.target.value)}
                 className="input-field"
               />
@@ -74,12 +104,12 @@ export default function EditSaving({
             <div className="twoInRow">
               <label>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                  <p className="form-label inverseFontColor">Desired sum</p>
+                  <p className="form-label inverseFontColor">Monthly saved:</p>
                 </div>
                 <input
                   type="number"
-                  value={"0"}
-                  onChange={fff}
+                  value={monthlyDeposited}
+                  onChange={(e) => setMonthlyDeposited(Number(e.target.value))}
                   placeholder="0"
                   className="input-field halfOfRow"
                 />
@@ -87,35 +117,24 @@ export default function EditSaving({
               </label>
 
               <label>
-                <div className="form-half-separator-up vertical-align-bottom halfOfRow paddingPlus">
-                  <p className="form-label inverseFontColor">End date</p>
+                <div className="form-half-separator-up vertical-align-bottom halfOfRow">
+                  <p className="form-label inverseFontColor">Counting date:</p>
                 </div>
-                <div className="halfOfRow endDate paddingPlus inverseFontColor02">
-                  0000-00
-                </div>
+                <input
+                  type="number"
+                  value={nextCounting}
+                  onChange={(e) => setNextCounting(Number(e.target.value))}
+                  placeholder="0"
+                  className="input-field halfOfRow"
+                />
+                <div className="form-half-separator-down"></div>
               </label>
             </div>
-
-            <label>
-              <div className="form-half-separator-up vertical-align-bottom">
-                <p className="form-label inverseFontColor">Link to the item</p>
-              </div>
-              <input
-                type="text"
-                placeholder="Link to the item"
-                value={"0"}
-                onChange={fff}
-                className="input-field"
-              />
-              <div className="form-half-separator-down"></div>
-            </label>
           </div>
           {/* --- END OF OPENED FORM --- */}
 
           {/* --- START OF COLLAPSED FORM --- */}
-          <div className={
-            "colapsableCenterClosed" }
-          >
+          <div className={"colapsableCenterClosed"}>
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Name</p>
             </div>
@@ -142,33 +161,102 @@ export default function EditSaving({
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow paddingPlus">
                   <p className="form-label inverseFontColor">End date</p>
                 </div>
-                <p className="amoutColapsed inverseFontColor02 paddingPlus">
-                  hvfhvgf
-                </p>
               </div>
             </div>
-
-            <div className="form-half-separator-up vertical-align-bottom">
-              <p className="form-label inverseFontColor">Link to the item</p>
-            </div>
-            <p className="amoutColapsed inverseFontColor02">{
-              "Link to the item was not set"}
-            </p>
-            <div className="form-half-separator-down separatorLow"></div>
           </div>
           {/* --- END OF COLLAPSED FORM --- */}
 
-          <div className="colapsableSideSpace">&nbsp;</div>
+          <div className="colapsableSideSpace"></div>
         </div>
+
+
+
+
+
 
         <div className="form-half-separator-down separatorTuning01">
-          <div className="visualSeparator">&nbsp;</div>
+          <div className="visualSeparator"></div>
         </div>
-        <div className="form-half-separator-down separatorTuning01"></div>
+        <div className="colapsable">
+          <div className="colapsableSideSpace"> 
+            <button
+              className="button-secondary colapseButton "
+              onClick={toggleColapse}
+            >
+              <img
+                className="chevron-icone"
+                src={`/icons/${!toggle ? 
+                  'ChevronWideDarkBlueDown' : 
+                  'ChevronWideDarkBlueRight'}.svg`
+                }
+                alt="colaps decolaps"
+              />
+            </button>
+          </div>
 
+          {/* --- START OF OPENED FORM --- */}
+          <div className={
+            "colapsableCenterOpen" }
+          >
+            <label>
+              <div className="form-half-separator-up vertical-align-bottom width-inner">
+                <p className="form-label inverseFontColor">Saving name</p>
+              </div>
+              <div className="imput-plus-nest">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input-field"
+                />
+                <button className="button-nested">
+                  <img
+                    className="plus-icone"
+                    src={`/icons/cross.svg`
+                    }
+                    alt="colaps decolaps"
+                  />
+                </button>
+              </div>
+              <div className="form-half-separator-down"></div>
+            </label>
+          </div>
+          {/* --- END OF OPENED FORM --- */}
+
+          {/* --- START OF COLLAPSED FORM --- */}
+          <div className={"colapsableCenterClosed"}>
+            
+          </div>
+          {/* --- END OF COLLAPSED FORM --- */}
+
+          <div className="colapsableSideSpace"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+        {/* <div className="form-half-separator-down separatorTuning01"></div> */}
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
 
-        <div className="two-buttons">
+        <div className="two-buttons"> 
+          <button
+              className="button-secondary inverseButton"
+              onClick={() => {
+                if (confirm("Do you really want to delete this saving?")) {
+
+                // user click "OK"
+                // startActionToBackend("delete")
+              }}}
+            >
+              Delete
+            </button>
     
           <button
             type="button"

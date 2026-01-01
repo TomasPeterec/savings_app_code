@@ -24,7 +24,7 @@ export interface SavingData {
   description: string | null
   totalSaved: number | null
   monthlyDeposited: number | null
-  nextCounting: string | null
+  countingDate: number | null
   currency: string | null
   signedAllowedUsers: AllowedUser[] | null
 }
@@ -195,7 +195,7 @@ export default function Dashboard() {
           description: data.description || null,
           totalSaved: itemsSum,
           monthlyDeposited: data.monthlyDeposited || null,
-          nextCounting: data.nextCounting || null,
+          countingDate: data.countingDate || null,
           currency: data.currency || null,
           signedAllowedUsers: data.allowedUsers || null
         })
