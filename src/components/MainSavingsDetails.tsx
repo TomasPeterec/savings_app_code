@@ -4,8 +4,10 @@ import React from "react"
 import "@/styles/MainSavingsDetails.css"
 
 interface AllowedUser {
+  shortName: string
   userId: string
   editor: boolean
+  email: string | null 
 }
 
 interface SavingData {
@@ -51,7 +53,7 @@ export default function MainSavingsDetails(
           <div className="text-box">
             <div className="users-box">
               {savingData?.signedAllowedUsers?.map((item, index) => (
-                <li key={index} className="user-smal">{item.userId}</li>
+                <li key={index} className="user-smal">{item.shortName}</li>
               ))}
             </div>
             <h3 className="main-savings-details-heading">

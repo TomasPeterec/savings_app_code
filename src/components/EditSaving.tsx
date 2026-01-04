@@ -9,6 +9,16 @@ interface NewItemProps {
   savingData: SavingData | null;   
 }
 
+interface Email {
+  id: string | null
+  email: string | null
+  editor: boolean
+  forDeleting: boolean
+}
+
+
+
+
 export default function EditSaving({
   savingData,
   setToogleEditSaving
@@ -19,6 +29,8 @@ export default function EditSaving({
   const [monthlyDeposited, setMonthlyDeposited] = useState<number>(0)
   const [nextCounting, setNextCounting] = useState<number>(0)
   const [toggle, setToggle] = useState<boolean>(true)
+  const [listOfEmails, setListOfEmails] = useState<Email[]>([])
+  const [newEmail, setNewEmail] = useState<string>("")
 
   const toggleColapse = () => {
     setToggle(!toggle)
@@ -27,17 +39,25 @@ export default function EditSaving({
   const fff = () => {}
 
   const closeEditSaving = () => {
-    console.log("Closing edit saving")
     setToogleEditSaving && setToogleEditSaving(false)
   }
 
   useEffect(() => {
-    if (savingData) {
+    if (savingData) {   
       setName(savingData.selectedSaving || "")
       setDescription(savingData.description || "")
       setTotalSaved(savingData.totalSaved || 0)
       setMonthlyDeposited(savingData.monthlyDeposited || 0)
       setNextCounting(savingData.countingDate || 0)
+
+      const emails: Email[] = (savingData.signedAllowedUsers?.map(user => ({
+        id: user.userId,
+        email: user.email,
+        editor: user.editor,
+        forDeleting: false,
+      })) ?? [])
+
+      setListOfEmails(emails)
     }
   }, [savingData])
 
@@ -69,8 +89,9 @@ export default function EditSaving({
           </div>
 
           {/* --- START OF OPENED FORM --- */}
-          <div className={
-            "colapsableCenterOpen" }
+          <div className={toggle ? 
+            "colapsableCenterOpen" : 
+            "colapsableCenterClosed"}
           >
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
@@ -134,9 +155,12 @@ export default function EditSaving({
           {/* --- END OF OPENED FORM --- */}
 
           {/* --- START OF COLLAPSED FORM --- */}
-          <div className={"colapsableCenterClosed"}>
+          <div className={!toggle ? 
+            "colapsableCenterOpen" : 
+            "colapsableCenterClosed"}
+          >
             <div className="form-half-separator-up vertical-align-bottom">
-              <p className="form-label inverseFontColor">Name</p>
+              <p className="form-label inverseFontColor">Saving name</p>
             </div>
             <p className="amoutColapsed inverseFontColor02">{name || "Name is not set"}</p>
             <div className="form-half-separator-down separatorLow"></div>
@@ -151,16 +175,18 @@ export default function EditSaving({
             <div className="twoInRow">
               <div>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                  <p className="form-label inverseFontColor">Desired sum</p>
+                  <p className="form-label inverseFontColor">Monthly saved:</p>
                 </div>
-                <p className="amoutColapsed inverseFontColor02">{"fgvfg"}</p>
+                <p className="amoutColapsed inverseFontColor02">{monthlyDeposited}</p>
                 <div className="form-half-separator-down separatorLow"></div>
               </div>
 
               <div>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow paddingPlus">
-                  <p className="form-label inverseFontColor">End date</p>
+                  <p className="form-label inverseFontColor">Counting date:</p>
                 </div>
+                <p className="amoutColapsed inverseFontColor02 paddingPlus">{nextCounting}</p>
+                <div className="form-half-separator-down separatorLow"></div>
               </div>
             </div>
           </div>
@@ -173,7 +199,7 @@ export default function EditSaving({
 
 
 
-
+        {/* --- START OF COLLAPSED FORM --- */}
         <div className="form-half-separator-down separatorTuning01">
           <div className="visualSeparator"></div>
         </div>
@@ -192,22 +218,80 @@ export default function EditSaving({
                 alt="colaps decolaps"
               />
             </button>
-          </div>
+          </div>  
 
-          {/* --- START OF OPENED FORM --- */}
+          {/* --- START OF COLAPSABLE EMAIL FORM --- */}
           <div className={
             "colapsableCenterOpen" }
           >
             <label>
-              <div className="form-half-separator-up vertical-align-bottom width-inner">
-                <p className="form-label inverseFontColor">Saving name</p>
+              <div className="vertical-align-bottom width-inner horizontal-rule">
+                <div className="slim-row">
+                  <p className="form-label inverseFontColor">Shared with</p>
+                </div>
+                <div className="slim-row">
+                  <p className="form-label inverseFontColor">{!toggle ? "Editor    Del." : ""}</p>
+                </div>
+ 
               </div>
+
+              {/* --- START OF COLAPSABLE LIST OF EMAILS --- */}
+              <div className={!toggle ? 
+                "colapsableCenterOpen" : 
+                "colapsableCenterClosed"}
+              >
+                <div className="inverseFontColor02">
+                  {listOfEmails.map((email, index) => (
+                    <div className="mail-row-nest" key={email.id}>
+                      <div className="mail-row-visual-separator"></div>
+                      <div className="mail-row" >
+                        <p className="mail-row-text">{email.email}</p>
+                        <div className="mail-row-buttons">
+                          <label className="checkbox-wrapper">
+                            <input
+                              type="checkbox"
+                              checked={email.forDeleting}
+                              onChange={() => {
+                                setListOfEmails(prev =>
+                                  prev.map((e, i) =>
+                                    i === index ? { ...e, forDeleting: !e.forDeleting } : e
+                                  )
+                                )
+                              }}
+                            />
+                            <span className="checkbox-style">
+                              {email.forDeleting && <img
+                                className="x-icone"
+                                src={`/icons/checker.svg`}
+                                alt="colaps decolaps"
+                              />}
+                            </span>
+                          </label>
+                          <button className="button-nested-small">
+                            <img
+                              className="x-icone"
+                              src={`/icons/deleteIcone.svg`}
+                              alt="colaps decolaps"
+                            />
+                          </button>
+                        </div> 
+                      </div>
+                    </div>
+                  ))}
+                  <div className="mail-row-visual-separator"></div>
+                  <div className="separator-from-butons"></div>
+
+                </div>
+              </div>
+              {/* --- END OF COLAPSABLE LIST OF EMAILS --- */}
+
+
               <div className="imput-plus-nest">
                 <input
                   type="text"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter email address"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
                   className="input-field"
                 />
                 <button className="button-nested">
@@ -222,14 +306,7 @@ export default function EditSaving({
               <div className="form-half-separator-down"></div>
             </label>
           </div>
-          {/* --- END OF OPENED FORM --- */}
-
-          {/* --- START OF COLLAPSED FORM --- */}
-          <div className={"colapsableCenterClosed"}>
-            
-          </div>
-          {/* --- END OF COLLAPSED FORM --- */}
-
+          {/* --- END OF COLAPSABLE EMAIL FORM --- */}
           <div className="colapsableSideSpace"></div>
         </div>
 
@@ -242,7 +319,7 @@ export default function EditSaving({
 
 
 
-        {/* <div className="form-half-separator-down separatorTuning01"></div> */}
+        {/* BUTON PART */}
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
 
         <div className="two-buttons"> 

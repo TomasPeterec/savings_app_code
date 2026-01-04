@@ -13,8 +13,10 @@ import EditSaving from "@/components/EditSaving"
 
 // Define allowed user structure
 interface AllowedUser {
+  shortName: string
   userId: string
   editor: boolean
+  email: string | null 
 }
 
 // Define shape of saving data
@@ -312,7 +314,7 @@ export default function Dashboard() {
         <MainSavingsDetails 
           setToogleEditSaving={setToogleEditSaving}
           setToogleAddOrEdit={setToogleAddOrEdit}
-          savingData={savingData} 
+          savingData={savingData}
           setNewItemVisible={setNewItemVisible} 
         />
 

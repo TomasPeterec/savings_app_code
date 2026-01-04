@@ -155,7 +155,9 @@ export async function POST(req: Request) {
         }
 
         return {
-          userId: shortName,
+          userId: u.userId,
+          shortName: shortName,
+          email: userObj?.email ?? null,
           editor: u.editor ?? false
         }
       }))
