@@ -37,6 +37,7 @@ export default function NewItem({
   const [priority, setPriority] = useState<number>(0)
   const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
   const [toggle, setToggle] = useState<boolean>(true)
+  const [priorityLock, setPriorityLock] = useState<{ locked: boolean }>({ locked: false })
 
 
   const toggleColapse = () => {
@@ -204,7 +205,7 @@ export default function NewItem({
             <div className="twoInRow">
               <label>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                  <p className="form-label inverseFontColor">Desired sum</p>
+                  <p className="form-label inverseFontColor">Item price</p>
                 </div>
                 <input
                   type="number"
@@ -311,11 +312,37 @@ export default function NewItem({
         <div className="form-half-separator-down separatorTuning01"></div>
 
         <label>
-          <div className="form-half-separator-up vertical-align-bottom fromLeft ">
-            <p className="form-label inverseFontColor">Priority</p>
+          <div className="form-half-separator-up vertical-align-bottom fromLeft flex-to-row">
+            <div className="half-of-row">
+              <p className="form-label inverseFontColor">Priority</p>&nbsp;
+              <p className="amoutOfpriority inverseFontColor02 ">{priority}%</p>
+            </div>
+            <div className="half-of-row2">
+              <p className="form-label inverseFontColor">Priority lock:</p>&nbsp;
+              <label className="checkbox-wrapper">
+                            <input
+                              type="checkbox"
+                              checked={priorityLock.locked}
+                              onChange={
+                                (e) => setPriorityLock({ locked: e.target.checked })
+                              }
+                            />
+                            <span className="checkbox-style">
+                              {(priorityLock.locked) ? <img
+                                className="x-icone"
+                                src={`/icons/lockLocked.svg`}
+                                alt="colaps decolaps"
+                              /> : <img
+                                className="x-icone"
+                                src={`/icons/lockUnlocked.svg`}
+                                alt="colaps decolaps"
+                              />}
+                            </span>
+                          </label>
+            </div>
           </div>
           <div className="two-buttons">
-            <p className="amoutOfpriority inverseFontColor02 ">{priority}%</p>
+            
             <input
               type="range"
               min="0"

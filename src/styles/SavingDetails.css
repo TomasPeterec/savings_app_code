@@ -416,3 +416,28 @@
 .separator-from-butons{
   height: calc(10vw * var(--pixToVw));
 }
+
+.half-of-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.half-of-row2 {
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-end;
+  align-items: center;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+.flex-to-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

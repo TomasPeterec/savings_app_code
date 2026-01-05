@@ -1,7 +1,7 @@
 "use client"
 
 import "@/styles/SavingDetails.css" 
-import { useState,useEffect, use } from "react"
+import { useState,useEffect } from "react"
 import { SavingData } from "@/app/dashboard/page"
 
 interface NewItemProps {
@@ -25,7 +25,7 @@ export default function EditSaving({
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
-  const [totalSaved, setTotalSaved] = useState<number>(0)
+  //const [totalSaved, setTotalSaved] = useState<number>(0)
   const [monthlyDeposited, setMonthlyDeposited] = useState<number>(0)
   const [nextCounting, setNextCounting] = useState<number>(0)
   const [toggle, setToggle] = useState<boolean>(true)
@@ -46,7 +46,7 @@ export default function EditSaving({
     if (savingData) {   
       setName(savingData.selectedSaving || "")
       setDescription(savingData.description || "")
-      setTotalSaved(savingData.totalSaved || 0)
+      //setTotalSaved(savingData.totalSaved || 0)
       setMonthlyDeposited(savingData.monthlyDeposited || 0)
       setNextCounting(savingData.countingDate || 0)
 
@@ -328,8 +328,6 @@ export default function EditSaving({
               onClick={() => {
                 if (confirm("Do you really want to delete this saving?")) {
 
-                // user click "OK"
-                // startActionToBackend("delete")
               }}}
             >
               Delete

@@ -77,7 +77,7 @@ export default function MainSavingsDetails(
               <div className="property-label">Total&nbsp;<br/>saved:</div>
               <div className="property-value">
                 {savingData?.totalSaved
-                  ? `${savingData.totalSaved} ${savingData.currency}`
+                  ? `${Math.floor(savingData.totalSaved)} ${savingData.currency}`
                   : "No value"
                 }
               </div>

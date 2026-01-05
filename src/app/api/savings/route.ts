@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import { adminAuth } from "@/firebase/admin"
-import { count } from "console"
 
 const prisma = new PrismaClient()
 
