@@ -60,4 +60,6 @@ model items {
   endDate  DateTime @map("end_date") @db.Date
   saved    Decimal
   priority Decimal
+  locked   Boolean?
 }
+  

@@ -16,9 +16,6 @@ interface Email {
   forDeleting: boolean
 }
 
-
-
-
 export default function EditSaving({
   savingData,
   setToogleEditSaving
@@ -194,10 +191,6 @@ export default function EditSaving({
 
           <div className="colapsableSideSpace"></div>
         </div>
-
-
-
-
 
         {/* --- START OF COLLAPSED FORM --- */}
         <div className="form-half-separator-down separatorTuning01">

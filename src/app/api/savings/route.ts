@@ -102,7 +102,8 @@ export async function POST(req: Request) {
           price: true,
           endDate: true,
           saved: true,
-          priority: true
+          priority: true,
+          locked: true
         }
       })
 
@@ -114,7 +115,8 @@ export async function POST(req: Request) {
         price: item.price !== null ? Number(item.price) : null,
         saved: item.saved !== null ? Number(item.saved) : null,
         endDate: item.endDate ? item.endDate.toISOString() : null,
-        priority: item.priority !== null ? Number(item.priority) : null
+        priority: item.priority !== null ? Number(item.priority) : null,
+        locked: item.locked
       }))
 
       // 6c. Fetch allowed users

@@ -11,6 +11,7 @@ interface ItemData {
   endDate: string | null
   saved: number | null
   priority: number | null
+  locked: boolean | null
 }
 
 interface ItemDetailsProps {

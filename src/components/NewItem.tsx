@@ -37,7 +37,7 @@ export default function NewItem({
   const [priority, setPriority] = useState<number>(0)
   const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
   const [toggle, setToggle] = useState<boolean>(true)
-  const [priorityLock, setPriorityLock] = useState<{ locked: boolean }>({ locked: false })
+  const [priorityLock, setPriorityLock] = useState<boolean>(false)
 
 
   const toggleColapse = () => {
@@ -69,7 +69,8 @@ export default function NewItem({
       price: desiredSum,
       saved: newItemToSave.saved || 0,
       endDate: endDateforNew ? new Date(endDateforNew).toISOString() : new Date().toISOString(),
-      priority: priority
+      priority: priority,
+      locked: priorityLock   
     })
   }, [
     name, 
@@ -79,7 +80,8 @@ export default function NewItem({
     priority, 
     setNewItemToSave, 
     newItemToSave.itemId, 
-    newItemToSave.saved
+    newItemToSave.saved,
+    priorityLock
   ])
 
   // ------------------------------
@@ -91,6 +93,7 @@ export default function NewItem({
     setDesiredSum(0)
     setItemLink("")
     setPriority(0)
+    setPriorityLock(false)
     setNewItemToSave({
       itemId: "",
       itemName: "",
@@ -98,7 +101,8 @@ export default function NewItem({
       price: 0,
       saved: 0,
       endDate: new Date().toISOString(),
-      priority: 0
+      priority: 0,
+      locked: false
     })
   }
 
@@ -124,6 +128,7 @@ export default function NewItem({
       setItemLink(newItemToSave.link ?? "")
       setDesiredSum(newItemToSave.price ?? 0)
       setPriority(newItemToSave.priority ?? 0)
+      setPriorityLock(newItemToSave.locked ?? false)
       setEndDateforNew(
         newItemToSave.endDate
           ? new Date(newItemToSave.endDate).toISOString()
@@ -131,6 +136,7 @@ export default function NewItem({
       )
       hasLoadedRef.current = true;
     }
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toogleAddOrEdit]); 
 
@@ -320,25 +326,25 @@ export default function NewItem({
             <div className="half-of-row2">
               <p className="form-label inverseFontColor">Priority lock:</p>&nbsp;
               <label className="checkbox-wrapper">
-                            <input
-                              type="checkbox"
-                              checked={priorityLock.locked}
-                              onChange={
-                                (e) => setPriorityLock({ locked: e.target.checked })
-                              }
-                            />
-                            <span className="checkbox-style">
-                              {(priorityLock.locked) ? <img
-                                className="x-icone"
-                                src={`/icons/lockLocked.svg`}
-                                alt="colaps decolaps"
-                              /> : <img
-                                className="x-icone"
-                                src={`/icons/lockUnlocked.svg`}
-                                alt="colaps decolaps"
-                              />}
-                            </span>
-                          </label>
+                <input
+                  type="checkbox"
+                  checked={priorityLock}
+                  onChange={
+                    (e) => setPriorityLock(e.target.checked)
+                  }
+                />
+                <span className="checkbox-style">
+                  {(priorityLock) ? <img
+                    className="x-icone"
+                    src={`/icons/lockLocked.svg`}
+                    alt="colaps decolaps"
+                  /> : <img
+                    className="x-icone"
+                    src={`/icons/lockUnlocked.svg`}
+                    alt="colaps decolaps"
+                  />}
+                </span>
+              </label>
             </div>
           </div>
           <div className="two-buttons">
@@ -347,6 +353,7 @@ export default function NewItem({
               type="range"
               min="0"
               max="100"
+              disabled={priorityLock}
               value={priority}
               className="input-field "
               onChange={(e) => setPriority(Number(e.target.value))}
@@ -379,7 +386,10 @@ export default function NewItem({
 
           <button
             className="button-primary button-inner-space-left-right"
-            onClick={(toogleAddOrEdit) ? () => startActionToBackend("add") : () => startActionToBackend("edit")}
+            onClick={(toogleAddOrEdit) ? 
+              () => startActionToBackend("add") : 
+              () => startActionToBackend("edit")
+            }
           >
             {(toogleAddOrEdit) ? 
               <div className="in-button">

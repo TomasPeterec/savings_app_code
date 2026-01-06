@@ -40,6 +40,7 @@ export interface ItemData {
   endDate: string | null  
   saved: number | null
   priority: number | null
+  locked: boolean | null
 }
 
 // Function to calculate the end date for saving an item
@@ -82,6 +83,7 @@ const EMPTY_ITEM: ItemData = {
   saved: 0,
   endDate: new Date().toISOString(),
   priority: 0,
+  locked: false
 }
 
 export default function Dashboard() {
@@ -115,6 +117,9 @@ export default function Dashboard() {
   useEffect(() => {
     if (newItemVisible === true) {
       setItemsData(prevItems => {
+        const fullPercent = 100 
+        const lockedPart = prevItems.map(item => item.priority ?? 0)
+
         const itemsCopy = prevItems.map(item => ({ ...item }))
 
         if (newItemToSave && newItemToSave.priority !== null) {
