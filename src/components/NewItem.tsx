@@ -341,14 +341,14 @@ export default function NewItem({
                     (e) => setPriorityLock(e.target.checked)
                   }
                 />
-                <span className="checkbox-style">
+                <span className="checkbox-style-line">
                   {(priorityLock) ? <img
-                    className="x-icone"
-                    src={`/icons/lockLocked.svg`}
+                    className="lock-icone"
+                    src={`/icons/Lock_duotone_line.svg`}
                     alt="colaps decolaps"
                   /> : <img
-                    className="x-icone"
-                    src={`/icons/lockUnlocked.svg`}
+                    className="lock-icone"
+                    src={`/icons/Unlock_duotone_line.svg`}
                     alt="colaps decolaps"
                   />}
                 </span>

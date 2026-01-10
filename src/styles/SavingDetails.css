@@ -375,21 +375,39 @@
   padding-left: calc(1vw * var(--pixToVw));
   padding-right: calc(-1vw * var(--pixToVw));
   display: flex;
+  align-items: center;  
+  justify-content: center;
+}
+
+.checkbox-style-line {
+  border-radius: 50%;
+  border-width: calc(1.2vw * var(--pixToVw));
+  border-color: rgba(58, 119, 161, 0.7);
+  border-style: solid;
+  width: calc(22vw * var(--pixToVw));
+  height: calc(22vw * var(--pixToVw));
+  padding: calc(-1vw * var(--pixToVw)); 
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .check-dot {
-  width: 33%;
-  height: 33%;
+  width: 3%;
+  height: 3%;
   background-color: #1E2A78;
-  border-radius: 50%;
+  border-radius: 5%;
 }
 
 
 .x-icone{
   width: calc(12vw * var(--pixToVw));
   height: calc(12vw * var(--pixToVw));
+}
+
+.lock-icone{
+  width: calc(18vw * var(--pixToVw));
+  height: calc(18vw * var(--pixToVw));
 }
 
 .mail-row-buttons{
@@ -440,4 +458,35 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.icone-and-buton-in-line {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* <-- toto robí vertikálne centrovanie */
+  justify-content: flex-start; /* alebo space-between podľa potreby */
+  gap: calc(2vw * var(--pixToVw)); /* medzera medzi ikonou a buttonom */
+}
+
+.toRightRow {
+  flex-direction: row;
+  width: calc(69vw * var(--pixToVw));
+  height: clamp(0rem, calc(46vw * var(--pixToVw)), calc(46rem * 0.115));
+  box-sizing: border-box;
+}
+
+.leftRow {
+  width: calc(271vw * var(--pixToVw));
+  box-sizing: border-box;
+}
+
+.newPadding {
+  margin: 0vw;
+  margin-right: calc(3vw * var(--pixToVw)); 
+  margin-top: calc(28vw * var(--pixToVw)); 
+  box-sizing: border-box;
+}
+
+.invisible{
+  visibility: hidden;
 }

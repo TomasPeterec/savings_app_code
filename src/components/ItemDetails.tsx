@@ -49,7 +49,7 @@ export default function ItemDetails({
   return (
     <div className="saving-details-box">
       <div className="upper-row">
-        <div className="savings-details-left">
+        <div className="savings-details-left leftRow">
           <div className="text-box">
             <h4 className="saving-details-heading">
               {item.itemName}
@@ -76,17 +76,25 @@ export default function ItemDetails({
           </div>
         </div>
 
-        <div className="main-savings-details-right">
-          <button
-            className="button-secondary smal-button"
-            onClick={openBotomSheet}
-          >
+        <div className="main-savings-details-right toRightRow">
+          <div className="icone-and-buton-in-line">
             <img
-              className="button-icone"
-              src="/icons/edit.svg"
+              className={`lock-icone newPadding ${!item.locked ? 'invisible' : ''}`}
+              src="/icons/Lock_duotone_line_inverse.svg"
               alt="change"
             />
-          </button>
+            <button
+              className="button-secondary smal-button"
+              onClick={openBotomSheet}
+            >
+              <img
+                className="button-icone"
+                src="/icons/edit.svg"
+                alt="change"
+              />
+            </button>
+          </div>
+          
         </div>
       </div>
 
