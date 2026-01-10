@@ -28,6 +28,8 @@ export default function EditSaving({
   const [toggle, setToggle] = useState<boolean>(true)
   const [listOfEmails, setListOfEmails] = useState<Email[]>([])
   const [newEmail, setNewEmail] = useState<string>("")
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+
 
   const toggleColapse = () => {
     setToggle(!toggle)
@@ -138,15 +140,60 @@ export default function EditSaving({
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
                   <p className="form-label inverseFontColor">Counting date:</p>
                 </div>
-                <input
-                  type="number"
-                  value={nextCounting}
-                  onChange={(e) => setNextCounting(Number(e.target.value))}
-                  placeholder="0"
-                  className="input-field halfOfRow"
-                />
+
+                <div style={{ position: "relative" }}>
+                  {/* Input-like field that opens the dropdown */}
+                  <input
+                    type="text"
+                    readOnly
+                    value={nextCounting || ""}
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    placeholder="Select day"
+                    className="input-field halfOfRow"
+                    style={{ cursor: "pointer" }}
+                  />
+
+                  {/* Dropdown with values 1–28 */}
+                  {dropdownOpen && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        maxHeight: 150,
+                        overflowY: "auto",
+                        border: "1px solid #ccc",
+                        background: "#fff",
+                        zIndex: 1000,
+                      }}
+                    >
+                      {Array.from({ length: 28 }, (_, i) => i + 1).map(day => (
+                        <div
+                          key={day}
+                          onClick={() => {
+                            setNextCounting(day)
+                            setDropdownOpen(false)
+                          }}
+                          style={{
+                            padding: "6px 10px",
+                            cursor: "pointer",
+                            backgroundColor: day === nextCounting ? "#eee" : "#fff"
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#eee"}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = day === nextCounting ? "#eee" : "#fff"}
+                        >
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div className="form-half-separator-down"></div>
               </label>
+
+
             </div>
           </div>
           {/* --- END OF OPENED FORM --- */}

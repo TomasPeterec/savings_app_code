@@ -45,6 +45,27 @@ export default function MainSavingsDetails(
     setToogleEditSaving && setToogleEditSaving(true)
   }
 
+ const getNextCountingDate = (dayOfMonth: number | null) => {
+  if (!dayOfMonth) return "No date"
+
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = today.getMonth()
+
+  // Create a date for the current month
+  let nextDate = new Date(year, month, dayOfMonth)
+
+  // If the day has already passed this month, use the next month
+  if (nextDate < today) {
+    nextDate = new Date(year, month + 1, dayOfMonth)
+  }
+
+  // Format the date as day and month only
+  return nextDate.toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
+}
+
+
+
   return (
     <>
       <div className="top-indentation">&nbsp;&nbsp;&nbsp;</div>
@@ -85,10 +106,7 @@ export default function MainSavingsDetails(
             <div className="property-box">
               <div className="property-label">Next counting:</div>
               <div className="property-value">
-                {savingData?.countingDate
-                  ? new Date(savingData.countingDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
-                  : "No date"
-                }
+                {getNextCountingDate(savingData?.countingDate ?? null)}
               </div>
             </div>
           </div>
