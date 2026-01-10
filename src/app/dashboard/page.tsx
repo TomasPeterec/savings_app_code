@@ -16,7 +16,7 @@ interface AllowedUser {
   shortName: string
   userId: string
   editor: boolean
-  email: string | null 
+  email: string | null
 }
 
 // Define shape of saving data
@@ -37,7 +37,7 @@ export interface ItemData {
   itemName: string | null
   link: string | null
   price: number | null
-  endDate: string | null  
+  endDate: string | null
   saved: number | null
   priority: number | null
   locked: boolean | null
@@ -58,21 +58,9 @@ function calculateEndDate(
   const restMonthsMs = Math.floor(monthInMs * monthsToAchieve)
   const endDateMs = restMonthsMs + nowMs
   // Return "9999-12-31" if calculation is invalid
-  return (restMonthsMs === Infinity || isNaN(restMonthsMs))
-        ? "9999-12-31T23:59:59.999Z"
-        : new Date(endDateMs).toISOString()
-}
-
-// Function to recalculate priority for existing items when adding a new item
-function calculatePriority(
-  newItemPriority: number, // priority of the new item
-  originalPriorityOfExitingItem: number, // current priority of existing item
-  prevSlidingPriority: number,
-  itemCount: number // previous priority of the new item
-): number {
-  return (prevSlidingPriority !== 100) ? 
-  Math.round((100 - newItemPriority) * originalPriorityOfExitingItem) / 100 :
-  Math.round((100 - newItemPriority) / itemCount)
+  return restMonthsMs === Infinity || isNaN(restMonthsMs)
+    ? "9999-12-31T23:59:59.999Z"
+    : new Date(endDateMs).toISOString()
 }
 
 const EMPTY_ITEM: ItemData = {
@@ -108,32 +96,46 @@ export default function Dashboard() {
 
   // State to toggle between adding a new item or editing an existing one
   const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
-
   const [togleEditSaving, setToogleEditSaving] = useState<boolean>(false)
+  const [actualSliderClamp, setActualSliderClamp] = useState<number>(0)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
   useEffect(() => {
     if (newItemVisible === true) {
-      setItemsData(prevItems => {
-        const fullPercent = 100 
-        const lockedPart = prevItems.map(item => item.priority ?? 0)
+      setItemsData((prevItems) => {
+        const fullPercent = 100
+        const lockedPartPercent = prevItems.reduce((sum, item) => {
+          // If item is locked, add its priority to the sum
+          if (item.locked) {
+            sum += item.priority ?? 0
+          }
+          return sum
+        }, 0)
 
-        const itemsCopy = prevItems.map(item => ({ ...item }))
+        const unlockedPercent = prevItems.reduce((sum, item) => {
+          // If item is locked, add its priority to the sum
+          if (!item.locked) {
+            sum += item.priority ?? 0
+          }
+          return sum
+        }, 0)
+
+        const sliderClamp = fullPercent - lockedPartPercent
+        setActualSliderClamp(sliderClamp - 0.01)
+
+        const decreasedPercent = fullPercent - lockedPartPercent - (newItemToSave.priority ?? 0)
+        const changeRatio = decreasedPercent / unlockedPercent
+
+        const itemsCopy = prevItems.map((item) => ({ ...item }))
 
         if (newItemToSave && newItemToSave.priority !== null) {
           itemsCopy.forEach((item, index) => {
             // Recalculate priority for each existing item
-            item.priority = calculatePriority(
-              newItemToSave?.priority ?? 0,
-              itemsDataCopy[index]?.priority ?? 0,
-              (100 - itemsDataCopy.reduce(
-                (sum, item) => sum + (item.priority ?? 0), 0
-              )),
-              itemsDataCopy.length
-            )
-
+            if (!item.locked) {
+              item.priority = (item.priority ?? 0) * changeRatio
+            }
 
             // Recalculate end date for each item
             item.endDate = calculateEndDate(
@@ -145,6 +147,7 @@ export default function Dashboard() {
           })
         }
         return itemsCopy
+        
       })
     } else {
       // If new item form is canceled and closed, restore original items
@@ -157,7 +160,7 @@ export default function Dashboard() {
   // Fetch saving data and items on first load
   // -----------------------------------------
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async currentUser => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         setSavingData(null)
         return
@@ -170,7 +173,7 @@ export default function Dashboard() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
           },
           body: JSON.stringify({
             email: currentUser.email,
@@ -190,9 +193,10 @@ export default function Dashboard() {
         setItemsData(data.itemsData || [])
         setItemsDataCopy(data.itemsData || [])
         setItemsDataCopy2(data.itemsData || [])
-        
-        let itemsSum = data.itemsData.reduce(
-          (sum: number, item: ItemData) => sum + (item.saved ?? 0), 0
+
+        const itemsSum = data.itemsData.reduce(
+          (sum: number, item: ItemData) => sum + (item.saved ?? 0),
+          0
         )
 
         // Set main saving data
@@ -204,9 +208,8 @@ export default function Dashboard() {
           monthlyDeposited: data.monthlyDeposited || null,
           countingDate: data.countingDate || null,
           currency: data.currency || null,
-          signedAllowedUsers: data.allowedUsers || null
+          signedAllowedUsers: data.allowedUsers || null,
         })
-
       } catch (err) {
         console.error("Backend error:", err)
       }
@@ -215,52 +218,80 @@ export default function Dashboard() {
     return () => unsubscribe()
   }, [user])
 
-
-  // -------------------------------------------
-  // Function for balancing of values in array
-  // -------------------------------------------
-  function balanceItemsPriorities(balancedArray: ItemData[]): ItemData[] {
-    const totalPriority = balancedArray.reduce(
-      (sum, item) => sum + (item.priority ?? 0), 0
-    );
-
-    // Ak je totalPriority 0, všetky priority necháme 0
-    if (totalPriority === 0) {
-      return balancedArray.map(item => ({
-        ...item,
-        priority: 0
-      }));
-    }
-
-    const ratio = 100 / totalPriority;
-
-    return balancedArray.map(item => ({
-      ...item,
-      priority: Math.round((item.priority ?? 0) * ratio)
-    }));
-  }
-
-
-
   // -----------------------------------------
-  // Function for temporary removing an ittem from list
+  // Function for temporary removing an item from list
   // -----------------------------------------
   function removeItemTemporarily(itemIdToRemove: string) {
-    let temporaryList = itemsData.filter(item => item.itemId !== itemIdToRemove)
-
-    temporaryList = balanceItemsPriorities(temporaryList)
-
+    const temporaryList = itemsData.filter((item) => item.itemId !== itemIdToRemove)
     setItemsData(temporaryList)
     setItemsDataCopy(temporaryList)
   }
-  
 
   // -----------------------------------------
-  // Function to send data of new item to backend 
+  // Adjusts unlocked item priorities so that total sums to 100
+  // -----------------------------------------
+  function adjustPrioritiesToFullPercent(items: ItemData[]): ItemData[] {
+    const fullPercent = 100
+    const updatedItems = items.map((item) => ({ ...item }))
+    const unlockedItems = updatedItems.filter((item) => !item.locked)
+
+    if (unlockedItems.length === 0) return updatedItems
+
+    const total = updatedItems.reduce((sum, item) => sum + (item.priority ?? 0), 0)
+    const difference = total - fullPercent
+
+    if (difference === 0) return updatedItems
+
+    let adjustedItems = updatedItems.map((item) => ({ ...item }))
+
+    if (difference > 0) {
+      // total > 100 → subtract from HIGHEST priority (unlocked)
+      const target = unlockedItems.reduce((max, item) =>
+        (item.priority ?? 0) > (max.priority ?? 0) ? item : max
+      )
+      const idx = adjustedItems.findIndex((i) => i.itemId === target.itemId)
+      adjustedItems[idx].priority = (adjustedItems[idx].priority ?? 0) - difference
+    } else {
+      // total < 100 → add to LOWEST priority (unlocked)
+      const target = unlockedItems.reduce((min, item) =>
+        (item.priority ?? 0) < (min.priority ?? 0) ? item : min
+      )
+      const idx = adjustedItems.findIndex((i) => i.itemId === target.itemId)
+      adjustedItems[idx].priority = (adjustedItems[idx].priority ?? 0) - difference
+      // difference is negative → effectively adding
+    }
+
+    return adjustedItems
+  }
+
+  // ----------------------------------------
+  // calculation before deleting an item
+  // ----------------------------------------
+  function restBeforeDeleting(itemSet: ItemData[]): ItemData[] {
+    const copiedItems = itemSet.map((item) => ({ ...item }))
+
+    const lockedPart = copiedItems.reduce(
+      (sum, item) => sum + (item.locked ? item.priority ?? 0 : 0), 
+      0
+    )
+    const unlockedPart = copiedItems.reduce(
+      (sum, item) => sum + (item.locked ? 0 : item.priority ?? 0), 
+      0
+    )
+    const ratio = unlockedPart > 0 ? (100 - lockedPart) / unlockedPart : 1
+
+    const scaledItems = copiedItems.map((item) => ({
+      ...item,
+      priority: item.locked ? item.priority : (item.priority ?? 0) * ratio,
+    }))
+
+    return adjustPrioritiesToFullPercent(scaledItems)
+  }
+
+  // -----------------------------------------
+  // Function to send data of new item to backend
   // -----------------------------------------
   async function sendNewItemToBackend(actionType: string) {
-
-    // Getting the current user from Firebase Auth
     const currentUser = auth.currentUser
     if (!currentUser) {
       console.error("No user is signed in.")
@@ -268,23 +299,19 @@ export default function Dashboard() {
     }
 
     try {
-      // Get token (uses cache, doesn't create new one if valid)
       const idToken = await currentUser.getIdToken()
 
-      // Sending data to the backend
       const res = await fetch("/api/savings/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${idToken}`,
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           actionType: actionType,
           savingUuId: savingData?.uuid ?? "",
           newItem: newItemToSave,
-          items: (actionType === "delete") ? 
-            balanceItemsPriorities(itemsDataCopy) : 
-            itemsData
+          items: actionType === "delete" ? restBeforeDeleting(itemsData) : itemsData,
         }),
       })
 
@@ -296,71 +323,64 @@ export default function Dashboard() {
 
       const data = await res.json()
 
-      // You can update your status here if you want.
-      // e.g. add a new item to itemsData or itemsDataCopy
       if (data.itemsData) {
-
-        setItemsData(data.itemsData) 
+        setItemsData(data.itemsData)
         setItemsDataCopy(data.itemsData)
         setItemsDataCopy2(data.itemsData)
       }
-
     } catch (err) {
       console.error("Error sending new item:", err)
     }
   }
 
-
   return (
     <div className="base-container">
       <Header />
       <div className="main-container-after-loging">
-        {/* Main savings details component */}
-        <MainSavingsDetails 
+        <MainSavingsDetails
           setToogleEditSaving={setToogleEditSaving}
           setToogleAddOrEdit={setToogleAddOrEdit}
           savingData={savingData}
-          setNewItemVisible={setNewItemVisible} 
+          setNewItemVisible={setNewItemVisible}
         />
 
-        {/* New Item form */}
         {newItemVisible && (
           <NewItem
+            setActualSliderClamp={setActualSliderClamp}
+            actualSliderClamp={actualSliderClamp}
             newItemToSave={newItemToSave}
             toogleAddOrEdit={toogleAddOrEdit}
             setBottomSheetToogleState={setBottomSheetToogleState}
-            setNewItemVisible={setNewItemVisible} 
+            setNewItemVisible={setNewItemVisible}
             setNewItemToSave={setNewItemToSave}
             calculateEndDate={calculateEndDate}
-            monthlyDeposited={savingData?.monthlyDeposited} 
+            monthlyDeposited={savingData?.monthlyDeposited}
             sendNewItemToBackend={sendNewItemToBackend}
           />
         )}
 
-        {(togleEditSaving) ? 
-          <EditSaving
-            savingData={savingData}
-            setToogleEditSaving={setToogleEditSaving}
-          /> : ""}
+        {togleEditSaving && (
+          <EditSaving savingData={savingData} setToogleEditSaving={setToogleEditSaving} />
+        )}
 
-        {/* Render list of items */}
-        {itemsData.map(item => (
-          <ItemDetails 
+        {itemsData.map((item) => (
+          <ItemDetails
             removeItemTemporarily={removeItemTemporarily}
             setNewItemToSave={setNewItemToSave}
             setToogleAddOrEdit={setToogleAddOrEdit}
             setNewItemVisible={setNewItemVisible}
-            key={item.itemId} 
-            item={item} 
-            monthlyDeposited={savingData?.monthlyDeposited} 
+            key={item.itemId}
+            item={item}
+            monthlyDeposited={savingData?.monthlyDeposited}
           />
         ))}
-        {newItemVisible && (<div className={(bottomSheetToogleState) ? 
-          "heightOnBottomOpen" : 
-          "heightOnBottomColapsed"}
-        >
-          &nbsp;
-        </div>)}
+
+        {newItemVisible && (
+          <div className={bottomSheetToogleState ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
+            &nbsp;
+          </div>
+        )}
+
         <div className="defaultBottomOffset">&nbsp;</div>
       </div>
     </div>

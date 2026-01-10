@@ -5,6 +5,9 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  setToogleAddOrEdit?: (value: boolean) => void
+  actualSliderClamp?: number | null,
+  setActualSliderClamp?: (value: number) => void
   newItemToSave: ItemData
   toogleAddOrEdit: boolean
   setBottomSheetToogleState: (visible: boolean) => void
@@ -21,6 +24,9 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  setToogleAddOrEdit,
+  setActualSliderClamp,
+  actualSliderClamp,
   newItemToSave,
   toogleAddOrEdit,
   setBottomSheetToogleState,
@@ -94,6 +100,8 @@ export default function NewItem({
     setItemLink("")
     setPriority(0)
     setPriorityLock(false)
+    setActualSliderClamp?.(0)
+    setToogleAddOrEdit?.(true)
     setNewItemToSave({
       itemId: "",
       itemName: "",
@@ -351,12 +359,21 @@ export default function NewItem({
             
             <input
               type="range"
-              min="0"
+              min="0.01"
               max="100"
               disabled={priorityLock}
               value={priority}
               className="input-field "
-              onChange={(e) => setPriority(Number(e.target.value))}
+              onChange={(e) => {
+                if(Number(e.target.value) > (actualSliderClamp ?? 0)){
+
+                  setPriority(Number(actualSliderClamp))
+                }else{
+                  setPriority(Number(e.target.value))
+                }
+                
+                
+              }}
             />
           </div>
         </label>

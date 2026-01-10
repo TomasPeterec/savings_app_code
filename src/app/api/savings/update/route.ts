@@ -13,6 +13,7 @@ interface NwItemInterface {
   endDate: string | null
   saved: number | null
   priority: number | null
+  locked: boolean | null
 }
 
 interface RequestBody {
@@ -30,6 +31,7 @@ interface ItemData {
   endDate: string | null
   saved: number | null
   priority: number | null
+  locked: boolean | null
 }
 
 export async function POST(req: Request) {
@@ -75,6 +77,7 @@ export async function POST(req: Request) {
           price: new Prisma.Decimal(newItem.price ?? 0),
           saved: new Prisma.Decimal(newItem.saved ?? 0),
           priority: new Prisma.Decimal(newItem.priority ?? 0),
+          locked: newItem.locked,
           endDate: newItem.endDate
             ? new Date(newItem.endDate)
             : new Date(),
@@ -100,6 +103,7 @@ export async function POST(req: Request) {
           price: new Prisma.Decimal(newItem.price ?? 0),
           saved: new Prisma.Decimal(newItem.saved ?? 0),
           priority: new Prisma.Decimal(newItem.priority ?? 0),
+          locked: newItem.locked,
           endDate: newItem.endDate
             ? new Date(newItem.endDate)
             : new Date(),
@@ -128,7 +132,7 @@ export async function POST(req: Request) {
     // 6. Update existing items
     await Promise.all(
       items.map(async (item) => {
-        if (!item.itemId) return // skip items without itemId
+        if (!item.itemId || item.locked) return // skip items without itemId or locked
         await prisma.items.update({
           where: { itemId: item.itemId },
           data: {
@@ -138,6 +142,7 @@ export async function POST(req: Request) {
         })
       })
     )
+
 
     // 7. Fetch all items for the saving
     const rawItems = await prisma.items.findMany({
@@ -150,6 +155,7 @@ export async function POST(req: Request) {
         endDate: true,
         saved: true,
         priority: true,
+        locked: true,
       },
     })
 
@@ -162,7 +168,9 @@ export async function POST(req: Request) {
       saved: item.saved !== null ? Number(item.saved) : null,
       endDate: item.endDate ? item.endDate.toISOString() : null,
       priority: item.priority !== null ? Number(item.priority) : null,
+      locked: item.locked ?? null
     }))
+
 
     // 9. Return JSON response
     return NextResponse.json({
