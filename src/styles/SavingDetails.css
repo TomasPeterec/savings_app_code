@@ -306,10 +306,14 @@
 
 .button-nested{
   border-radius: 50%;
-  background-color: #C4D2FF;
+  /* background-color: #C4D2FF; */
+  background-color: rgba(58, 119, 161, 0.0);
+  border-color: rgba(58, 119, 161, 0.7);
+  border-style: solid;
+  border-width: calc(1.2vw * var(--pixToVw));
   width: calc(36vw * var(--pixToVw));
   height: calc(36vw * var(--pixToVw));
-  padding: calc(8vw * var(--pixToVw));
+  padding: calc(7vw * var(--pixToVw));
 }
 
 .plus-icone{
@@ -386,7 +390,7 @@
   border-style: solid;
   width: calc(22vw * var(--pixToVw));
   height: calc(22vw * var(--pixToVw));
-  padding: calc(-1vw * var(--pixToVw)); 
+  padding: calc(0.4vw * var(--pixToVw)); 
   display: flex;
   align-items: center;
   justify-content: center;

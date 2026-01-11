@@ -360,7 +360,11 @@ export default function Dashboard() {
         )}
 
         {togleEditSaving && (
-          <EditSaving savingData={savingData} setToogleEditSaving={setToogleEditSaving} />
+          <EditSaving 
+            savingData={savingData} 
+            setToogleEditSaving={setToogleEditSaving} 
+            mainUserId={user?.uid ?? null}
+          />
         )}
 
         {itemsData.map((item) => (

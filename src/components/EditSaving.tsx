@@ -5,9 +5,11 @@ import { useState,useEffect } from "react"
 import { SavingData } from "@/app/dashboard/page"
 
 interface NewItemProps {
-  setToogleEditSaving?: (value: boolean) => void,
-  savingData: SavingData | null;   
+  setToogleEditSaving?: (value: boolean) => void
+  savingData: SavingData | null
+  mainUserId: string | null
 }
+
 
 interface Email {
   id: string | null
@@ -17,6 +19,7 @@ interface Email {
 }
 
 export default function EditSaving({
+  mainUserId,
   savingData,
   setToogleEditSaving
 }: NewItemProps) {
@@ -138,7 +141,7 @@ export default function EditSaving({
 
               <label>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                  <p className="form-label inverseFontColor">Counting date:</p>
+                  <p className="form-label inverseFontColor">Counting day:</p>
                 </div>
 
                 <div style={{ position: "relative" }}>
@@ -281,12 +284,32 @@ export default function EditSaving({
                 "colapsableCenterClosed"}
               >
                 <div className="inverseFontColor02">
-                  {listOfEmails.map((email, index) => (
+                  {listOfEmails.map((email, index) => ( ( (email.id) != mainUserId ) && (
                     <div className="mail-row-nest" key={email.id}>
                       <div className="mail-row-visual-separator"></div>
                       <div className="mail-row" >
                         <p className="mail-row-text">{email.email}</p>
                         <div className="mail-row-buttons">
+                          <label className="checkbox-wrapper">
+                            <input
+                              type="checkbox"
+                              checked={email.editor}
+                              onChange={() => {
+                                setListOfEmails(prev =>
+                                  prev.map((e, i) =>
+                                    i === index ? { ...e, editor: !e.editor } : e
+                                  )
+                                )
+                              }}
+                            />
+                            <span className="checkbox-style-line">
+                              <img
+                                className="x-icone"
+                                src={`/icons/${email.editor ? "checkedOn" : "checkedOff"}.svg`}
+                                alt="colaps decolaps"
+                              />
+                            </span>
+                          </label>
                           <label className="checkbox-wrapper">
                             <input
                               type="checkbox"
@@ -299,25 +322,18 @@ export default function EditSaving({
                                 )
                               }}
                             />
-                            <span className="checkbox-style">
-                              {email.forDeleting && <img
+                            <span className="checkbox-style-line">
+                              <img
                                 className="x-icone"
-                                src={`/icons/checker.svg`}
+                                src={`/icons/${email.forDeleting ? "deleteSmalOn": "deleteSmalOff"}.svg`}
                                 alt="colaps decolaps"
-                              />}
+                              /> 
                             </span>
                           </label>
-                          <button className="button-nested-small">
-                            <img
-                              className="x-icone"
-                              src={`/icons/deleteIcone.svg`}
-                              alt="colaps decolaps"
-                            />
-                          </button>
                         </div> 
                       </div>
                     </div>
-                  ))}
+                  )))}
                   <div className="mail-row-visual-separator"></div>
                   <div className="separator-from-butons"></div>
 
