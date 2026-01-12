@@ -3,8 +3,11 @@
 import "@/styles/SavingDetails.css" 
 import { useState,useEffect } from "react"
 import { SavingData } from "@/app/dashboard/page"
+import type { Auth } from "firebase/auth"
+
 
 interface NewItemProps {
+  auth: Auth
   setToogleEditSaving?: (value: boolean) => void
   savingData: SavingData | null
   mainUserId: string | null
@@ -19,6 +22,7 @@ interface Email {
 }
 
 export default function EditSaving({
+  auth,
   mainUserId,
   savingData,
   setToogleEditSaving
@@ -62,6 +66,55 @@ export default function EditSaving({
       setListOfEmails(emails)
     }
   }, [savingData])
+
+  const addNewEmail = async () => {
+    const currentUser = auth.currentUser
+        if (!currentUser) {
+          console.error("No user is signed in.")
+          return
+        }
+
+
+    try {
+      const idToken = await currentUser.getIdToken()
+
+      const resAboutEmail = await fetch("/api/emails/",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`
+        },
+        body: JSON.stringify({
+          email: newEmail
+        })
+
+      })
+
+      const data = await resAboutEmail.json()
+
+      if (data.userEmail === newEmail) {
+
+        setListOfEmails([
+          ...listOfEmails,
+          {
+            id: "",
+            email: data.userEmail,
+            editor: false,
+            forDeleting: false
+          }
+        ])
+        
+      } else {
+        alert("There is no user of DreamSaver app with this email address")
+        console.log("NEPODARILO SA", data.userEmail)
+      }
+
+    } catch (err) {
+      console.error("Error get info about emails", err)
+    }
+    setToggle(false)
+    setNewEmail("")
+  }
 
   return (
     <div className="saving-details-box s-d-b-new">
@@ -350,7 +403,10 @@ export default function EditSaving({
                   onChange={(e) => setNewEmail(e.target.value)}
                   className="input-field"
                 />
-                <button className="button-nested">
+                <button
+                  onClick={() => {addNewEmail()}}
+                  className="button-nested"
+                >
                   <img
                     className="plus-icone"
                     src={`/icons/cross.svg`

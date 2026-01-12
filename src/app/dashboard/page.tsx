@@ -364,6 +364,7 @@ export default function Dashboard() {
             savingData={savingData} 
             setToogleEditSaving={setToogleEditSaving} 
             mainUserId={user?.uid ?? null}
+            auth={auth}
           />
         )}
 
