@@ -329,7 +329,7 @@ export default function NewItem({
           <div className="form-half-separator-up vertical-align-bottom fromLeft flex-to-row">
             <div className="half-of-row">
               <p className="form-label inverseFontColor">Priority</p>&nbsp;
-              <p className="amoutOfpriority inverseFontColor02 ">{priority}%</p>
+              <p className="amoutOfpriority inverseFontColor02 ">{Math.round(priority*100)/100}%</p>
             </div>
             <div className="half-of-row2">
               <p className="form-label inverseFontColor">Priority lock:</p>&nbsp;

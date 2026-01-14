@@ -13,7 +13,6 @@ interface NewItemProps {
   mainUserId: string | null
 }
 
-
 interface Email {
   id: string | null
   email: string | null
@@ -42,7 +41,6 @@ export default function EditSaving({
     setToggle(!toggle)
   }
 
-  const fff = () => {}
 
   const closeEditSaving = () => {
     setToogleEditSaving && setToogleEditSaving(false)
@@ -68,52 +66,75 @@ export default function EditSaving({
   }, [savingData])
 
   const addNewEmail = async () => {
-    const currentUser = auth.currentUser
+    let runRest = true
+
+    listOfEmails.map((item) => {
+      if(newEmail === item.email ){
+        alert(`The email is allready in the list or it is owners email`)
+        runRest = false
+      }
+    })
+
+    if(runRest === true) {
+      const currentUser = auth.currentUser
         if (!currentUser) {
           console.error("No user is signed in.")
           return
         }
 
+      try {
+        const idToken = await currentUser.getIdToken()
 
-    try {
-      const idToken = await currentUser.getIdToken()
-
-      const resAboutEmail = await fetch("/api/emails/",{
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`
-        },
-        body: JSON.stringify({
-          email: newEmail
+        const resAboutEmail = await fetch("/api/emails/",{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`
+          },
+          body: JSON.stringify({
+            email: newEmail
+          })
         })
 
-      })
+        const data = await resAboutEmail.json()
 
-      const data = await resAboutEmail.json()
+        if (data.userEmail === newEmail) {
 
-      if (data.userEmail === newEmail) {
+          setListOfEmails([
+            ...listOfEmails,
+            {
+              id: crypto.randomUUID(),
+              email: data.userEmail,
+              editor: false,
+              forDeleting: false
+            }
+          ])
+          
+        } else {
+          alert("There is no user of DreamSaver app with this email address")
+          console.log("NEPODARILO SA", data.userEmail)
+        }
 
-        setListOfEmails([
-          ...listOfEmails,
-          {
-            id: "",
-            email: data.userEmail,
-            editor: false,
-            forDeleting: false
-          }
-        ])
-        
-      } else {
-        alert("There is no user of DreamSaver app with this email address")
-        console.log("NEPODARILO SA", data.userEmail)
+      } catch (err) {
+        console.error("Error get info about emails", err)
       }
-
-    } catch (err) {
-      console.error("Error get info about emails", err)
     }
+
     setToggle(false)
     setNewEmail("")
+  }
+
+  const sendUpdate = async () => {
+    const cuttedList = listOfEmails.filter(email => email.id !== mainUserId)
+    const sendingSaving = {
+      nextCounting,
+      monthlyDeposited,
+      name,
+      description
+    }
+    console.log("Saving for backend", sendingSaving)
+    console.log("Zoznam emailov:", cuttedList)
+    
   }
 
   return (
@@ -142,7 +163,6 @@ export default function EditSaving({
               />
             </button>
           </div>
-
           {/* --- START OF OPENED FORM --- */}
           <div className={toggle ? 
             "colapsableCenterOpen" : 
@@ -161,7 +181,6 @@ export default function EditSaving({
               />
               <div className="form-half-separator-down"></div>
             </label>
-
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
                 <p className="form-label inverseFontColor">Short description</p>
@@ -191,12 +210,10 @@ export default function EditSaving({
                 />
                 <div className="form-half-separator-down"></div>
               </label>
-
               <label>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
                   <p className="form-label inverseFontColor">Counting day:</p>
                 </div>
-
                 <div style={{ position: "relative" }}>
                   {/* Input-like field that opens the dropdown */}
                   <input
@@ -245,11 +262,8 @@ export default function EditSaving({
                     </div>
                   )}
                 </div>
-
                 <div className="form-half-separator-down"></div>
               </label>
-
-
             </div>
           </div>
           {/* --- END OF OPENED FORM --- */}
@@ -291,10 +305,8 @@ export default function EditSaving({
             </div>
           </div>
           {/* --- END OF COLLAPSED FORM --- */}
-
           <div className="colapsableSideSpace"></div>
         </div>
-
         {/* --- START OF COLLAPSED FORM --- */}
         <div className="form-half-separator-down separatorTuning01">
           <div className="visualSeparator"></div>
@@ -315,7 +327,6 @@ export default function EditSaving({
               />
             </button>
           </div>  
-
           {/* --- START OF COLAPSABLE EMAIL FORM --- */}
           <div className={
             "colapsableCenterOpen" }
@@ -328,9 +339,7 @@ export default function EditSaving({
                 <div className="slim-row">
                   <p className="form-label inverseFontColor">{!toggle ? "Editor    Del." : ""}</p>
                 </div>
- 
               </div>
-
               {/* --- START OF COLAPSABLE LIST OF EMAILS --- */}
               <div className={!toggle ? 
                 "colapsableCenterOpen" : 
@@ -389,12 +398,9 @@ export default function EditSaving({
                   )))}
                   <div className="mail-row-visual-separator"></div>
                   <div className="separator-from-butons"></div>
-
                 </div>
               </div>
               {/* --- END OF COLAPSABLE LIST OF EMAILS --- */}
-
-
               <div className="imput-plus-nest">
                 <input
                   type="text"
@@ -421,30 +427,17 @@ export default function EditSaving({
           {/* --- END OF COLAPSABLE EMAIL FORM --- */}
           <div className="colapsableSideSpace"></div>
         </div>
-
-
-
-
-
-
-
-
-
-
         {/* BUTON PART */}
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
-
         <div className="two-buttons"> 
           <button
               className="button-secondary inverseButton"
               onClick={() => {
                 if (confirm("Do you really want to delete this saving?")) {
-
               }}}
             >
               Delete
             </button>
-    
           <button
             type="button"
             className="button-secondary inverseButton"
@@ -452,15 +445,11 @@ export default function EditSaving({
           >
             Cancel
           </button>
-
-
           <button
             className="button-primary button-inner-space-left-right"
-            onClick={fff}
+            onClick={() => sendUpdate()}
           >
-            {
-              "Update"
-            }
+            {"Update"}
           </button>
         </div>
       </div>

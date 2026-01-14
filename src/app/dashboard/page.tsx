@@ -43,7 +43,7 @@ export interface ItemData {
   locked: boolean | null
 }
 
-// Function to calculate the end date for saving an item
+// Function to calculate the end date for saving an item safely
 function calculateEndDate(
   price: number,
   saved: number,
@@ -51,17 +51,29 @@ function calculateEndDate(
   priority: number
 ): string {
   const nowMs = Date.now()
+
+  // Avoid division by zero
+  if (!monthlyDeposited || priority <= 0) {
+    return "9999-12-31T23:59:59.999Z"
+  }
+
   const remainingPrice = price - saved
   const priorityInMoney = (monthlyDeposited * priority) / 100
   const monthsToAchieve = remainingPrice / priorityInMoney
-  const monthInMs = 2629746000
+  const monthInMs = 2629746000 // average month in ms
   const restMonthsMs = Math.floor(monthInMs * monthsToAchieve)
   const endDateMs = restMonthsMs + nowMs
-  // Return "9999-12-31" if calculation is invalid
-  return restMonthsMs === Infinity || isNaN(restMonthsMs)
-    ? "9999-12-31T23:59:59.999Z"
-    : new Date(endDateMs).toISOString()
+
+  const MAX_DATE_MS = 8.64e15 // Max allowed timestamp in JS
+
+  // Return a valid ISO string or fallback if out-of-range
+  if (!Number.isFinite(endDateMs) || endDateMs < -MAX_DATE_MS || endDateMs > MAX_DATE_MS) {
+    return "9999-12-31T23:59:59.999Z"
+  }
+
+  return new Date(endDateMs).toISOString()
 }
+
 
 const EMPTY_ITEM: ItemData = {
   itemId: "",
