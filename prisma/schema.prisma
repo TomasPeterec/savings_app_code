@@ -48,6 +48,7 @@ model SavingAccess {
   savings    Savings  @relation(fields: [savingUuid], references: [uuid])
   user       User     @relation(fields: [userId], references: [firebaseUid])
 
+  @@unique([savingUuid, userId]) // composite unique
   @@map("saving_access")
 }
 
@@ -62,4 +63,3 @@ model items {
   priority Decimal
   locked   Boolean?
 }
-  

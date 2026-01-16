@@ -11,6 +11,7 @@ interface NewItemProps {
   setToogleEditSaving?: (value: boolean) => void
   savingData: SavingData | null
   mainUserId: string | null
+  updateParentSavingData?: (updated: SavingData) => void 
 }
 
 interface Email {
@@ -21,6 +22,7 @@ interface Email {
 }
 
 export default function EditSaving({
+  updateParentSavingData,
   auth,
   mainUserId,
   savingData,
@@ -28,7 +30,7 @@ export default function EditSaving({
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
-  //const [totalSaved, setTotalSaved] = useState<number>(0)
+  const [totalSaved, setTotalSaved] = useState<number>(0)
   const [monthlyDeposited, setMonthlyDeposited] = useState<number>(0)
   const [nextCounting, setNextCounting] = useState<number>(0)
   const [toggle, setToggle] = useState<boolean>(true)
@@ -50,7 +52,7 @@ export default function EditSaving({
     if (savingData) {   
       setName(savingData.selectedSaving || "")
       setDescription(savingData.description || "")
-      //setTotalSaved(savingData.totalSaved || 0)
+      setTotalSaved(savingData.totalSaved || 0)
       setMonthlyDeposited(savingData.monthlyDeposited || 0)
       setNextCounting(savingData.countingDate || 0)
 
@@ -103,7 +105,7 @@ export default function EditSaving({
           setListOfEmails([
             ...listOfEmails,
             {
-              id: crypto.randomUUID(),
+              id: data.userId,
               email: data.userEmail,
               editor: false,
               forDeleting: false
@@ -112,7 +114,6 @@ export default function EditSaving({
           
         } else {
           alert("There is no user of DreamSaver app with this email address")
-          console.log("NEPODARILO SA", data.userEmail)
         }
 
       } catch (err) {
@@ -126,15 +127,57 @@ export default function EditSaving({
 
   const sendUpdate = async () => {
     const cuttedList = listOfEmails.filter(email => email.id !== mainUserId)
-    const sendingSaving = {
+    const sendSaving = {
       nextCounting,
       monthlyDeposited,
       name,
+      uuid: savingData?.uuid,
+      curency: savingData?.currency,
+      totalSaved: totalSaved,
       description
     }
-    console.log("Saving for backend", sendingSaving)
-    console.log("Zoznam emailov:", cuttedList)
+
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      console.error("No user is signed in")
+      return
+    }
+
+    try {
+      const idToken = await currentUser.getIdToken()
+      
+      const rest = await fetch("/api/savings/settings",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`
+        },
+        body: JSON.stringify({
+          sendSaving,
+          cuttedList
+        })
+      })
+
+      const data = await rest.json()
+
+      if (data.updatedSaving) {
+        updateParentSavingData && updateParentSavingData({
+          uuid: data.updatedSaving.uuid,
+          selectedSaving: data.updatedSaving.name,      // <-- mapovanie názvu
+          description: data.updatedSaving.description,
+          totalSaved: data.updatedSaving.totalSaved,
+          monthlyDeposited: data.updatedSaving.monthlyDeposited,
+          countingDate: data.updatedSaving.countingDate, // <-- mapovanie counting date
+          currency: data.updatedSaving.currency,
+          signedAllowedUsers: data.allowedUsers        // <-- zoznam používateľov
+        })
+      }
+
+    } catch (err) {
+      console.error("Error save saving settings", err)
+    }
     
+    closeEditSaving()
   }
 
   return (

@@ -345,6 +345,11 @@ export default function Dashboard() {
     }
   }
 
+  const updateSavingData = (updated: SavingData) => {
+    setSavingData(updated)
+  }
+
+
   return (
     <div className="base-container">
       <Header />
@@ -377,6 +382,7 @@ export default function Dashboard() {
             setToogleEditSaving={setToogleEditSaving} 
             mainUserId={user?.uid ?? null}
             auth={auth}
+            updateParentSavingData={updateSavingData}
           />
         )}
 

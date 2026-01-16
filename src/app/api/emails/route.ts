@@ -36,13 +36,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
+    // 5. Find user by email
     const userOfEmail = await prisma.user.findFirst({
       where: { email }
     })
-    
-    // 7. Return JSON response
+
+    if (!userOfEmail) {
+      // ak používateľ neexistuje, vráti chybu
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // 6. Return both email and firebaseUid as userId
     return NextResponse.json({
-      userEmail: userOfEmail?.email
+      userEmail: userOfEmail.email,
+      userId: userOfEmail.firebaseUid
     })
 
   } catch (error: unknown) {
