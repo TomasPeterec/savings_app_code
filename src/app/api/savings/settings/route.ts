@@ -72,21 +72,42 @@ export async function POST(req: Request) {
     })
 
 
-    // 6. Upsert each user in savingAccess using composite unique
+    // 6. Handle savingAccess rows (delete / update / create)
     await Promise.all(
       cuttedList.map(async (user) => {
         if (!user.id) return
 
+        // 6a. If the relation should be removed, delete it and stop here
+        if (user.forDeleting) {
+          await prisma.savingAccess.deleteMany({
+            where: {
+              savingUuid: sendSaving.uuid,
+              userId: user.id
+            }
+          })
+          return
+        }
+
+        // 6b. Check if the relation already exists
         const existing = await prisma.savingAccess.findFirst({
-          where: { savingUuid: sendSaving.uuid, userId: user.id }
+          where: {
+            savingUuid: sendSaving.uuid,
+            userId: user.id
+          }
         })
 
+        // 6c. Update existing relation
         if (existing) {
           await prisma.savingAccess.update({
             where: { id: existing.id },
-            data: { editor: user.editor, isSelected: !user.forDeleting }
+            data: {
+              editor: user.editor,
+              isSelected: true
+            }
           })
-        } else {
+        } 
+        // 6d. Create new relation
+        else {
           await prisma.savingAccess.create({
             data: {
               savingUuid: sendSaving.uuid,
@@ -98,6 +119,7 @@ export async function POST(req: Request) {
         }
       })
     )
+
 
     // 7. Fetch all access rows for this saving, including user emails
     const accessRows = await prisma.savingAccess.findMany({
