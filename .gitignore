@@ -40,4 +40,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# generated code
 /src/generated/prisma
+
+# editor / OS
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Prettier / ESLint cache
+/.eslintcache
+/.prettiercache

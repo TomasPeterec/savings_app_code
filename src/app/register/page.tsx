@@ -1,36 +1,33 @@
-'use client' // required for React interactivity
+"use client" // required for React interactivity
 
-import Header from '@/components/Header'
-import { useState, useEffect, useCallback } from 'react'
+import Header from "@/components/Header"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
   User,
-} from 'firebase/auth'
-import { auth } from '@/firebase/firebase'
-import { myEmailValidation, validatePassword } from '@/components/lib/emailValidation'
-import '@/styles/theme.css' // import new CSS
+} from "firebase/auth"
+import { auth } from "@/firebase/firebase"
+import { myEmailValidation, validatePassword } from "@/components/lib/emailValidation"
+import "@/styles/theme.css" // import new CSS
 
 export default function RegistrationPage() {
   const router = useRouter()
 
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [confirmpassword, setConfirmpassword] = useState<string>('')
-  const [displayname, setDisplayname] = useState<string>('')
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [confirmpassword, setConfirmpassword] = useState<string>("")
+  const [displayname, setDisplayname] = useState<string>("")
   const [samePassword, setSamePassword] = useState<boolean>(true)
   const [regButtonMuted, setRegButtonMuted] = useState<boolean>(true)
-  const [emailError, setEmailError] = useState<string>('')
-  const [newPasswordError, setNewPasswordError] = useState<string>('')
+  const [emailError, setEmailError] = useState<string>("")
+  const [newPasswordError, setNewPasswordError] = useState<string>("")
 
   const checkAllFields = useCallback(() => {
     const allFieldsFilled =
-      email !== '' &&
-      password !== '' &&
-      confirmpassword !== '' &&
-      displayname !== ''
+      email !== "" && password !== "" && confirmpassword !== "" && displayname !== ""
     setRegButtonMuted(!(allFieldsFilled && samePassword))
   }, [email, password, confirmpassword, displayname, samePassword])
 
@@ -63,14 +60,14 @@ export default function RegistrationPage() {
       await sendEmailVerification(user)
 
       // Reset form
-      setEmail('')
-      setPassword('')
-      setConfirmpassword('')
-      setDisplayname('')
+      setEmail("")
+      setPassword("")
+      setConfirmpassword("")
+      setDisplayname("")
       router.push("/verify-email")
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error)
-      console.error('Registration error:', message)
+      console.error("Registration error:", message)
       alert(message)
     }
   }
@@ -89,7 +86,6 @@ export default function RegistrationPage() {
 
       <div className="actions-section">
         <div className="form-card">
-
           {/* Email */}
           <label>
             <div className="form-half-separator-up vertical-align-bottom">
@@ -99,7 +95,7 @@ export default function RegistrationPage() {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => handleEmailChange(e.target.value)}
+              onChange={e => handleEmailChange(e.target.value)}
               className="input-field"
               autoComplete="off"
             />
@@ -117,7 +113,7 @@ export default function RegistrationPage() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => handlePasswordChange(e.target.value)}
+              onChange={e => handlePasswordChange(e.target.value)}
               className="input-field"
               autoComplete="new-password"
             />
@@ -135,13 +131,13 @@ export default function RegistrationPage() {
               type="password"
               placeholder="Confirm Password"
               value={confirmpassword}
-              onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+              onChange={e => handleConfirmPasswordChange(e.target.value)}
               className="input-field"
               autoComplete="new-password"
             />
             <div className="form-half-separator-down">
               <p className="field-message">
-                {samePassword ? <span>&nbsp;</span> : 'Both passwords must match'}
+                {samePassword ? <span>&nbsp;</span> : "Both passwords must match"}
               </p>
             </div>
           </label>
@@ -154,12 +150,12 @@ export default function RegistrationPage() {
             <input
               placeholder="Display name"
               value={displayname}
-              onChange={(e) => setDisplayname(e.target.value)}
+              onChange={e => setDisplayname(e.target.value)}
               className="input-field"
             />
             <div className="form-half-separator-down">
               <p className="field-message">
-                {email && !displayname ? 'Display name must be set' : <span>&nbsp;</span>}
+                {email && !displayname ? "Display name must be set" : <span>&nbsp;</span>}
               </p>
             </div>
             <div className="form-half-separator-up vertical-align-bottom">
@@ -170,7 +166,7 @@ export default function RegistrationPage() {
           {/* Register Button */}
           <button
             onClick={handleRegister}
-            className={!regButtonMuted ? 'button-primary' : 'button-primary-muted'}
+            className={!regButtonMuted ? "button-primary" : "button-primary-muted"}
           >
             Register
           </button>

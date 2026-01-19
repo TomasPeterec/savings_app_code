@@ -8,7 +8,7 @@ describe("authStore", () => {
     expect(user).toBeNull()
 
     // Create a fake user (cast as Firebase User)
-    const fakeUser = { uid: "123", email: "test@example.com" } as User;
+    const fakeUser = { uid: "123", email: "test@example.com" } as User
 
     // Update the store
     setUser(fakeUser)

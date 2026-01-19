@@ -30,19 +30,16 @@ export async function POST(req: Request) {
   try {
     // 1. Authorization header
     const authHeader = req.headers.get("authorization")
-    if (!authHeader)
-      return NextResponse.json({ error: "No token provided" }, { status: 401 })
+    if (!authHeader) return NextResponse.json({ error: "No token provided" }, { status: 401 })
 
     // 2. Extract Bearer token
     const token = authHeader.split(" ")[1]
-    if (!token)
-      return NextResponse.json({ error: "Invalid token format" }, { status: 401 })
+    if (!token) return NextResponse.json({ error: "Invalid token format" }, { status: 401 })
 
     // 3. Verify Firebase token
     const decodedToken = await adminAuth.verifyIdToken(token)
     const firebaseUid = decodedToken.uid
-    if (!firebaseUid)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!firebaseUid) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     // 4. Parse request body
     const { sendSaving, cuttedList } = (await req.json()) as RequestBody
@@ -58,7 +55,7 @@ export async function POST(req: Request) {
         monthlyDeposited: sendSaving.monthlyDeposited,
         totalSaved: sendSaving.totalSaved,
         countingDate: sendSaving.nextCounting,
-        currency: sendSaving.currency ?? "€"
+        currency: sendSaving.currency ?? "€",
       },
       select: {
         uuid: true,
@@ -66,15 +63,14 @@ export async function POST(req: Request) {
         description: true,
         monthlyDeposited: true,
         totalSaved: true,
-        countingDate: true, 
-        currency: true
-      }
+        countingDate: true,
+        currency: true,
+      },
     })
-
 
     // 6. Handle savingAccess rows (delete / update / create)
     await Promise.all(
-      cuttedList.map(async (user) => {
+      cuttedList.map(async user => {
         if (!user.id) return
 
         // 6a. If the relation should be removed, delete it and stop here
@@ -82,8 +78,8 @@ export async function POST(req: Request) {
           await prisma.savingAccess.deleteMany({
             where: {
               savingUuid: sendSaving.uuid,
-              userId: user.id
-            }
+              userId: user.id,
+            },
           })
           return
         }
@@ -92,8 +88,8 @@ export async function POST(req: Request) {
         const existing = await prisma.savingAccess.findFirst({
           where: {
             savingUuid: sendSaving.uuid,
-            userId: user.id
-          }
+            userId: user.id,
+          },
         })
 
         // 6c. Update existing relation
@@ -102,10 +98,10 @@ export async function POST(req: Request) {
             where: { id: existing.id },
             data: {
               editor: user.editor,
-              isSelected: true
-            }
+              isSelected: true,
+            },
           })
-        } 
+        }
         // 6d. Create new relation
         else {
           await prisma.savingAccess.create({
@@ -113,54 +109,56 @@ export async function POST(req: Request) {
               savingUuid: sendSaving.uuid,
               userId: user.id,
               editor: user.editor,
-              isSelected: false
-            }
+              isSelected: false,
+            },
           })
         }
       })
     )
 
-
     // 7. Fetch all access rows for this saving, including user emails
     const accessRows = await prisma.savingAccess.findMany({
       where: { savingUuid: sendSaving.uuid },
-      include: { user: true } // pridáme user info z users tabuľky
+      include: { user: true }, // pridáme user info z users tabuľky
     })
 
     // 8. Map to formát, ktorý EditSaving očakáva (s logikou shortName z prvej routy)
-    const allowedUsers = await Promise.all(accessRows.map(async (row) => {
-      let shortName: string | null = null
+    const allowedUsers = await Promise.all(
+      accessRows.map(async row => {
+        let shortName: string | null = null
 
-      const nameToUse = row.user?.displayName && row.user.displayName !== "Anonymous"
-        ? row.user.displayName
-        : row.user?.email ?? null
+        const nameToUse =
+          row.user?.displayName && row.user.displayName !== "Anonymous"
+            ? row.user.displayName
+            : (row.user?.email ?? null)
 
-      if (nameToUse) {
-        if (nameToUse.includes(" ")) {
-          const parts = nameToUse.split(" ")
-          shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
-        } else if (nameToUse.includes(".") && nameToUse.includes("@")) {
-          const localPart = nameToUse.split("@")[0]
-          const parts = localPart.split(".")
-          shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
-        } else {
-          shortName = nameToUse[0].toUpperCase()
+        if (nameToUse) {
+          if (nameToUse.includes(" ")) {
+            const parts = nameToUse.split(" ")
+            shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
+          } else if (nameToUse.includes(".") && nameToUse.includes("@")) {
+            const localPart = nameToUse.split("@")[0]
+            const parts = localPart.split(".")
+            shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
+          } else {
+            shortName = nameToUse[0].toUpperCase()
+          }
         }
-      }
 
-      return {
-        shortName: shortName,
-        userId: row.userId,
-        email: row.user?.email ?? null,
-        editor: row.editor ?? false,
-        forDeleting: !row.isSelected
-      }
-    }))
+        return {
+          shortName: shortName,
+          userId: row.userId,
+          email: row.user?.email ?? null,
+          editor: row.editor ?? false,
+          forDeleting: !row.isSelected,
+        }
+      })
+    )
 
     // 9. Return updated saving + all access rows
-    return NextResponse.json({ 
+    return NextResponse.json({
       updatedSaving,
-      allowedUsers
+      allowedUsers,
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)

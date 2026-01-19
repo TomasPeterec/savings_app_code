@@ -5,12 +5,12 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
-  setToogleAddOrEdit?: (value: boolean) => void
-  actualSliderClamp?: number | null,
+  setToggleAddOrEdit?: (value: boolean) => void
+  actualSliderClamp?: number | null
   setActualSliderClamp?: (value: number) => void
   newItemToSave: ItemData
-  toogleAddOrEdit: boolean
-  setBottomSheetToogleState: (visible: boolean) => void
+  toggleAddOrEdit: boolean
+  setBottomSheetToggleState: (visible: boolean) => void
   setNewItemVisible: (visible: boolean) => void
   setNewItemToSave: (item: ItemData) => void
   monthlyDeposited?: number | null
@@ -24,17 +24,17 @@ interface NewItemProps {
 }
 
 export default function NewItem({
-  setToogleAddOrEdit,
+  setToggleAddOrEdit,
   setActualSliderClamp,
   actualSliderClamp,
   newItemToSave,
-  toogleAddOrEdit,
-  setBottomSheetToogleState,
+  toggleAddOrEdit,
+  setBottomSheetToggleState,
   setNewItemVisible,
   setNewItemToSave,
   monthlyDeposited,
   sendNewItemToBackend,
-  calculateEndDate
+  calculateEndDate,
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
@@ -45,22 +45,16 @@ export default function NewItem({
   const [toggle, setToggle] = useState<boolean>(true)
   const [priorityLock, setPriorityLock] = useState<boolean>(false)
 
-
   const toggleColapse = () => {
     setToggle(!toggle)
-    setBottomSheetToogleState(!toggle)
+    setBottomSheetToggleState(!toggle)
   }
 
   // ------------------------------
   // AUTO UPDATE END DATE
   // ------------------------------
   useEffect(() => {
-    const newEndDate = calculateEndDate(
-      desiredSum,
-      0,
-      monthlyDeposited ?? 0,
-      priority
-    )
+    const newEndDate = calculateEndDate(desiredSum, 0, monthlyDeposited ?? 0, priority)
     setEndDateforNew(newEndDate)
   }, [desiredSum, priority, monthlyDeposited, calculateEndDate])
 
@@ -76,18 +70,18 @@ export default function NewItem({
       saved: newItemToSave.saved || 0,
       endDate: endDateforNew ? new Date(endDateforNew).toISOString() : new Date().toISOString(),
       priority: priority,
-      locked: priorityLock   
+      locked: priorityLock,
     })
   }, [
-    name, 
-    itemLink, 
+    name,
+    itemLink,
     desiredSum,
-    endDateforNew, 
-    priority, 
-    setNewItemToSave, 
-    newItemToSave.itemId, 
+    endDateforNew,
+    priority,
+    setNewItemToSave,
+    newItemToSave.itemId,
     newItemToSave.saved,
-    priorityLock
+    priorityLock,
   ])
 
   // ------------------------------
@@ -101,7 +95,7 @@ export default function NewItem({
     setPriority(0)
     setPriorityLock(false)
     setActualSliderClamp?.(0)
-    setToogleAddOrEdit?.(true)
+    setToggleAddOrEdit?.(true)
     setNewItemToSave({
       itemId: "",
       itemName: "",
@@ -110,7 +104,7 @@ export default function NewItem({
       saved: 0,
       endDate: new Date().toISOString(),
       priority: 0,
-      locked: false
+      locked: false,
     })
   }
 
@@ -128,10 +122,10 @@ export default function NewItem({
   }
 
   //distribute the data of selected item to the form when in edit mode
-  const hasLoadedRef = useRef(false);
+  const hasLoadedRef = useRef(false)
 
   useEffect(() => {
-    if (!toogleAddOrEdit && newItemToSave && !hasLoadedRef.current) {
+    if (!toggleAddOrEdit && newItemToSave && !hasLoadedRef.current) {
       setName(newItemToSave.itemName ?? "")
       setItemLink(newItemToSave.link ?? "")
       setDesiredSum(newItemToSave.price ?? 0)
@@ -142,22 +136,16 @@ export default function NewItem({
           ? new Date(newItemToSave.endDate).toISOString()
           : new Date().toISOString()
       )
-      hasLoadedRef.current = true;
+      hasLoadedRef.current = true
     }
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toogleAddOrEdit]); 
-
-
-
+  }, [toggleAddOrEdit])
 
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading inverseFontColor">
-        {(toogleAddOrEdit) ? 
-          "Create new item" : 
-          `Edit item: ${newItemToSave.itemName}`
-        }
+        {toggleAddOrEdit ? "Create new item" : `Edit item: ${newItemToSave.itemName}`}
       </h3>
       <div className="form-card form-card-n-i">
         <div className="form-half-separator-down separatorTuning01"></div>
@@ -167,26 +155,19 @@ export default function NewItem({
 
         <div className="colapsable">
           <div className="colapsableSideSpace">
-            <button
-              className="button-secondary colapseButton"
-              onClick={toggleColapse}
-            >
+            <button className="button-secondary colapseButton" onClick={toggleColapse}>
               <img
                 className="chevron-icone"
-                src={`/icons/${toggle ? 
-                  'ChevronWideDarkBlueDown' : 
-                  'ChevronWideDarkBlueRight'}.svg`
-                }
+                src={`/icons/${
+                  toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
+                }.svg`}
                 alt="colaps decolaps"
               />
             </button>
           </div>
 
           {/* --- START OF OPENED FORM --- */}
-          <div className={toggle ? 
-            "colapsableCenterOpen" : 
-            "colapsableCenterClosed"}
-          >
+          <div className={toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
                 <p className="form-label inverseFontColor">Name</p>
@@ -195,7 +176,7 @@ export default function NewItem({
                 type="text"
                 placeholder="Name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={e => setName(e.target.value)}
                 className="input-field"
               />
               <div className="form-half-separator-down"></div>
@@ -209,7 +190,7 @@ export default function NewItem({
                 type="text"
                 placeholder="Short description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={e => setDescription(e.target.value)}
                 className="input-field"
               />
               <div className="form-half-separator-down"></div>
@@ -224,7 +205,7 @@ export default function NewItem({
                 <input
                   type="number"
                   value={desiredSum === 0 ? "" : desiredSum}
-                  onChange={(e) => {
+                  onChange={e => {
                     const val = e.target.value
                     setDesiredSum(val === "" ? 0 : Number(val))
                   }}
@@ -239,12 +220,17 @@ export default function NewItem({
                   <p className="form-label inverseFontColor">End date</p>
                 </div>
                 <div className="halfOfRow endDate paddingPlus inverseFontColor02">
-                  {endDateforNew && (() => {
-                    const date = new Date(endDateforNew)
-                    const month = date.toLocaleString("en-US", { month: "short" })
-                    const year = date.getFullYear()
-                    return <>{month}&nbsp;{year}</>
-                  })()}
+                  {endDateforNew &&
+                    (() => {
+                      const date = new Date(endDateforNew)
+                      const month = date.toLocaleString("en-US", { month: "short" })
+                      const year = date.getFullYear()
+                      return (
+                        <>
+                          {month}&nbsp;{year}
+                        </>
+                      )
+                    })()}
                 </div>
               </label>
             </div>
@@ -257,7 +243,7 @@ export default function NewItem({
                 type="text"
                 placeholder="Link to the item"
                 value={itemLink}
-                onChange={(e) => setItemLink(e.target.value)}
+                onChange={e => setItemLink(e.target.value)}
                 className="input-field"
               />
               <div className="form-half-separator-down"></div>
@@ -266,10 +252,7 @@ export default function NewItem({
           {/* --- END OF OPENED FORM --- */}
 
           {/* --- START OF COLLAPSED FORM --- */}
-          <div className={toggle ? 
-            "colapsableCenterClosed" : 
-            "colapsableCenterOpen"}
-          >
+          <div className={toggle ? "colapsableCenterClosed" : "colapsableCenterOpen"}>
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Name</p>
             </div>
@@ -279,7 +262,9 @@ export default function NewItem({
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Short description</p>
             </div>
-            <p className="amoutColapsed inverseFontColor02">{description || "Short description is not set"}</p>
+            <p className="amoutColapsed inverseFontColor02">
+              {description || "Short description is not set"}
+            </p>
             <div className="form-half-separator-down separatorLow"></div>
 
             {/* --- DOUBLE ROW --- */}
@@ -297,12 +282,17 @@ export default function NewItem({
                   <p className="form-label inverseFontColor">End date</p>
                 </div>
                 <p className="amoutColapsed inverseFontColor02 paddingPlus">
-                  {endDateforNew && (() => {
-                    const date = new Date(endDateforNew)
-                    const month = date.toLocaleString("en-US", { month: "short" })
-                    const year = date.getFullYear()
-                    return <>{month}&nbsp;{year}</>
-                  })()}
+                  {endDateforNew &&
+                    (() => {
+                      const date = new Date(endDateforNew)
+                      const month = date.toLocaleString("en-US", { month: "short" })
+                      const year = date.getFullYear()
+                      return (
+                        <>
+                          {month}&nbsp;{year}
+                        </>
+                      )
+                    })()}
                 </p>
               </div>
             </div>
@@ -310,8 +300,8 @@ export default function NewItem({
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Link to the item</p>
             </div>
-            <p className="amoutColapsed inverseFontColor02">{
-              itemLink.slice(0, 27)+"..." || "Link to the item was not set"}
+            <p className="amoutColapsed inverseFontColor02">
+              {itemLink.slice(0, 27) + "..." || "Link to the item was not set"}
             </p>
             <div className="form-half-separator-down separatorLow"></div>
           </div>
@@ -329,7 +319,9 @@ export default function NewItem({
           <div className="form-half-separator-up vertical-align-bottom fromLeft flex-to-row">
             <div className="half-of-row">
               <p className="form-label inverseFontColor">Priority</p>&nbsp;
-              <p className="amoutOfpriority inverseFontColor02 ">{Math.round(priority*100)/100}%</p>
+              <p className="amoutOfpriority inverseFontColor02 ">
+                {Math.round(priority * 100) / 100}%
+              </p>
             </div>
             <div className="half-of-row2">
               <p className="form-label inverseFontColor">Priority lock:</p>&nbsp;
@@ -337,26 +329,27 @@ export default function NewItem({
                 <input
                   type="checkbox"
                   checked={priorityLock}
-                  onChange={
-                    (e) => setPriorityLock(e.target.checked)
-                  }
+                  onChange={e => setPriorityLock(e.target.checked)}
                 />
                 <span className="checkbox-style-line">
-                  {(priorityLock) ? <img
-                    className="lock-icone"
-                    src={`/icons/Lock_duotone_line.svg`}
-                    alt="colaps decolaps"
-                  /> : <img
-                    className="lock-icone"
-                    src={`/icons/Unlock_duotone_line.svg`}
-                    alt="colaps decolaps"
-                  />}
+                  {priorityLock ? (
+                    <img
+                      className="lock-icone"
+                      src={`/icons/Lock_duotone_line.svg`}
+                      alt="colaps decolaps"
+                    />
+                  ) : (
+                    <img
+                      className="lock-icone"
+                      src={`/icons/Unlock_duotone_line.svg`}
+                      alt="colaps decolaps"
+                    />
+                  )}
                 </span>
               </label>
             </div>
           </div>
           <div className="two-buttons">
-            
             <input
               type="range"
               min="0.01"
@@ -364,15 +357,12 @@ export default function NewItem({
               disabled={priorityLock}
               value={priority}
               className="input-field "
-              onChange={(e) => {
-                if(Number(e.target.value) > (actualSliderClamp ?? 0)){
-
+              onChange={e => {
+                if (Number(e.target.value) > (actualSliderClamp ?? 0)) {
                   setPriority(Number(actualSliderClamp))
-                }else{
+                } else {
                   setPriority(Number(e.target.value))
                 }
-                
-                
               }}
             />
           </div>
@@ -381,41 +371,40 @@ export default function NewItem({
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
 
         <div className="two-buttons">
-          {!toogleAddOrEdit && 
+          {!toggleAddOrEdit && (
             <button
               className="button-secondary inverseButton"
               onClick={() => {
                 if (confirm("Do you really want to delete this item?")) {
-
-                // user click "OK"
-                startActionToBackend("delete")
-              }}}
+                  // user click "OK"
+                  startActionToBackend("delete")
+                }
+              }}
             >
               Delete
             </button>
-          }
-          <button
-            className="button-secondary inverseButton"
-            onClick={cancelNewItemDialog}
-          >
+          )}
+          <button className="button-secondary inverseButton" onClick={cancelNewItemDialog}>
             Cancel
           </button>
 
           <button
             className="button-primary button-inner-space-left-right"
-            onClick={(toogleAddOrEdit) ? 
-              () => startActionToBackend("add") : 
-              () => startActionToBackend("edit")
+            onClick={
+              toggleAddOrEdit
+                ? () => startActionToBackend("add")
+                : () => startActionToBackend("edit")
             }
           >
-            {(toogleAddOrEdit) ? 
+            {toggleAddOrEdit ? (
               <div className="in-button">
                 <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
                 Create
                 <div className="button-icone">&nbsp;</div>
-              </div> : 
+              </div>
+            ) : (
               "Update"
-            }
+            )}
           </button>
         </div>
       </div>

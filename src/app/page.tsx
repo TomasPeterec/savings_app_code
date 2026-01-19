@@ -1,32 +1,32 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import { auth, googleProvider } from '@/firebase/firebase'
-import { signInWithPopup, signInWithEmailAndPassword, AuthError } from 'firebase/auth'
-import { useAuthStore } from '@/store/authStore'
-import { myEmailValidation } from '@/components/lib/emailValidation'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Header from "@/components/Header"
+import { auth, googleProvider } from "@/firebase/firebase"
+import { signInWithPopup, signInWithEmailAndPassword, AuthError } from "firebase/auth"
+import { useAuthStore } from "@/store/authStore"
+import { myEmailValidation } from "@/components/lib/emailValidation"
 // import '@/styles/theme.css'
 
 export default function Home() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [loginError, setLoginError] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [loginError, setLoginError] = useState("")
 
-  const setUser = useAuthStore((state) => state.setUser)
+  const setUser = useAuthStore(state => state.setUser)
 
   // Google login
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
       setUser(result.user)
-      router.push('/dashboard')
+      router.push("/dashboard")
     } catch (error: unknown) {
-      console.error('Google sign-in error:', error)
-      setLoginError('Error signing in with Google.')
+      console.error("Google sign-in error:", error)
+      setLoginError("Error signing in with Google.")
     }
   }
 
@@ -39,38 +39,38 @@ export default function Home() {
 
   // Email/password login
   const login = async (email: string, password: string) => {
-    setLoginError('')
+    setLoginError("")
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       setUser(userCredential.user)
-      router.push('/dashboard')
+      router.push("/dashboard")
     } catch (error: unknown) {
       const e = error as AuthError
-      console.error('Login failed:', e.code)
+      console.error("Login failed:", e.code)
       switch (e.code) {
-        case 'auth/invalid-email':
-          setLoginError('Invalid email.')
+        case "auth/invalid-email":
+          setLoginError("Invalid email.")
           break
-        case 'auth/user-disabled':
-          setLoginError('Account is disabled.')
+        case "auth/user-disabled":
+          setLoginError("Account is disabled.")
           break
-        case 'auth/user-not-found':
-          setLoginError('Account does not exist.')
+        case "auth/user-not-found":
+          setLoginError("Account does not exist.")
           break
-        case 'auth/wrong-password':
-          setLoginError('Incorrect password.')
+        case "auth/wrong-password":
+          setLoginError("Incorrect password.")
           break
-        case 'auth/too-many-requests':
-          setLoginError('Too many attempts.')
+        case "auth/too-many-requests":
+          setLoginError("Too many attempts.")
           break
         default:
-          setLoginError('Error signing in.')
+          setLoginError("Error signing in.")
           break
       }
     }
   }
 
-  const linkToRegister = () => router.push('/register')
+  const linkToRegister = () => router.push("/register")
 
   return (
     <div className="base-container">
@@ -78,9 +78,7 @@ export default function Home() {
 
       <div className="hero-section">
         <h1 className="heading">Manage your savings easily</h1>
-        <p className="perex">
-          Track your goals as they grow and set priorities as needed  
-        </p>
+        <p className="perex">Track your goals as they grow and set priorities as needed</p>
       </div>
 
       {/* Action / Form section */}
@@ -88,13 +86,9 @@ export default function Home() {
         {/* Google Sign In */}
         <div className="google-box">
           <button onClick={handleGoogleSignIn} className="button-secondary">
-            <img
-              className="google-logo"
-              src="/images/google-logo.svg"
-              alt="Google logo"
-            />
+            <img className="google-logo" src="/images/google-logo.svg" alt="Google logo" />
             Sign in with Google
-            <div className="google-logo" >
+            <div className="google-logo">
               <span>&nbsp;</span>
             </div>
           </button>
@@ -111,7 +105,7 @@ export default function Home() {
               placeholder="Email"
               value={email}
               onChange={handleEmailChange}
-              className={`input-field ${emailError ? 'error' : ''}`}
+              className={`input-field ${emailError ? "error" : ""}`}
             />
             <div className="form-half-separator-down">
               {emailError && <p className="field-message">{emailError}</p>}
@@ -126,7 +120,7 @@ export default function Home() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className="input-field"
             />
             <div className="form-half-separator-down">

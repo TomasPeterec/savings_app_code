@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   // 1. Find all savings to update today
   const savingsToUpdate = await prisma.savings.findMany({
     where: { countingDate: dayOfMonth },
-    select: { uuid: true, monthlyDeposited: true }
+    select: { uuid: true, monthlyDeposited: true },
   })
 
   let totalUpdated = 0
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
   for (const saving of savingsToUpdate) {
     const items = await prisma.items.findMany({
       where: { savingId: saving.uuid },
-      select: { itemId: true, saved: true, priority: true }
+      select: { itemId: true, saved: true, priority: true },
     })
 
     // 3. Update each item individually
@@ -34,7 +34,7 @@ export async function GET(req: Request) {
 
       await prisma.items.update({
         where: { itemId: item.itemId },
-        data: { saved: Number(item.saved) + increment }
+        data: { saved: Number(item.saved) + increment },
       })
 
       totalUpdated++
@@ -43,6 +43,6 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     ok: true,
-    updated: totalUpdated
+    updated: totalUpdated,
   })
 }

@@ -4,27 +4,25 @@ import tsPlugin from "@typescript-eslint/eslint-plugin"
 import tsParser from "@typescript-eslint/parser"
 import reactPlugin from "eslint-plugin-react"
 import reactHooksPlugin from "eslint-plugin-react-hooks"
+import prettierPlugin from "eslint-plugin-prettier"
 import { defineConfig } from "eslint/config"
 
 export default defineConfig([
-  // --------------------
   // Ignored folders
-  // --------------------
   {
     ignores: [".next/**", "node_modules/**", "dist/**"],
   },
 
-  // --------------------
-  // JS / JSX files
-  // --------------------
+  // JS / JSX
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     plugins: {
       js,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
+      prettier: prettierPlugin,
     },
-    extends: ["js/recommended"],
+    extends: ["js/recommended"], // NIE plugin:prettier/recommended
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
@@ -35,21 +33,18 @@ export default defineConfig([
     },
     rules: {
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-
-      // React
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "prettier/prettier": "error",
     },
     settings: {
       react: { version: "detect" },
     },
   },
 
-  // --------------------
-  // TypeScript / TSX files
-  // --------------------
+  // TS / TSX
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -63,16 +58,17 @@ export default defineConfig([
       "@typescript-eslint": tsPlugin,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
+      prettier: prettierPlugin,
     },
+    extends: [], // úplne prázdne, nič nepridávať
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-
-      // React
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "prettier/prettier": "error",
     },
     settings: {
       react: { version: "detect" },

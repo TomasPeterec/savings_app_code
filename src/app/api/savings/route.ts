@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     let savingMonthlyDeposited: number | null = null
     let savingTotalSaved: number | null = null
     let savingCurrency: string | null = null
-    let countingDate: number | null = null 
+    let countingDate: number | null = null
     let allowedUsers: AllowedUser[] = []
     let itemsData: ItemData[] = []
 
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
           monthlyDeposited: true,
           totalSaved: true,
           currency: true,
-          countingDate: true
+          countingDate: true,
         },
       })
 
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
         savingMonthlyDeposited = saving.monthlyDeposited
         savingTotalSaved = saving.totalSaved
         savingCurrency = saving.currency
-        countingDate = saving.countingDate 
+        countingDate = saving.countingDate
       }
 
       // 6b. Fetch items for this saving
@@ -103,8 +103,8 @@ export async function POST(req: Request) {
           endDate: true,
           saved: true,
           priority: true,
-          locked: true
-        }
+          locked: true,
+        },
       })
 
       // Convert Decimal/Date to JSON-friendly types
@@ -116,7 +116,7 @@ export async function POST(req: Request) {
         saved: item.saved !== null ? Number(item.saved) : null,
         endDate: item.endDate ? item.endDate.toISOString() : null,
         priority: item.priority !== null ? Number(item.priority) : null,
-        locked: item.locked
+        locked: item.locked,
       }))
 
       // 6c. Fetch allowed users
@@ -124,44 +124,47 @@ export async function POST(req: Request) {
         where: { savingUuid: selectedSavingAccess.savingUuid },
         select: {
           editor: true,
-          userId: true
-        }
+          userId: true,
+        },
       })
 
-      allowedUsers = await Promise.all(accessList.map(async u => {
-        if (!u.userId) return { userId: null, editor: u.editor ?? false }
+      allowedUsers = await Promise.all(
+        accessList.map(async u => {
+          if (!u.userId) return { userId: null, editor: u.editor ?? false }
 
-        const userObj = await prisma.user.findUnique({
-          where: { firebaseUid: u.userId },
-          select: { displayName: true, email: true }
-        })
+          const userObj = await prisma.user.findUnique({
+            where: { firebaseUid: u.userId },
+            select: { displayName: true, email: true },
+          })
 
-        let shortName: string | null = null
+          let shortName: string | null = null
 
-        const nameToUse = userObj?.displayName && userObj.displayName !== "Anonymous"
-          ? userObj.displayName
-          : userObj?.email ?? null
+          const nameToUse =
+            userObj?.displayName && userObj.displayName !== "Anonymous"
+              ? userObj.displayName
+              : (userObj?.email ?? null)
 
-        if (nameToUse) {
-          if (nameToUse.includes(" ")) {
-            const parts = nameToUse.split(" ")
-            shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
-          } else if (nameToUse.includes(".") && nameToUse.includes("@")) {
-            const localPart = nameToUse.split("@")[0]
-            const parts = localPart.split(".")
-            shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
-          } else {
-            shortName = nameToUse[0].toUpperCase()
+          if (nameToUse) {
+            if (nameToUse.includes(" ")) {
+              const parts = nameToUse.split(" ")
+              shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
+            } else if (nameToUse.includes(".") && nameToUse.includes("@")) {
+              const localPart = nameToUse.split("@")[0]
+              const parts = localPart.split(".")
+              shortName = (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
+            } else {
+              shortName = nameToUse[0].toUpperCase()
+            }
           }
-        }
 
-        return {
-          userId: u.userId,
-          shortName: shortName,
-          email: userObj?.email ?? null,
-          editor: u.editor ?? false
-        }
-      }))
+          return {
+            userId: u.userId,
+            shortName: shortName,
+            email: userObj?.email ?? null,
+            editor: u.editor ?? false,
+          }
+        })
+      )
     }
 
     // 7. Return JSON response
@@ -175,9 +178,8 @@ export async function POST(req: Request) {
       currency: savingCurrency,
       countingDate: countingDate,
       allowedUsers,
-      itemsData
+      itemsData,
     })
-
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)
     console.error("Error in /api/savings:", message)

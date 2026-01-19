@@ -10,6 +10,7 @@ import MainSavingsDetails from "@/components/MainSavingsDetails"
 import ItemDetails from "@/components/ItemDetails"
 import NewItem from "@/components/NewItem"
 import EditSaving from "@/components/EditSaving"
+import ChangeSaving from "@/components/ChangeSaving"
 
 // Define allowed user structure
 interface AllowedUser {
@@ -74,7 +75,6 @@ function calculateEndDate(
   return new Date(endDateMs).toISOString()
 }
 
-
 const EMPTY_ITEM: ItemData = {
   itemId: "",
   itemName: "",
@@ -83,11 +83,11 @@ const EMPTY_ITEM: ItemData = {
   saved: 0,
   endDate: new Date().toISOString(),
   priority: 0,
-  locked: false
+  locked: false,
 }
 
 export default function Dashboard() {
-  const user = useAuthStore((state) => state.user)
+  const user = useAuthStore(state => state.user)
 
   // State for main saving data
   const [savingData, setSavingData] = useState<SavingData | null>(null)
@@ -107,16 +107,19 @@ export default function Dashboard() {
   const [bottomSheetToogleState, setBottomSheetToogleState] = useState<boolean>(true)
 
   // State to toggle between adding a new item or editing an existing one
-  const [toogleAddOrEdit, setToogleAddOrEdit] = useState<boolean>(true)
-  const [togleEditSaving, setToogleEditSaving] = useState<boolean>(false)
+  const [toogleAddOrEdit, setToggleAddOrEdit] = useState<boolean>(true)
+  const [togleEditSaving, setToggleEditSaving] = useState<boolean>(false)
   const [actualSliderClamp, setActualSliderClamp] = useState<number>(0)
+
+  // toggle visibility of ChangeSaving bottomsheet
+  const [toggleChangeSaving, setToggleChangeSaving] = useState<boolean>(false)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
   useEffect(() => {
     if (newItemVisible === true) {
-      setItemsData((prevItems) => {
+      setItemsData(prevItems => {
         const fullPercent = 100
         const lockedPartPercent = prevItems.reduce((sum, item) => {
           // If item is locked, add its priority to the sum
@@ -140,7 +143,7 @@ export default function Dashboard() {
         const decreasedPercent = fullPercent - lockedPartPercent - (newItemToSave.priority ?? 0)
         const changeRatio = decreasedPercent / unlockedPercent
 
-        const itemsCopy = prevItems.map((item) => ({ ...item }))
+        const itemsCopy = prevItems.map(item => ({ ...item }))
 
         if (newItemToSave && newItemToSave.priority !== null) {
           itemsCopy.forEach((item, index) => {
@@ -159,7 +162,6 @@ export default function Dashboard() {
           })
         }
         return itemsCopy
-        
       })
     } else {
       // If new item form is canceled and closed, restore original items
@@ -172,7 +174,7 @@ export default function Dashboard() {
   // Fetch saving data and items on first load
   // -----------------------------------------
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async currentUser => {
       if (!currentUser) {
         setSavingData(null)
         return
@@ -234,7 +236,7 @@ export default function Dashboard() {
   // Function for temporary removing an item from list
   // -----------------------------------------
   function removeItemTemporarily(itemIdToRemove: string) {
-    const temporaryList = itemsData.filter((item) => item.itemId !== itemIdToRemove)
+    const temporaryList = itemsData.filter(item => item.itemId !== itemIdToRemove)
     setItemsData(temporaryList)
     setItemsDataCopy(temporaryList)
   }
@@ -244,8 +246,8 @@ export default function Dashboard() {
   // -----------------------------------------
   function adjustPrioritiesToFullPercent(items: ItemData[]): ItemData[] {
     const fullPercent = 100
-    const updatedItems = items.map((item) => ({ ...item }))
-    const unlockedItems = updatedItems.filter((item) => !item.locked)
+    const updatedItems = items.map(item => ({ ...item }))
+    const unlockedItems = updatedItems.filter(item => !item.locked)
 
     if (unlockedItems.length === 0) return updatedItems
 
@@ -254,21 +256,21 @@ export default function Dashboard() {
 
     if (difference === 0) return updatedItems
 
-    let adjustedItems = updatedItems.map((item) => ({ ...item }))
+    let adjustedItems = updatedItems.map(item => ({ ...item }))
 
     if (difference > 0) {
       // total > 100 → subtract from HIGHEST priority (unlocked)
       const target = unlockedItems.reduce((max, item) =>
         (item.priority ?? 0) > (max.priority ?? 0) ? item : max
       )
-      const idx = adjustedItems.findIndex((i) => i.itemId === target.itemId)
+      const idx = adjustedItems.findIndex(i => i.itemId === target.itemId)
       adjustedItems[idx].priority = (adjustedItems[idx].priority ?? 0) - difference
     } else {
       // total < 100 → add to LOWEST priority (unlocked)
       const target = unlockedItems.reduce((min, item) =>
         (item.priority ?? 0) < (min.priority ?? 0) ? item : min
       )
-      const idx = adjustedItems.findIndex((i) => i.itemId === target.itemId)
+      const idx = adjustedItems.findIndex(i => i.itemId === target.itemId)
       adjustedItems[idx].priority = (adjustedItems[idx].priority ?? 0) - difference
       // difference is negative → effectively adding
     }
@@ -280,19 +282,19 @@ export default function Dashboard() {
   // calculation before deleting an item
   // ----------------------------------------
   function restBeforeDeleting(itemSet: ItemData[]): ItemData[] {
-    const copiedItems = itemSet.map((item) => ({ ...item }))
+    const copiedItems = itemSet.map(item => ({ ...item }))
 
     const lockedPart = copiedItems.reduce(
-      (sum, item) => sum + (item.locked ? item.priority ?? 0 : 0), 
+      (sum, item) => sum + (item.locked ? (item.priority ?? 0) : 0),
       0
     )
     const unlockedPart = copiedItems.reduce(
-      (sum, item) => sum + (item.locked ? 0 : item.priority ?? 0), 
+      (sum, item) => sum + (item.locked ? 0 : (item.priority ?? 0)),
       0
     )
     const ratio = unlockedPart > 0 ? (100 - lockedPart) / unlockedPart : 1
 
-    const scaledItems = copiedItems.map((item) => ({
+    const scaledItems = copiedItems.map(item => ({
       ...item,
       priority: item.locked ? item.priority : (item.priority ?? 0) * ratio,
     }))
@@ -349,14 +351,14 @@ export default function Dashboard() {
     setSavingData(updated)
   }
 
-
   return (
     <div className="base-container">
       <Header />
       <div className="main-container-after-loging">
         <MainSavingsDetails
-          setToogleEditSaving={setToogleEditSaving}
-          setToogleAddOrEdit={setToogleAddOrEdit}
+          setToggleChangeSaving={setToggleChangeSaving}
+          setToggleEditSaving={setToggleEditSaving}
+          setToggleAddOrEdit={setToggleAddOrEdit}
           savingData={savingData}
           setNewItemVisible={setNewItemVisible}
         />
@@ -376,21 +378,23 @@ export default function Dashboard() {
           />
         )}
 
+        {toggleChangeSaving && <ChangeSaving setToggleChangeSaving={setToggleChangeSaving} />}
+
         {togleEditSaving && (
-          <EditSaving 
-            savingData={savingData} 
-            setToogleEditSaving={setToogleEditSaving} 
+          <EditSaving
+            savingData={savingData}
+            setToggleEditSaving={setToggleEditSaving}
             mainUserId={user?.uid ?? null}
             auth={auth}
             updateParentSavingData={updateSavingData}
           />
         )}
 
-        {itemsData.map((item) => (
+        {itemsData.map(item => (
           <ItemDetails
             removeItemTemporarily={removeItemTemporarily}
             setNewItemToSave={setNewItemToSave}
-            setToogleAddOrEdit={setToogleAddOrEdit}
+            setToggleAddOrEdit={setToggleAddOrEdit}
             setNewItemVisible={setNewItemVisible}
             key={item.itemId}
             item={item}

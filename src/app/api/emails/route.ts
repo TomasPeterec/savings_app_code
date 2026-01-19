@@ -30,28 +30,27 @@ export async function POST(req: Request) {
     }
 
     // 4. Parse body
-    const { email } = (await req.json()) as RequestBody;
+    const { email } = (await req.json()) as RequestBody
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
 
     // 5. Find user by email
     const userOfEmail = await prisma.user.findFirst({
-      where: { email }
+      where: { email },
     })
 
     if (!userOfEmail) {
       // ak používateľ neexistuje, vráti chybu
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
     // 6. Return both email and firebaseUid as userId
     return NextResponse.json({
       userEmail: userOfEmail.email,
-      userId: userOfEmail.firebaseUid
+      userId: userOfEmail.firebaseUid,
     })
-
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)
     console.error("Error in /api/emails:", message)

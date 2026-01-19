@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     // 3. Verify token
     const decodedToken = await adminAuth.verifyIdToken(token)
     const firebaseUid = decodedToken.uid
-    if(!firebaseUid){
+    if (!firebaseUid) {
       console.log("no valid user token")
     }
 
@@ -64,10 +64,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "savingUuId is missing" }, { status: 400 })
     }
 
- 
-
     if (actionType === "add") {
-         // 5. Create new item
+      // 5. Create new item
       const fromNewItem = await prisma.items.create({
         data: {
           savingId: savingUuId,
@@ -78,22 +76,20 @@ export async function POST(req: Request) {
           saved: new Prisma.Decimal(newItem.saved ?? 0),
           priority: new Prisma.Decimal(newItem.priority ?? 0),
           locked: newItem.locked,
-          endDate: newItem.endDate
-            ? new Date(newItem.endDate)
-            : new Date(),
+          endDate: newItem.endDate ? new Date(newItem.endDate) : new Date(),
         },
-      })  
+      })
 
-       if(!fromNewItem) {
+      if (!fromNewItem) {
         console.log("bad response from DB", fromNewItem)
       }
     }
 
-       if (actionType === "edit") {
-         // 5. Create new item
+    if (actionType === "edit") {
+      // 5. Create new item
       const fromNewItem = await prisma.items.update({
         where: {
-          itemId: newItem.itemId
+          itemId: newItem.itemId,
         },
         data: {
           savingId: savingUuId,
@@ -104,13 +100,11 @@ export async function POST(req: Request) {
           saved: new Prisma.Decimal(newItem.saved ?? 0),
           priority: new Prisma.Decimal(newItem.priority ?? 0),
           locked: newItem.locked,
-          endDate: newItem.endDate
-            ? new Date(newItem.endDate)
-            : new Date(),
+          endDate: newItem.endDate ? new Date(newItem.endDate) : new Date(),
         },
-      })  
+      })
 
-       if(!fromNewItem) {
+      if (!fromNewItem) {
         console.log("bad response from DB", fromNewItem)
       }
     }
@@ -119,19 +113,18 @@ export async function POST(req: Request) {
       // Delete item
       const fromNewItem = await prisma.items.delete({
         where: {
-          itemId: newItem.itemId
+          itemId: newItem.itemId,
         },
       })
 
-       if(!fromNewItem) {
+      if (!fromNewItem) {
         console.log("bad response from DB", fromNewItem)
       }
     }
-   
 
     // 6. Update existing items
     await Promise.all(
-      items.map(async (item) => {
+      items.map(async item => {
         if (!item.itemId || item.locked) return // skip items without itemId or locked
         await prisma.items.update({
           where: { itemId: item.itemId },
@@ -142,7 +135,6 @@ export async function POST(req: Request) {
         })
       })
     )
-
 
     // 7. Fetch all items for the saving
     const rawItems = await prisma.items.findMany({
@@ -160,7 +152,7 @@ export async function POST(req: Request) {
     })
 
     // 8. Convert to frontend-friendly types
-    const itemsData: ItemData[] = rawItems.map((item) => ({
+    const itemsData: ItemData[] = rawItems.map(item => ({
       itemId: item.itemId,
       itemName: item.itemName,
       link: item.link,
@@ -168,9 +160,8 @@ export async function POST(req: Request) {
       saved: item.saved !== null ? Number(item.saved) : null,
       endDate: item.endDate ? item.endDate.toISOString() : null,
       priority: item.priority !== null ? Number(item.priority) : null,
-      locked: item.locked ?? null
+      locked: item.locked ?? null,
     }))
-
 
     // 9. Return JSON response
     return NextResponse.json({

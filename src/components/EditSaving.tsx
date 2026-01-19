@@ -1,17 +1,16 @@
 "use client"
 
-import "@/styles/SavingDetails.css" 
-import { useState,useEffect } from "react"
+import "@/styles/SavingDetails.css"
+import { useState, useEffect } from "react"
 import { SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
 
-
 interface NewItemProps {
   auth: Auth
-  setToogleEditSaving?: (value: boolean) => void
+  setToggleEditSaving?: (value: boolean) => void
   savingData: SavingData | null
   mainUserId: string | null
-  updateParentSavingData?: (updated: SavingData) => void 
+  updateParentSavingData?: (updated: SavingData) => void
 }
 
 interface Email {
@@ -26,7 +25,7 @@ export default function EditSaving({
   auth,
   mainUserId,
   savingData,
-  setToogleEditSaving
+  setToggleEditSaving,
 }: NewItemProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
@@ -38,30 +37,29 @@ export default function EditSaving({
   const [newEmail, setNewEmail] = useState<string>("")
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
-
   const toggleColapse = () => {
     setToggle(!toggle)
   }
 
-
   const closeEditSaving = () => {
-    setToogleEditSaving && setToogleEditSaving(false)
+    setToggleEditSaving && setToggleEditSaving(false)
   }
 
   useEffect(() => {
-    if (savingData) {   
+    if (savingData) {
       setName(savingData.selectedSaving || "")
       setDescription(savingData.description || "")
       setTotalSaved(savingData.totalSaved || 0)
       setMonthlyDeposited(savingData.monthlyDeposited || 0)
       setNextCounting(savingData.countingDate || 0)
 
-      const emails: Email[] = (savingData.signedAllowedUsers?.map(user => ({
-        id: user.userId,
-        email: user.email,
-        editor: user.editor,
-        forDeleting: false,
-      })) ?? [])
+      const emails: Email[] =
+        savingData.signedAllowedUsers?.map(user => ({
+          id: user.userId,
+          email: user.email,
+          editor: user.editor,
+          forDeleting: false,
+        })) ?? []
 
       setListOfEmails(emails)
     }
@@ -70,52 +68,49 @@ export default function EditSaving({
   const addNewEmail = async () => {
     let runRest = true
 
-    listOfEmails.map((item) => {
-      if(newEmail === item.email ){
+    listOfEmails.map(item => {
+      if (newEmail === item.email) {
         alert(`The email is allready in the list or it is owners email`)
         runRest = false
       }
     })
 
-    if(runRest === true) {
+    if (runRest === true) {
       const currentUser = auth.currentUser
-        if (!currentUser) {
-          console.error("No user is signed in.")
-          return
-        }
+      if (!currentUser) {
+        console.error("No user is signed in.")
+        return
+      }
 
       try {
         const idToken = await currentUser.getIdToken()
 
-        const resAboutEmail = await fetch("/api/emails/",{
+        const resAboutEmail = await fetch("/api/emails/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`
+            Authorization: `Bearer ${idToken}`,
           },
           body: JSON.stringify({
-            email: newEmail
-          })
+            email: newEmail,
+          }),
         })
 
         const data = await resAboutEmail.json()
 
         if (data.userEmail === newEmail) {
-
           setListOfEmails([
             ...listOfEmails,
             {
               id: data.userId,
               email: data.userEmail,
               editor: false,
-              forDeleting: false
-            }
+              forDeleting: false,
+            },
           ])
-          
         } else {
           alert("There is no user of DreamSaver app with this email address")
         }
-
       } catch (err) {
         console.error("Error get info about emails", err)
       }
@@ -134,7 +129,7 @@ export default function EditSaving({
       uuid: savingData?.uuid,
       curency: savingData?.currency,
       totalSaved: totalSaved,
-      description
+      description,
     }
 
     const currentUser = auth.currentUser
@@ -145,45 +140,45 @@ export default function EditSaving({
 
     try {
       const idToken = await currentUser.getIdToken()
-      
-      const rest = await fetch("/api/savings/settings",{
+
+      const rest = await fetch("/api/savings/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           sendSaving,
-          cuttedList
-        })
+          cuttedList,
+        }),
       })
 
       const data = await rest.json()
 
       if (data.updatedSaving) {
-        updateParentSavingData && updateParentSavingData({
-          uuid: data.updatedSaving.uuid,
-          selectedSaving: data.updatedSaving.name,      // <-- mapovanie názvu
-          description: data.updatedSaving.description,
-          totalSaved: data.updatedSaving.totalSaved,
-          monthlyDeposited: data.updatedSaving.monthlyDeposited,
-          countingDate: data.updatedSaving.countingDate, // <-- mapovanie counting date
-          currency: data.updatedSaving.currency,
-          signedAllowedUsers: data.allowedUsers        // <-- zoznam používateľov
-        })
+        updateParentSavingData &&
+          updateParentSavingData({
+            uuid: data.updatedSaving.uuid,
+            selectedSaving: data.updatedSaving.name, // <-- mapovanie názvu
+            description: data.updatedSaving.description,
+            totalSaved: data.updatedSaving.totalSaved,
+            monthlyDeposited: data.updatedSaving.monthlyDeposited,
+            countingDate: data.updatedSaving.countingDate, // <-- mapovanie counting date
+            currency: data.updatedSaving.currency,
+            signedAllowedUsers: data.allowedUsers, // <-- zoznam používateľov
+          })
       }
-
     } catch (err) {
       console.error("Error save saving settings", err)
     }
-    
+
     closeEditSaving()
   }
 
   return (
     <div className="saving-details-box s-d-b-new">
       <h3 className="main-savings-details-heading inverseFontColor">
-        Edit: {savingData?.selectedSaving || "Loading..."}  
+        Edit: {savingData?.selectedSaving || "Loading..."}
       </h3>
       <div className="form-card form-card-n-i">
         <div className="form-half-separator-down separatorTuning01"></div>
@@ -192,25 +187,18 @@ export default function EditSaving({
         </div>
         <div className="colapsable">
           <div className="colapsableSideSpace">
-            <button
-              className="button-secondary colapseButton"
-              onClick={toggleColapse}
-            >
+            <button className="button-secondary colapseButton" onClick={toggleColapse}>
               <img
                 className="chevron-icone"
-                src={`/icons/${toggle ? 
-                  'ChevronWideDarkBlueDown' : 
-                  'ChevronWideDarkBlueRight'}.svg`
-                }
+                src={`/icons/${
+                  toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
+                }.svg`}
                 alt="colaps decolaps"
               />
             </button>
           </div>
           {/* --- START OF OPENED FORM --- */}
-          <div className={toggle ? 
-            "colapsableCenterOpen" : 
-            "colapsableCenterClosed"}
-          >
+          <div className={toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
                 <p className="form-label inverseFontColor">Saving name</p>
@@ -218,8 +206,8 @@ export default function EditSaving({
               <input
                 type="text"
                 placeholder="Name"
-                value={savingData?.selectedSaving || name }
-                onChange={(e) => setName(e.target.value)}
+                value={savingData?.selectedSaving || name}
+                onChange={e => setName(e.target.value)}
                 className="input-field"
               />
               <div className="form-half-separator-down"></div>
@@ -232,7 +220,7 @@ export default function EditSaving({
                 type="text"
                 placeholder="Short description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={e => setDescription(e.target.value)}
                 className="input-field"
               />
               <div className="form-half-separator-down"></div>
@@ -247,7 +235,7 @@ export default function EditSaving({
                 <input
                   type="number"
                   value={monthlyDeposited}
-                  onChange={(e) => setMonthlyDeposited(Number(e.target.value))}
+                  onChange={e => setMonthlyDeposited(Number(e.target.value))}
                   placeholder="0"
                   className="input-field halfOfRow"
                 />
@@ -294,10 +282,13 @@ export default function EditSaving({
                           style={{
                             padding: "6px 10px",
                             cursor: "pointer",
-                            backgroundColor: day === nextCounting ? "#eee" : "#fff"
+                            backgroundColor: day === nextCounting ? "#eee" : "#fff",
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#eee"}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = day === nextCounting ? "#eee" : "#fff"}
+                          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#eee")}
+                          onMouseLeave={e =>
+                            (e.currentTarget.style.backgroundColor =
+                              day === nextCounting ? "#eee" : "#fff")
+                          }
                         >
                           {day}
                         </div>
@@ -312,10 +303,7 @@ export default function EditSaving({
           {/* --- END OF OPENED FORM --- */}
 
           {/* --- START OF COLLAPSED FORM --- */}
-          <div className={!toggle ? 
-            "colapsableCenterOpen" : 
-            "colapsableCenterClosed"}
-          >
+          <div className={!toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Saving name</p>
             </div>
@@ -325,7 +313,9 @@ export default function EditSaving({
             <div className="form-half-separator-up vertical-align-bottom">
               <p className="form-label inverseFontColor">Short description</p>
             </div>
-            <p className="amoutColapsed inverseFontColor02">{description || "Short description is not set"}</p>
+            <p className="amoutColapsed inverseFontColor02">
+              {description || "Short description is not set"}
+            </p>
             <div className="form-half-separator-down separatorLow"></div>
 
             {/* --- DOUBLE ROW --- */}
@@ -355,25 +345,19 @@ export default function EditSaving({
           <div className="visualSeparator"></div>
         </div>
         <div className="colapsable">
-          <div className="colapsableSideSpace"> 
-            <button
-              className="button-secondary colapseButton "
-              onClick={toggleColapse}
-            >
+          <div className="colapsableSideSpace">
+            <button className="button-secondary colapseButton " onClick={toggleColapse}>
               <img
                 className="chevron-icone"
-                src={`/icons/${!toggle ? 
-                  'ChevronWideDarkBlueDown' : 
-                  'ChevronWideDarkBlueRight'}.svg`
-                }
+                src={`/icons/${
+                  !toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
+                }.svg`}
                 alt="colaps decolaps"
               />
             </button>
-          </div>  
+          </div>
           {/* --- START OF COLAPSABLE EMAIL FORM --- */}
-          <div className={
-            "colapsableCenterOpen" }
-          >
+          <div className={"colapsableCenterOpen"}>
             <label>
               <div className="vertical-align-bottom width-inner horizontal-rule">
                 <div className="slim-row">
@@ -384,61 +368,61 @@ export default function EditSaving({
                 </div>
               </div>
               {/* --- START OF COLAPSABLE LIST OF EMAILS --- */}
-              <div className={!toggle ? 
-                "colapsableCenterOpen" : 
-                "colapsableCenterClosed"}
-              >
+              <div className={!toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
                 <div className="inverseFontColor02">
-                  {listOfEmails.map((email, index) => ( ( (email.id) != mainUserId ) && (
-                    <div className="mail-row-nest" key={email.id}>
-                      <div className="mail-row-visual-separator"></div>
-                      <div className="mail-row" >
-                        <p className="mail-row-text">{email.email}</p>
-                        <div className="mail-row-buttons">
-                          <label className="checkbox-wrapper">
-                            <input
-                              type="checkbox"
-                              checked={email.editor}
-                              onChange={() => {
-                                setListOfEmails(prev =>
-                                  prev.map((e, i) =>
-                                    i === index ? { ...e, editor: !e.editor } : e
-                                  )
-                                )
-                              }}
-                            />
-                            <span className="checkbox-style-line">
-                              <img
-                                className="x-icone"
-                                src={`/icons/${email.editor ? "checkedOn" : "checkedOff"}.svg`}
-                                alt="colaps decolaps"
-                              />
-                            </span>
-                          </label>
-                          <label className="checkbox-wrapper">
-                            <input
-                              type="checkbox"
-                              checked={email.forDeleting}
-                              onChange={() => {
-                                setListOfEmails(prev =>
-                                  prev.map((e, i) =>
-                                    i === index ? { ...e, forDeleting: !e.forDeleting } : e
-                                  )
-                                )
-                              }}
-                            />
-                            <span className="checkbox-style-line">
-                              <img
-                                className="x-icone"
-                                src={`/icons/${email.forDeleting ? "deleteSmalOn": "deleteSmalOff"}.svg`}
-                                alt="colaps decolaps"
-                              /> 
-                            </span>
-                          </label>
-                        </div> 
-                      </div>
-                    </div>
-                  )))}
+                  {listOfEmails.map(
+                    (email, index) =>
+                      email.id != mainUserId && (
+                        <div className="mail-row-nest" key={email.id}>
+                          <div className="mail-row-visual-separator"></div>
+                          <div className="mail-row">
+                            <p className="mail-row-text">{email.email}</p>
+                            <div className="mail-row-buttons">
+                              <label className="checkbox-wrapper">
+                                <input
+                                  type="checkbox"
+                                  checked={email.editor}
+                                  onChange={() => {
+                                    setListOfEmails(prev =>
+                                      prev.map((e, i) =>
+                                        i === index ? { ...e, editor: !e.editor } : e
+                                      )
+                                    )
+                                  }}
+                                />
+                                <span className="checkbox-style-line">
+                                  <img
+                                    className="x-icone"
+                                    src={`/icons/${email.editor ? "checkedOn" : "checkedOff"}.svg`}
+                                    alt="colaps decolaps"
+                                  />
+                                </span>
+                              </label>
+                              <label className="checkbox-wrapper">
+                                <input
+                                  type="checkbox"
+                                  checked={email.forDeleting}
+                                  onChange={() => {
+                                    setListOfEmails(prev =>
+                                      prev.map((e, i) =>
+                                        i === index ? { ...e, forDeleting: !e.forDeleting } : e
+                                      )
+                                    )
+                                  }}
+                                />
+                                <span className="checkbox-style-line">
+                                  <img
+                                    className="x-icone"
+                                    src={`/icons/${email.forDeleting ? "deleteSmalOn" : "deleteSmalOff"}.svg`}
+                                    alt="colaps decolaps"
+                                  />
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                  )}
                   <div className="mail-row-visual-separator"></div>
                   <div className="separator-from-butons"></div>
                 </div>
@@ -449,19 +433,16 @@ export default function EditSaving({
                   type="text"
                   placeholder="Enter email address"
                   value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
+                  onChange={e => setNewEmail(e.target.value)}
                   className="input-field"
                 />
                 <button
-                  onClick={() => {addNewEmail()}}
+                  onClick={() => {
+                    addNewEmail()
+                  }}
                   className="button-nested"
                 >
-                  <img
-                    className="plus-icone"
-                    src={`/icons/cross.svg`
-                    }
-                    alt="colaps decolaps"
-                  />
+                  <img className="plus-icone" src={`/icons/cross.svg`} alt="colaps decolaps" />
                 </button>
               </div>
               <div className="form-half-separator-down"></div>
@@ -472,15 +453,16 @@ export default function EditSaving({
         </div>
         {/* BUTON PART */}
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
-        <div className="two-buttons"> 
+        <div className="two-buttons">
           <button
-              className="button-secondary inverseButton"
-              onClick={() => {
-                if (confirm("Do you really want to delete this saving?")) {
-              }}}
-            >
-              Delete
-            </button>
+            className="button-secondary inverseButton"
+            onClick={() => {
+              if (confirm("Do you really want to delete this saving?")) {
+              }
+            }}
+          >
+            Delete
+          </button>
           <button
             type="button"
             className="button-secondary inverseButton"

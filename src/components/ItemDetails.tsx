@@ -17,7 +17,7 @@ interface ItemData {
 interface ItemDetailsProps {
   removeItemTemporarily?: (itemId: string) => void
   setNewItemToSave: (value: ItemData) => void
-  setToogleAddOrEdit: (value: boolean) => void
+  setToggleAddOrEdit: (value: boolean) => void
   setNewItemVisible: (visible: boolean) => void
   item: ItemData
   monthlyDeposited?: number | null
@@ -28,22 +28,18 @@ export default function ItemDetails({
   setNewItemToSave,
   item,
   monthlyDeposited,
-  setToogleAddOrEdit,
+  setToggleAddOrEdit,
   setNewItemVisible,
 }: ItemDetailsProps) {
-
   const openBotomSheet = () => {
     if (typeof setNewItemToSave !== "function") {
-      console.error(
-        "setNewItemToSave is not a function",
-        setNewItemToSave
-      )
+      console.error("setNewItemToSave is not a function", setNewItemToSave)
       return
     }
     setNewItemToSave(item)
     removeItemTemporarily && removeItemTemporarily(item.itemId)
     setNewItemVisible(true)
-    setToogleAddOrEdit(false)
+    setToggleAddOrEdit(false)
   }
 
   return (
@@ -51,9 +47,7 @@ export default function ItemDetails({
       <div className="upper-row">
         <div className="savings-details-left leftRow">
           <div className="text-box">
-            <h4 className="saving-details-heading">
-              {item.itemName}
-            </h4>
+            <h4 className="saving-details-heading">{item.itemName}</h4>
 
             <a
               className="savings-details-link"
@@ -61,11 +55,7 @@ export default function ItemDetails({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img
-                className="link-icone"
-                src="/icons/link.svg"
-                alt="change"
-              />
+              <img className="link-icone" src="/icons/link.svg" alt="change" />
               &nbsp;
               {item.link
                 ? item.link.length > 36
@@ -79,22 +69,14 @@ export default function ItemDetails({
         <div className="main-savings-details-right toRightRow">
           <div className="icone-and-buton-in-line">
             <img
-              className={`lock-icone newPadding ${!item.locked ? 'invisible' : ''}`}
+              className={`lock-icone newPadding ${!item.locked ? "invisible" : ""}`}
               src="/icons/Lock_duotone_line_inverse.svg"
               alt="change"
             />
-            <button
-              className="button-secondary smal-button"
-              onClick={openBotomSheet}
-            >
-              <img
-                className="button-icone"
-                src="/icons/edit.svg"
-                alt="change"
-              />
+            <button className="button-secondary smal-button" onClick={openBotomSheet}>
+              <img className="button-icone" src="/icons/edit.svg" alt="change" />
             </button>
           </div>
-          
         </div>
       </div>
 
@@ -107,27 +89,29 @@ export default function ItemDetails({
         <div className="property-box-2">
           <div className="property-label-2">End date:</div>
           <div className="property-value-2">
-            {item.endDate && (() => {
-              const date = new Date(item.endDate)
-              return (
-                <>
-                  {date.toLocaleString("en-US", { month: "short" })}
-                  <br />
-                  {date.getFullYear()}
-                </>
-              )
-            })()}
+            {item.endDate &&
+              (() => {
+                const date = new Date(item.endDate)
+                return (
+                  <>
+                    {date.toLocaleString("en-US", { month: "short" })}
+                    <br />
+                    {date.getFullYear()}
+                  </>
+                )
+              })()}
           </div>
         </div>
 
         <div className="property-box-2">
           <div className="property-label-2">
-            Saved<br />so far:
+            Saved
+            <br />
+            so far:
           </div>
           <div className="property-value-2">
             {item.saved} €
-            <br />
-            ({Math.round((item.saved ?? 0) / (item.price ?? 1) * 10000) / 100}%)
+            <br />({Math.round(((item.saved ?? 0) / (item.price ?? 1)) * 10000) / 100}%)
           </div>
         </div>
 
@@ -135,8 +119,7 @@ export default function ItemDetails({
           <div className="property-label-2">Priority monthly:</div>
           <div className="property-value-2">
             {Math.round(((monthlyDeposited ?? 0) * (item.priority ?? 0)) / 100)} €
-            <br />
-            ({(item.priority ?? 0).toFixed(2)}%)
+            <br />({(item.priority ?? 0).toFixed(2)}%)
           </div>
         </div>
       </div>
