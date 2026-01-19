@@ -104,10 +104,10 @@ export default function Dashboard() {
   const [newItemToSave, setNewItemToSave] = useState<ItemData>(EMPTY_ITEM)
 
   // switching the height of bottom offset regarding whether form in bottomseet is colapsed or not
-  const [bottomSheetToogleState, setBottomSheetToogleState] = useState<boolean>(true)
+  const [bottomSheetToggleState, setBottomSheetToggleState] = useState<boolean>(true)
 
   // State to toggle between adding a new item or editing an existing one
-  const [toogleAddOrEdit, setToggleAddOrEdit] = useState<boolean>(true)
+  const [toggleAddOrEdit, setToggleAddOrEdit] = useState<boolean>(true)
   const [togleEditSaving, setToggleEditSaving] = useState<boolean>(false)
   const [actualSliderClamp, setActualSliderClamp] = useState<number>(0)
 
@@ -368,8 +368,8 @@ export default function Dashboard() {
             setActualSliderClamp={setActualSliderClamp}
             actualSliderClamp={actualSliderClamp}
             newItemToSave={newItemToSave}
-            toogleAddOrEdit={toogleAddOrEdit}
-            setBottomSheetToogleState={setBottomSheetToogleState}
+            toggleAddOrEdit={toggleAddOrEdit}
+            setBottomSheetToggleState={setBottomSheetToggleState}
             setNewItemVisible={setNewItemVisible}
             setNewItemToSave={setNewItemToSave}
             calculateEndDate={calculateEndDate}
@@ -403,7 +403,7 @@ export default function Dashboard() {
         ))}
 
         {newItemVisible && (
-          <div className={bottomSheetToogleState ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
+          <div className={bottomSheetToggleState ? "heightOnBottomOpen" : "heightOnBottomColapsed"}>
             &nbsp;
           </div>
         )}
