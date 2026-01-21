@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/jest-cache/          # Jest cache (užitočné pri TS projektoch)
 
 # next.js
 /.next/
@@ -32,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.example           # commitovať len príklad, nie hodnoty
 
 # vercel
 .vercel
@@ -52,3 +54,6 @@ next-env.d.ts
 # Prettier / ESLint cache
 /.eslintcache
 /.prettiercache
+
+# optional: node fetch/polyfill logs (ak používame jest + firebase)
+/node-fetch.log*

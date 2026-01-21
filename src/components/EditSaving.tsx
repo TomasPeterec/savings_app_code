@@ -340,6 +340,7 @@ export default function EditSaving({
           {/* --- END OF COLLAPSED FORM --- */}
           <div className="colapsableSideSpace"></div>
         </div>
+
         {/* --- START OF COLLAPSED FORM --- */}
         <div className="form-half-separator-down separatorTuning01">
           <div className="visualSeparator"></div>
@@ -451,6 +452,7 @@ export default function EditSaving({
           {/* --- END OF COLAPSABLE EMAIL FORM --- */}
           <div className="colapsableSideSpace"></div>
         </div>
+
         {/* BUTON PART */}
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
         <div className="two-buttons">

@@ -13,7 +13,7 @@ export default defineConfig([
     ignores: [".next/**", "node_modules/**", "dist/**"],
   },
 
-  // JS / JSX
+  // JS / JSX files
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     plugins: {
@@ -22,7 +22,7 @@ export default defineConfig([
       "react-hooks": reactHooksPlugin,
       prettier: prettierPlugin,
     },
-    extends: ["js/recommended"], // NIE plugin:prettier/recommended
+    extends: ["js/recommended"],
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
@@ -44,7 +44,7 @@ export default defineConfig([
     },
   },
 
-  // TS / TSX
+  // TypeScript / TSX files
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -60,7 +60,7 @@ export default defineConfig([
       "react-hooks": reactHooksPlugin,
       prettier: prettierPlugin,
     },
-    extends: [], // úplne prázdne, nič nepridávať
+    extends: [],
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
@@ -72,6 +72,22 @@ export default defineConfig([
     },
     settings: {
       react: { version: "detect" },
+    },
+  },
+
+  // Node files (jest.config.js, next.config.js)
+  {
+    files: ["jest.config.js", "next.config.js", "scripts/**/*.js"],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "script", // CommonJS
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-var-requires": "off", // allow require()
+      "no-undef": "off", // allow module.exports / require
     },
   },
 ])
