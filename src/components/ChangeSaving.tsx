@@ -5,16 +5,30 @@ import "@/styles/SavingDetails.css"
 import { auth } from "@/firebase/firebase"
 import { useState, useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
+import { SavingData } from "@/app/dashboard/page"
+import { ItemData } from "@/app/dashboard/page"
 
 type ChangeSavingProps = {
   setToggleChangeSaving: (value: boolean) => void
+  setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
+  setItemsData: React.Dispatch<React.SetStateAction<ItemData[]>>
+  setItemsDataCopy: React.Dispatch<React.SetStateAction<ItemData[]>>
+  setItemsDataCopy2: React.Dispatch<React.SetStateAction<ItemData[]>>
 }
+
 type SavingItem = {
   uuid: string
   name: string
+  shortName: string
 }
 
-const ChangeSaving = ({ setToggleChangeSaving }: ChangeSavingProps) => {
+const ChangeSaving = ({
+  setToggleChangeSaving,
+  setSavingData,
+  setItemsData,
+  setItemsDataCopy,
+  setItemsDataCopy2,
+}: ChangeSavingProps) => {
   const [toggle, setToggle] = useState<boolean>(true)
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
   const [nextCounting, setNextCounting] = useState<number>(0)
@@ -30,7 +44,7 @@ const ChangeSaving = ({ setToggleChangeSaving }: ChangeSavingProps) => {
       const idToken = await currentUser.getIdToken()
 
       try {
-        const res = await fetch("/api/savings/simple", {
+        const res = await fetch("/api/savings/access", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -56,6 +70,48 @@ const ChangeSaving = ({ setToggleChangeSaving }: ChangeSavingProps) => {
 
   const cancelBottomsheet = () => {
     setToggleChangeSaving(false)
+  }
+
+  const loadChosen = async (savingObject: SavingItem) => {
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      console.error("No user is signed in.")
+      return
+    }
+
+    try {
+      const idToken = await currentUser.getIdToken()
+
+      const res = await fetch("/api/savings/selected", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          uuid: savingObject.uuid,
+        }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        console.error("Backend returned error:", text)
+        return
+      }
+
+      const data = await res.json()
+
+      // In ChangeSaving.tsx → loadChosen
+      if (data) {
+        setSavingData(data.changeSaving)
+        setItemsData(data.changeItems)
+        setItemsDataCopy(data.changeItems)
+        setItemsDataCopy2(data.changeItems)
+        cancelBottomsheet()
+      }
+    } catch (err) {
+      console.error("Error sending new item:", err)
+    }
   }
 
   return (
@@ -90,15 +146,27 @@ const ChangeSaving = ({ setToggleChangeSaving }: ChangeSavingProps) => {
                 <div className="slim-row">
                   <p className="form-label inverseFontColor">Already created savings</p>
                 </div>
+                <div className="slim-row">
+                  <p className="form-label inverseFontColor">{toggle ? "Owner" : ""}</p>
+                </div>
               </div>
               {/* --- START OF COLAPSABLE LIST OF savingS --- */}
               <div className={toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
                 <div className="inverseFontColor02">
-                  {listOfSavings.map(saving => (
-                    <div className="mail-row-nest" key={saving.uuid}>
+                  {listOfSavings.map((saving, index) => (
+                    <div
+                      onClick={() => loadChosen(saving)}
+                      className="mail-row-nest"
+                      key={saving.uuid}
+                    >
                       <div className="mail-row-visual-separator"></div>
                       <div className="mail-row">
                         <p className="mail-row-text">{saving.name}</p>
+                        <div className="users-box">
+                          <li key={index} className="user-smal-bright">
+                            {saving.shortName}
+                          </li>
+                        </div>
                       </div>
                     </div>
                   ))}

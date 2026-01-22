@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
 
-interface NewItemProps {
+interface EditSavingProps {
   auth: Auth
   setToggleEditSaving?: (value: boolean) => void
   savingData: SavingData | null
@@ -26,7 +26,7 @@ export default function EditSaving({
   mainUserId,
   savingData,
   setToggleEditSaving,
-}: NewItemProps) {
+}: EditSavingProps) {
   const [name, setName] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [totalSaved, setTotalSaved] = useState<number>(0)

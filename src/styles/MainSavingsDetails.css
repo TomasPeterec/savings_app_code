@@ -39,6 +39,8 @@
   box-sizing: border-box;
 }
 
+
+
 .text-box {
   width: 100%;
   box-sizing: border-box;
@@ -122,6 +124,29 @@
   border-style: solid;
   position: relative;
   top: -6vw;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 0.4vw;
+  font-family: var(--font-onest);
+  font-size: clamp(var(--m-s-d-userSmalMobileMin), var(--m-s-d-userSmalMobile), var(--m-s-d-userSmalMobileMax));
+  box-sizing: border-box;
+}
+
+
+.user-smal-bright {
+  width: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
+  height: clamp(0rem, calc(26vw * var(--pixToVw)), calc(26rem * 0.115));
+  border-radius: 50%; /* <-- makes it a perfect circle */
+  color: #005A8E;
+  border-color: rgba(58, 119, 161, 0.7);
+  border-width: clamp(0rem, calc(1.2vw * var(--pixToVw)), calc(1.33rem * 0.115));
+  border-style: solid;
+  position: relative;
+  top: -3vw;
   margin-left: 1vw;
   margin-right: 1vw;
   text-align: center;

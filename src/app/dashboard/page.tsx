@@ -378,7 +378,15 @@ export default function Dashboard() {
           />
         )}
 
-        {toggleChangeSaving && <ChangeSaving setToggleChangeSaving={setToggleChangeSaving} />}
+        {toggleChangeSaving && (
+          <ChangeSaving
+            setToggleChangeSaving={setToggleChangeSaving}
+            setSavingData={setSavingData}
+            setItemsData={setItemsData}
+            setItemsDataCopy={setItemsDataCopy}
+            setItemsDataCopy2={setItemsDataCopy2}
+          />
+        )}
 
         {togleEditSaving && (
           <EditSaving
