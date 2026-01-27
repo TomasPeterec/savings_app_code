@@ -44,6 +44,11 @@ export interface ItemData {
   locked: boolean | null
 }
 
+const MAX_DATE_MS = 46_000_000_000_000
+const MAX_DATE_ISO = new Date(MAX_DATE_MS).toISOString()
+const MIN_DATE_MS = -8.64e15
+
+
 // Function to calculate the end date for saving an item safely
 function calculateEndDate(
   price: number,
@@ -53,24 +58,21 @@ function calculateEndDate(
 ): string {
   const nowMs = Date.now()
 
-  // Avoid division by zero
   if (!monthlyDeposited || priority <= 0) {
-    return "9999-12-31T23:59:59.999Z"
+    return MAX_DATE_ISO
   }
 
   const remainingPrice = price - saved
   const priorityInMoney = (monthlyDeposited * priority) / 100
   const monthsToAchieve = remainingPrice / priorityInMoney
-  const monthInMs = 2629746000 // average month in ms
-  const restMonthsMs = Math.floor(monthInMs * monthsToAchieve)
-  const endDateMs = restMonthsMs + nowMs
+  const monthInMs = 2629746000
+  let endDateMs = nowMs + Math.floor(monthInMs * monthsToAchieve)
 
-  const MAX_DATE_MS = 8.64e15 // Max allowed timestamp in JS
+  
 
-  // Return a valid ISO string or fallback if out-of-range
-  if (!Number.isFinite(endDateMs) || endDateMs < -MAX_DATE_MS || endDateMs > MAX_DATE_MS) {
-    return "9999-12-31T23:59:59.999Z"
-  }
+  // clamp 
+  if (!Number.isFinite(endDateMs) || endDateMs > MAX_DATE_MS) endDateMs = MAX_DATE_MS
+  if (endDateMs < MIN_DATE_MS) endDateMs = MIN_DATE_MS
 
   return new Date(endDateMs).toISOString()
 }
@@ -315,6 +317,19 @@ export default function Dashboard() {
     try {
       const idToken = await currentUser.getIdToken()
 
+      // TU sprav sanitizaciu endDate
+      const sanitizedItems = itemsData.map(item => ({
+        ...item,
+        endDate: item.endDate ? new Date(item.endDate).toISOString() : new Date().toISOString(),
+      }))
+
+      const sanitizedNewItem = {
+        ...newItemToSave,
+        endDate: newItemToSave.endDate
+          ? new Date(newItemToSave.endDate).toISOString()
+          : new Date().toISOString(),
+      }
+
       const res = await fetch("/api/savings/update", {
         method: "POST",
         headers: {
@@ -324,8 +339,8 @@ export default function Dashboard() {
         body: JSON.stringify({
           actionType: actionType,
           savingUuId: savingData?.uuid ?? "",
-          newItem: newItemToSave,
-          items: actionType === "delete" ? restBeforeDeleting(itemsData) : itemsData,
+          newItem: sanitizedNewItem,
+          items: actionType === "delete" ? restBeforeDeleting(sanitizedItems) : sanitizedItems,
         }),
       })
 
@@ -365,6 +380,7 @@ export default function Dashboard() {
 
         {newItemVisible && (
           <NewItem
+            itemsDataLength={itemsData.length}
             setActualSliderClamp={setActualSliderClamp}
             actualSliderClamp={actualSliderClamp}
             newItemToSave={newItemToSave}

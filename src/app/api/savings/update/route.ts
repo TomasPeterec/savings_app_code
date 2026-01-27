@@ -34,6 +34,28 @@ interface ItemData {
   locked: boolean | null
 }
 
+function normalizeDate(input: string | { $type: string; value: string } | null): Date {
+  let date: Date
+
+  if (!input) {
+    date = new Date()
+  } else if (typeof input === "string") {
+    date = new Date(input)
+  } else if (typeof input === "object" && input.$type === "DateTime" && input.value) {
+    date = new Date(input.value)
+  } else {
+    date = new Date()
+  }
+
+  // Obmedzenie na bezpečný rozsah pre Prisma (±8.64e15 ms)
+  const MAX_DATE = new Date(8.64e15)
+  const MIN_DATE = new Date(-8.64e15)
+  if (date > MAX_DATE) return MAX_DATE
+  if (date < MIN_DATE) return MIN_DATE
+
+  return date
+}
+
 export async function POST(req: Request) {
   try {
     // 1. Authorization header
@@ -125,12 +147,12 @@ export async function POST(req: Request) {
     // 6. Update existing items
     await Promise.all(
       items.map(async item => {
-        if (!item.itemId || item.locked) return // skip items without itemId or locked
+        if (!item.itemId || item.locked) return
         await prisma.items.update({
           where: { itemId: item.itemId },
           data: {
             priority: new Prisma.Decimal(item.priority ?? 0),
-            endDate: item.endDate ? new Date(item.endDate) : new Date(),
+            endDate: normalizeDate(item.endDate),
           },
         })
       })

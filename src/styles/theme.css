@@ -389,6 +389,13 @@ button {
   border-color: rgba(146, 219, 255, 0.1)
 }
 
+
+.button-secondary:disabled {
+  border-color: rgba(128, 128, 255, 0.4);
+  cursor: not-allowed;
+  color: rgba(128, 128, 128, 0.4);
+}
+
 .header-button {
   margin-left: 1rem;
   padding: 0.5rem 1rem;

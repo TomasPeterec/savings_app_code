@@ -67,6 +67,7 @@ export async function POST(req: Request) {
     let countingDate: number | null = null
     let allowedUsers: AllowedUser[] = []
     let itemsData: ItemData[] = []
+    let userOfSelectedSaving: string | null = null
 
     if (selectedSavingAccess) {
       // 6a. Fetch saving details
@@ -79,6 +80,7 @@ export async function POST(req: Request) {
           totalSaved: true,
           currency: true,
           countingDate: true,
+          userId: true,
         },
       })
 
@@ -90,6 +92,7 @@ export async function POST(req: Request) {
         savingTotalSaved = saving.totalSaved
         savingCurrency = saving.currency
         countingDate = saving.countingDate
+        userOfSelectedSaving = saving.userId
       }
 
       // 6b. Fetch items for this saving
@@ -167,10 +170,18 @@ export async function POST(req: Request) {
       )
     }
 
+
+
+
+
     // 7. Return JSON response
     return NextResponse.json({
+      countOfSavings: await prisma.savings.count({
+        where: { userId: firebaseUid },
+      }),
       uuid: uuid,
       user,
+      userOfSelectedSaving: userOfSelectedSaving,
       selectedSavingName: nameOfSaving,
       description: savingDescription,
       monthlyDeposited: savingMonthlyDeposited,

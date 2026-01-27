@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  itemsDataLength?: number
   setToggleAddOrEdit?: (value: boolean) => void
   actualSliderClamp?: number | null
   setActualSliderClamp?: (value: number) => void
@@ -24,6 +25,7 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  itemsDataLength,
   setToggleAddOrEdit,
   setActualSliderClamp,
   actualSliderClamp,
@@ -40,10 +42,22 @@ export default function NewItem({
   const [description, setDescription] = useState<string>("")
   const [desiredSum, setDesiredSum] = useState<number>(0)
   const [itemLink, setItemLink] = useState<string>("")
-  const [priority, setPriority] = useState<number>(0)
+  const [priority, setPriority] = useState<number>(0.02)
   const [endDateforNew, setEndDateforNew] = useState<string>(new Date().toISOString())
   const [toggle, setToggle] = useState<boolean>(true)
   const [priorityLock, setPriorityLock] = useState<boolean>(false)
+
+  function sanitizeDateForBackend(dateStr: string): string {
+    const date = new Date(dateStr)
+    const MAX_YEAR = 9999
+    const MIN_YEAR = 1000
+    let year = date.getFullYear()
+
+    if (year > MAX_YEAR) date.setFullYear(MAX_YEAR)
+    if (year < MIN_YEAR) date.setFullYear(MIN_YEAR)
+
+    return date.toISOString()
+  }
 
   const toggleColapse = () => {
     setToggle(!toggle)
@@ -68,7 +82,8 @@ export default function NewItem({
       link: itemLink,
       price: desiredSum,
       saved: newItemToSave.saved || 0,
-      endDate: endDateforNew ? new Date(endDateforNew).toISOString() : new Date().toISOString(),
+      endDate: endDateforNew ? sanitizeDateForBackend(endDateforNew) : new Date().toISOString(),
+
       priority: priority,
       locked: priorityLock,
     })
@@ -352,11 +367,11 @@ export default function NewItem({
           <div className="two-buttons">
             <input
               type="range"
-              min="0.01"
+              min="0.02"
               max="100"
-              disabled={priorityLock}
+              disabled={priorityLock || (itemsDataLength ?? 0) < 1}
               value={priority}
-              className="input-field "
+              className="input-field"
               onChange={e => {
                 if (Number(e.target.value) > (actualSliderClamp ?? 0)) {
                   setPriority(Number(actualSliderClamp))
@@ -373,6 +388,7 @@ export default function NewItem({
         <div className="two-buttons">
           {!toggleAddOrEdit && (
             <button
+              disabled={(itemsDataLength ?? 0) < 1}
               className="button-secondary inverseButton"
               onClick={() => {
                 if (confirm("Do you really want to delete this item?")) {
