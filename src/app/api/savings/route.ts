@@ -55,7 +55,10 @@ export async function POST(req: Request) {
     // 6. Get selected saving for this user
     const selectedSavingAccess = await prisma.savingAccess.findFirst({
       where: { userId: firebaseUid, isSelected: true },
-      select: { savingUuid: true },
+      select: {
+        savingUuid: true,
+        editor: true,
+      },
     })
 
     let uuid: string | null = null
@@ -68,6 +71,7 @@ export async function POST(req: Request) {
     let allowedUsers: AllowedUser[] = []
     let itemsData: ItemData[] = []
     let userOfSelectedSaving: string | null = null
+    let editor: boolean = false
 
     if (selectedSavingAccess) {
       // 6a. Fetch saving details
@@ -93,6 +97,7 @@ export async function POST(req: Request) {
         savingCurrency = saving.currency
         countingDate = saving.countingDate
         userOfSelectedSaving = saving.userId
+        editor = selectedSavingAccess.editor ?? false
       }
 
       // 6b. Fetch items for this saving
@@ -170,10 +175,6 @@ export async function POST(req: Request) {
       )
     }
 
-
-
-
-
     // 7. Return JSON response
     return NextResponse.json({
       countOfSavings: await prisma.savings.count({
@@ -181,6 +182,7 @@ export async function POST(req: Request) {
       }),
       uuid: uuid,
       user,
+      editor: editor,
       userOfSelectedSaving: userOfSelectedSaving,
       selectedSavingName: nameOfSaving,
       description: savingDescription,

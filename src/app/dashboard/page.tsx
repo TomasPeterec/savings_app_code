@@ -48,7 +48,6 @@ const MAX_DATE_MS = 46_000_000_000_000
 const MAX_DATE_ISO = new Date(MAX_DATE_MS).toISOString()
 const MIN_DATE_MS = -8.64e15
 
-
 // Function to calculate the end date for saving an item safely
 function calculateEndDate(
   price: number,
@@ -68,9 +67,7 @@ function calculateEndDate(
   const monthInMs = 2629746000
   let endDateMs = nowMs + Math.floor(monthInMs * monthsToAchieve)
 
-  
-
-  // clamp 
+  // clamp
   if (!Number.isFinite(endDateMs) || endDateMs > MAX_DATE_MS) endDateMs = MAX_DATE_MS
   if (endDateMs < MIN_DATE_MS) endDateMs = MIN_DATE_MS
 
@@ -115,6 +112,10 @@ export default function Dashboard() {
 
   // toggle visibility of ChangeSaving bottomsheet
   const [toggleChangeSaving, setToggleChangeSaving] = useState<boolean>(false)
+
+  const [editor, setEditor] = useState<boolean>(false)
+
+  const [countOfSavings, setCountOfSavings] = useState<number>(0)
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
@@ -209,6 +210,8 @@ export default function Dashboard() {
         setItemsData(data.itemsData || [])
         setItemsDataCopy(data.itemsData || [])
         setItemsDataCopy2(data.itemsData || [])
+        setEditor(data.editor || false)
+        setCountOfSavings(data.countOfSavings || 0)
 
         const itemsSum = data.itemsData.reduce(
           (sum: number, item: ItemData) => sum + (item.saved ?? 0),
@@ -396,6 +399,8 @@ export default function Dashboard() {
 
         {toggleChangeSaving && (
           <ChangeSaving
+            setEditor={setEditor}
+            setCountOfSavings={setCountOfSavings}
             setToggleChangeSaving={setToggleChangeSaving}
             setSavingData={setSavingData}
             setItemsData={setItemsData}
@@ -406,6 +411,8 @@ export default function Dashboard() {
 
         {togleEditSaving && (
           <EditSaving
+            countOfSavings={countOfSavings}
+            editor={editor}
             savingData={savingData}
             setToggleEditSaving={setToggleEditSaving}
             mainUserId={user?.uid ?? null}

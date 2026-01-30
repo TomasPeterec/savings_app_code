@@ -9,6 +9,8 @@ import { SavingData } from "@/app/dashboard/page"
 import { ItemData } from "@/app/dashboard/page"
 
 type ChangeSavingProps = {
+  setCountOfSavings: (value: number) => void
+  setEditor: (value: boolean) => void
   setToggleChangeSaving: (value: boolean) => void
   setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
   setItemsData: React.Dispatch<React.SetStateAction<ItemData[]>>
@@ -28,13 +30,17 @@ const ChangeSaving = ({
   setItemsData,
   setItemsDataCopy,
   setItemsDataCopy2,
+  setCountOfSavings,
+  setEditor,
 }: ChangeSavingProps) => {
   const [toggle, setToggle] = useState<boolean>(true)
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
   const [nextCounting, setNextCounting] = useState<number>(0)
   const [listOfSavings, setListOfSavings] = useState<SavingItem[]>([])
+  const [loadingNow, setLoadingNow] = useState<boolean>(false)
 
   useEffect(() => {
+    setLoadingNow(true)
     const unsubscribe = onAuthStateChanged(auth, async currentUser => {
       if (!currentUser) {
         setListOfSavings([])
@@ -57,6 +63,7 @@ const ChangeSaving = ({
         const data: SavingItem[] = await res.json()
 
         setListOfSavings(data)
+        setLoadingNow(false)
       } catch (err) {
         console.error("Backend error:", err)
       }
@@ -107,6 +114,8 @@ const ChangeSaving = ({
         setItemsData(data.changeItems)
         setItemsDataCopy(data.changeItems)
         setItemsDataCopy2(data.changeItems)
+        setCountOfSavings(data.countOfSavings)
+        setEditor(data.editor)
         cancelBottomsheet()
       }
     } catch (err) {
@@ -152,27 +161,31 @@ const ChangeSaving = ({
               </div>
               {/* --- START OF COLAPSABLE LIST OF savingS --- */}
               <div className={toggle ? "colapsableCenterOpen" : "colapsableCenterClosed"}>
-                <div className="inverseFontColor02">
-                  {listOfSavings.map((saving, index) => (
-                    <div
-                      onClick={() => loadChosen(saving)}
-                      className="mail-row-nest"
-                      key={saving.uuid}
-                    >
-                      <div className="mail-row-visual-separator"></div>
-                      <div className="mail-row">
-                        <p className="mail-row-text">{saving.name}</p>
-                        <div className="users-box">
-                          <li key={index} className="user-smal-bright">
-                            {saving.shortName}
-                          </li>
+                {loadingNow ? (
+                  <p className="inverseFontColor02">Loading data...</p>
+                ) : (
+                  <div className="inverseFontColor02">
+                    {listOfSavings.map((saving, index) => (
+                      <div
+                        onClick={() => loadChosen(saving)}
+                        className="mail-row-nest"
+                        key={saving.uuid}
+                      >
+                        <div className="mail-row-visual-separator"></div>
+                        <div className="mail-row">
+                          <p className="mail-row-text">{saving.name}</p>
+                          <div className="users-box">
+                            <li key={index} className="user-smal-bright">
+                              {saving.shortName}
+                            </li>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                  <div className="mail-row-visual-separator"></div>
-                  <div className="separator-from-butons"></div>
-                </div>
+                    ))}
+                    <div className="mail-row-visual-separator"></div>
+                    <div className="separator-from-butons"></div>
+                  </div>
+                )}
               </div>
               {/* --- END OF COLAPSABLE LIST OF savingS --- */}
 

@@ -175,10 +175,28 @@ export async function POST(req: Request) {
       data: { isSelected: true },
     })
 
+    const selectedSavingAccess = await prisma.savingAccess.findFirst({
+      where: { userId: firebaseUid, isSelected: true },
+      select: {
+        savingUuid: true,
+        editor: true,
+      },
+    })
+
+    let editor: boolean = false
+
+    if (selectedSavingAccess) {
+      editor = selectedSavingAccess.editor ?? false
+    }
+
     // 6. Map shortName from user info
     return NextResponse.json({
       changeSaving,
       changeItems,
+      countOfSavings: await prisma.savings.count({
+        where: { userId: firebaseUid },
+      }),
+      editor: editor,
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)

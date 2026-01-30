@@ -6,6 +6,8 @@ import { SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
 
 interface EditSavingProps {
+  countOfSavings?: number
+  editor?: boolean
   auth: Auth
   setToggleEditSaving?: (value: boolean) => void
   savingData: SavingData | null
@@ -21,6 +23,8 @@ interface Email {
 }
 
 export default function EditSaving({
+  countOfSavings,
+  editor,
   updateParentSavingData,
   auth,
   mainUserId,
@@ -457,6 +461,7 @@ export default function EditSaving({
         <div className="form-half-separator-up vertical-align-bottom">&nbsp;</div>
         <div className="two-buttons">
           <button
+            disabled={(countOfSavings && countOfSavings < 1) || !editor ? true : false}
             className="button-secondary inverseButton"
             onClick={() => {
               if (confirm("Do you really want to delete this saving?")) {
