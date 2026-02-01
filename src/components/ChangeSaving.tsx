@@ -10,6 +10,7 @@ import { ItemData } from "@/app/dashboard/page"
 
 type ChangeSavingProps = {
   setCountOfSavings: (value: number) => void
+  setOwner: (value: boolean) => void
   setEditor: (value: boolean) => void
   setToggleChangeSaving: (value: boolean) => void
   setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
@@ -25,6 +26,7 @@ type SavingItem = {
 }
 
 const ChangeSaving = ({
+  setOwner,
   setToggleChangeSaving,
   setSavingData,
   setItemsData,
@@ -116,6 +118,7 @@ const ChangeSaving = ({
         setItemsDataCopy2(data.changeItems)
         setCountOfSavings(data.countOfSavings)
         setEditor(data.editor)
+        setOwner(data.owner)
         cancelBottomsheet()
       }
     } catch (err) {

@@ -22,6 +22,8 @@ interface SavingData {
 }
 
 interface MainSavingsDetailsProps {
+  editor: boolean | null
+  owner: boolean | null
   setToggleChangeSaving: (value: boolean) => void
   setToggleEditSaving?: (value: boolean) => void
   setToggleAddOrEdit: (value: boolean) => void
@@ -30,6 +32,8 @@ interface MainSavingsDetailsProps {
 }
 
 export default function MainSavingsDetails({
+  editor,
+  owner,
   setToggleChangeSaving,
   setToggleEditSaving,
   savingData,
@@ -132,12 +136,24 @@ export default function MainSavingsDetails({
             <img className="button-icone" src="/icons/change.svg" alt="change" />
           </button>
 
-          <button className="button-secondary smal-button" onClick={() => openBottomSheetForEdit()}>
-            <img className="button-icone" src="/icons/edit.svg" alt="edit" />
+          <button
+            disabled={!owner ? true : false}
+            className="button-secondary smal-button"
+            onClick={() => openBottomSheetForEdit()}
+          >
+            <img
+              className={`button-icone ${owner ? "" : "disabled-icone"}`}
+              src="/icons/edit.svg"
+              alt="edit"
+            />
           </button>
 
-          <button className="button-primary smal-button" onClick={() => openBottomSheet()}>
-            <img className="button-icone" src="/icons/cross.svg" alt="add new item" />
+          <button
+            disabled={!editor ? true : false}
+            className={`smal-button ${editor ? "button-primary" : "smal-button-primary-muted"}`}
+            onClick={() => openBottomSheet()}
+          >
+            <img className={`button-icone`} src="/icons/cross.svg" alt="add new item" />
           </button>
         </div>
       </div>

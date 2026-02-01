@@ -96,6 +96,25 @@
   align-items: center;
 }
 
+smal-button:disabled {
+  border-color: rgba(128, 128, 128, 1);
+  cursor: not-allowed;
+  color: rgba(128, 128, 128, 1);
+  opacity: 0.4;
+}
+
+
+.smal-button-primary-muted {
+  background-color: var(--color-bgblue-muted);
+  color: var(--color-bgblue);
+  cursor: pointer;
+  opacity: 0.22;
+}
+
+.disabled-icone {
+  opacity: 0.23
+}
+
 .button-icone {
   width: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));
   height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115));

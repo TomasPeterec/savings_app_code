@@ -15,6 +15,7 @@ interface ItemData {
 }
 
 interface ItemDetailsProps {
+  editor?: boolean | null
   removeItemTemporarily?: (itemId: string) => void
   setNewItemToSave: (value: ItemData) => void
   setToggleAddOrEdit: (value: boolean) => void
@@ -24,6 +25,7 @@ interface ItemDetailsProps {
 }
 
 export default function ItemDetails({
+  editor,
   removeItemTemporarily,
   setNewItemToSave,
   item,
@@ -73,8 +75,16 @@ export default function ItemDetails({
               src="/icons/Lock_duotone_line_inverse.svg"
               alt="change"
             />
-            <button className="button-secondary smal-button" onClick={openBotomSheet}>
-              <img className="button-icone" src="/icons/edit.svg" alt="change" />
+            <button
+              disabled={!editor ? true : false}
+              className="button-secondary smal-button"
+              onClick={openBotomSheet}
+            >
+              <img
+                className={`button-icone ${editor ? "" : "disabled-icone"}`}
+                src="/icons/edit.svg"
+                alt="change"
+              />
             </button>
           </div>
         </div>

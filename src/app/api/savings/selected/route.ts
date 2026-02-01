@@ -180,13 +180,16 @@ export async function POST(req: Request) {
       select: {
         savingUuid: true,
         editor: true,
+        owner: true,
       },
     })
 
     let editor: boolean = false
+    let owner: boolean = false
 
     if (selectedSavingAccess) {
       editor = selectedSavingAccess.editor ?? false
+      owner = selectedSavingAccess.owner ?? false
     }
 
     // 6. Map shortName from user info
@@ -197,6 +200,7 @@ export async function POST(req: Request) {
         where: { userId: firebaseUid },
       }),
       editor: editor,
+      owner: owner,
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)

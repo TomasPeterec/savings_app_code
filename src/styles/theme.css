@@ -391,7 +391,7 @@ button {
 
 
 .button-secondary:disabled {
-  border-color: rgba(128, 128, 255, 0.4);
+  border-color: rgba(128, 128, 128, 0.4);
   cursor: not-allowed;
   color: rgba(128, 128, 128, 0.4);
 }

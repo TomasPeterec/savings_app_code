@@ -58,6 +58,7 @@ export async function POST(req: Request) {
       select: {
         savingUuid: true,
         editor: true,
+        owner: true,
       },
     })
 
@@ -72,6 +73,7 @@ export async function POST(req: Request) {
     let itemsData: ItemData[] = []
     let userOfSelectedSaving: string | null = null
     let editor: boolean = false
+    let owner: boolean = false
 
     if (selectedSavingAccess) {
       // 6a. Fetch saving details
@@ -97,8 +99,10 @@ export async function POST(req: Request) {
         savingCurrency = saving.currency
         countingDate = saving.countingDate
         userOfSelectedSaving = saving.userId
-        editor = selectedSavingAccess.editor ?? false
       }
+
+      editor = selectedSavingAccess.editor ?? false
+      owner = selectedSavingAccess.owner ?? false
 
       // 6b. Fetch items for this saving
       const rawItems = await prisma.items.findMany({
@@ -183,6 +187,7 @@ export async function POST(req: Request) {
       uuid: uuid,
       user,
       editor: editor,
+      owner: owner,
       userOfSelectedSaving: userOfSelectedSaving,
       selectedSavingName: nameOfSaving,
       description: savingDescription,

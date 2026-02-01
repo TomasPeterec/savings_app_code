@@ -42,6 +42,7 @@ model SavingAccess {
   savingUuid String   @map("savinguuid") @db.Uuid
   userId     String   @map("userid")
   editor     Boolean? @default(true)
+  owner      Boolean? @default(true)
   isSelected Boolean? @map("isselected") @default(false)
 
   // relations

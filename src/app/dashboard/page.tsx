@@ -113,7 +113,9 @@ export default function Dashboard() {
   // toggle visibility of ChangeSaving bottomsheet
   const [toggleChangeSaving, setToggleChangeSaving] = useState<boolean>(false)
 
+  // user roles
   const [editor, setEditor] = useState<boolean>(false)
+  const [owner, setOwner] = useState<boolean>(false)
 
   const [countOfSavings, setCountOfSavings] = useState<number>(0)
 
@@ -211,6 +213,8 @@ export default function Dashboard() {
         setItemsDataCopy(data.itemsData || [])
         setItemsDataCopy2(data.itemsData || [])
         setEditor(data.editor || false)
+        setOwner(data.owner || false)
+
         setCountOfSavings(data.countOfSavings || 0)
 
         const itemsSum = data.itemsData.reduce(
@@ -374,6 +378,8 @@ export default function Dashboard() {
       <Header />
       <div className="main-container-after-loging">
         <MainSavingsDetails
+          owner={owner}
+          editor={editor}
           setToggleChangeSaving={setToggleChangeSaving}
           setToggleEditSaving={setToggleEditSaving}
           setToggleAddOrEdit={setToggleAddOrEdit}
@@ -400,6 +406,7 @@ export default function Dashboard() {
         {toggleChangeSaving && (
           <ChangeSaving
             setEditor={setEditor}
+            setOwner={setOwner}
             setCountOfSavings={setCountOfSavings}
             setToggleChangeSaving={setToggleChangeSaving}
             setSavingData={setSavingData}
@@ -411,8 +418,8 @@ export default function Dashboard() {
 
         {togleEditSaving && (
           <EditSaving
+            owner={owner}
             countOfSavings={countOfSavings}
-            editor={editor}
             savingData={savingData}
             setToggleEditSaving={setToggleEditSaving}
             mainUserId={user?.uid ?? null}
@@ -423,6 +430,7 @@ export default function Dashboard() {
 
         {itemsData.map(item => (
           <ItemDetails
+            editor={editor}
             removeItemTemporarily={removeItemTemporarily}
             setNewItemToSave={setNewItemToSave}
             setToggleAddOrEdit={setToggleAddOrEdit}
