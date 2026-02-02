@@ -506,3 +506,36 @@
 .moreLong{
   width: calc(265vw * var(--pixToVw));
 }
+
+.day-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.15s ease;
+}
+
+.day-item:hover {
+  background-color: #eee;
+}
+
+.day-item.selected {
+  background-color: #eee;
+  font-weight: 600;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  max-height: 150px;
+  overflow-y: auto;
+
+  border: 1px solid #ccc;
+  background-color: #fff;
+
+  z-index: 1000;
+}
+
+

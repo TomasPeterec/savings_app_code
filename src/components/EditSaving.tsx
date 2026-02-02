@@ -263,36 +263,15 @@ export default function EditSaving({
 
                   {/* Dropdown with values 1–28 */}
                   {dropdownOpen && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "100%",
-                        left: 0,
-                        right: 0,
-                        maxHeight: 150,
-                        overflowY: "auto",
-                        border: "1px solid #ccc",
-                        background: "#fff",
-                        zIndex: 1000,
-                      }}
-                    >
+                    <div className="dropdown-menu">
                       {Array.from({ length: 28 }, (_, i) => i + 1).map(day => (
                         <div
                           key={day}
+                          className={`day-item ${day === nextCounting ? "selected" : ""}`}
                           onClick={() => {
                             setNextCounting(day)
                             setDropdownOpen(false)
                           }}
-                          style={{
-                            padding: "6px 10px",
-                            cursor: "pointer",
-                            backgroundColor: day === nextCounting ? "#eee" : "#fff",
-                          }}
-                          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#eee")}
-                          onMouseLeave={e =>
-                            (e.currentTarget.style.backgroundColor =
-                              day === nextCounting ? "#eee" : "#fff")
-                          }
                         >
                           {day}
                         </div>

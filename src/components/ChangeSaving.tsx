@@ -37,9 +37,12 @@ const ChangeSaving = ({
 }: ChangeSavingProps) => {
   const [toggle, setToggle] = useState<boolean>(true)
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
-  const [nextCounting, setNextCounting] = useState<number>(0)
+  const [nextCounting, setNextCounting] = useState<number>(1)
   const [listOfSavings, setListOfSavings] = useState<SavingItem[]>([])
   const [loadingNow, setLoadingNow] = useState<boolean>(false)
+  const [savingName, setSavingName] = useState<string>("")
+  const [shortDescription, setShortDescription] = useState<string>("")
+  const [monthlySaved, setMonthlySaved] = useState<number>(0)
 
   useEffect(() => {
     setLoadingNow(true)
@@ -73,7 +76,7 @@ const ChangeSaving = ({
     return () => unsubscribe()
   }, [])
 
-  const fff = () => {
+  const createNewSaving = () => {
     console.log("Something")
   }
 
@@ -145,7 +148,7 @@ const ChangeSaving = ({
               <img
                 className="chevron-icone"
                 src={`/icons/${
-                  !toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
+                  toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
                 }.svg`}
                 alt="colaps decolaps"
               />
@@ -211,7 +214,7 @@ const ChangeSaving = ({
               <img
                 className="chevron-icone"
                 src={`/icons/${
-                  toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
+                  !toggle ? "ChevronWideDarkBlueDown" : "ChevronWideDarkBlueRight"
                 }.svg`}
                 alt="colaps decolaps"
               />
@@ -227,12 +230,12 @@ const ChangeSaving = ({
                 <input
                   type="text"
                   placeholder="Enter saving address"
-                  value={""}
-                  onChange={e => e.target.value}
+                  value={savingName}
+                  onChange={e => setSavingName(e.target.value)}
                   className={`input-field widthSeparate ${!toggle ? "moreLong" : ""}`}
                 />
                 <button
-                  onClick={() => {}}
+                  onClick={() => setToggle(!toggle)}
                   className={`button-nested ${!toggle ? "disAppearance" : ""}`}
                 >
                   <img className="plus-icone" src={`/icons/cross.svg`} alt="colaps decolaps" />
@@ -251,8 +254,8 @@ const ChangeSaving = ({
                 <input
                   type="text"
                   placeholder="Short description"
-                  value={""}
-                  onChange={e => e.target.value}
+                  value={shortDescription}
+                  onChange={e => setShortDescription(e.target.value)}
                   className="input-field"
                 />
                 <div className="form-half-separator-down"></div>
@@ -266,8 +269,8 @@ const ChangeSaving = ({
                   </div>
                   <input
                     type="number"
-                    value={""}
-                    onChange={e => e.target.value}
+                    value={monthlySaved}
+                    onChange={e => setMonthlySaved(Number(e.target.value))}
                     placeholder="0"
                     className="input-field halfOfRow"
                   />
@@ -291,36 +294,15 @@ const ChangeSaving = ({
 
                     {/* Dropdown with values 1–28 */}
                     {dropdownOpen && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          maxHeight: 150,
-                          overflowY: "auto",
-                          border: "1px solid #ccc",
-                          background: "#fff",
-                          zIndex: 1000,
-                        }}
-                      >
+                      <div className="dropdown-menu">
                         {Array.from({ length: 28 }, (_, i) => i + 1).map(day => (
                           <div
                             key={day}
+                            className={`day-item ${day === nextCounting ? "selected" : ""}`}
                             onClick={() => {
                               setNextCounting(day)
                               setDropdownOpen(false)
                             }}
-                            style={{
-                              padding: "6px 10px",
-                              cursor: "pointer",
-                              backgroundColor: day === nextCounting ? "#eee" : "#fff",
-                            }}
-                            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#eee")}
-                            onMouseLeave={e =>
-                              (e.currentTarget.style.backgroundColor =
-                                day === nextCounting ? "#eee" : "#fff")
-                            }
                           >
                             {day}
                           </div>
@@ -354,7 +336,7 @@ const ChangeSaving = ({
           </button>
           <button
             className={toggle ? "disAppearance" : "button-primary button-inner-space-left-right"}
-            onClick={() => fff()}
+            onClick={() => createNewSaving()}
           >
             {"Update"}
           </button>
