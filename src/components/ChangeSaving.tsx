@@ -76,9 +76,53 @@ const ChangeSaving = ({
     return () => unsubscribe()
   }, [])
 
-  const createNewSaving = () => {
-    console.log("Something")
+  // Create new saving function start
+  const createNewSaving = async () => {
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      console.error("No user is signed in.")
+      return
+    }
+
+    try {
+      const idToken = await currentUser.getIdToken()
+
+      const res = await fetch("/api/savings/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          savingName: savingName,
+          shortDescription: shortDescription,
+          monthlySaved: monthlySaved,
+          nextCounting: nextCounting,
+        }),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        console.error("Backend returned error:", text)
+        return
+      } else {
+        const data = await res.json()
+        setSavingData(data.newSaving)
+        setItemsData(data.newItemList)
+        setItemsDataCopy(data.newItemList)
+        setItemsDataCopy2(data.newItemList)
+        setCountOfSavings(data.countOfSavings)
+        setEditor(data.editor)
+        setOwner(data.owner)
+        console.log("New saving created successfully.", data)
+      }
+    } catch (err) {
+      console.error("Error creating new saving:", err)
+    }
+
+    setToggleChangeSaving(false)
   }
+  // Create new saving function end
 
   const cancelBottomsheet = () => {
     setToggleChangeSaving(false)
@@ -338,7 +382,7 @@ const ChangeSaving = ({
             className={toggle ? "disAppearance" : "button-primary button-inner-space-left-right"}
             onClick={() => createNewSaving()}
           >
-            {"Update"}
+            {"Create"}
           </button>
         </div>
       </div>
