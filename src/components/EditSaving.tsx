@@ -2,10 +2,14 @@
 
 import "@/styles/SavingDetails.css"
 import { useState, useEffect } from "react"
-import { SavingData } from "@/app/dashboard/page"
+import { ItemData, SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
 
 interface EditSavingProps {
+  setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
+  setItemsData: React.Dispatch<React.SetStateAction<ItemData[]>>
+  setItemsDataCopy: React.Dispatch<React.SetStateAction<ItemData[]>>
+  setItemsDataCopy2: React.Dispatch<React.SetStateAction<ItemData[]>>
   owner?: boolean
   countOfSavings?: number
   auth: Auth
@@ -23,6 +27,10 @@ interface Email {
 }
 
 export default function EditSaving({
+  setSavingData,
+  setItemsData,
+  setItemsDataCopy,
+  setItemsDataCopy2,
   owner,
   countOfSavings,
   updateParentSavingData,
@@ -177,6 +185,40 @@ export default function EditSaving({
     }
 
     closeEditSaving()
+  }
+
+  const deleteSaving = async () => {
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      console.error("No user is signed in")
+      return
+    }
+
+    try {
+      const idToken = await currentUser.getIdToken()
+
+      const rest = await fetch("/api/savings/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          uuid: savingData?.uuid,
+        }),
+      })
+
+      if (rest.ok) {
+        const data = await rest.json()
+        setSavingData(data.chosenSaving)
+        setItemsData(data.chosenItemList)
+        setItemsDataCopy(data.chosenItemList)
+        setItemsDataCopy2(data.chosenItemList)
+        closeEditSaving()
+      }
+    } catch (err) {
+      console.error("Error delete saving", err)
+    }
   }
 
   return (
@@ -444,6 +486,7 @@ export default function EditSaving({
             className="button-secondary inverseButton"
             onClick={() => {
               if (confirm("Do you really want to delete this saving?")) {
+                deleteSaving()
               }
             }}
           >

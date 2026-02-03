@@ -418,6 +418,10 @@ export default function Dashboard() {
 
         {togleEditSaving && (
           <EditSaving
+            setSavingData={setSavingData}
+            setItemsData={setItemsData}
+            setItemsDataCopy={setItemsDataCopy}
+            setItemsDataCopy2={setItemsDataCopy2}
             owner={owner}
             countOfSavings={countOfSavings}
             savingData={savingData}
