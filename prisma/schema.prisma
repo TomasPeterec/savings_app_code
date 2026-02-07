@@ -64,3 +64,18 @@ model items {
   priority Decimal
   locked   Boolean?
 }
+
+
+model ContributionHistory {
+  primaryId    Int      @id @default(autoincrement()) @map("primaryid")
+  savingId     String   @map("savingid")
+  date         DateTime @map("date") @db.Date
+  currentValue Int      @map("currentvalue")
+  exchangeRate Decimal? @map("exchangerate") 
+  currency     String?   @map("currency")
+
+  @@map("contributionhistory")
+}
+
+
+

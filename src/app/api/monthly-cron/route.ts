@@ -1,6 +1,21 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 
+// utils/exchange.ts
+export async function getExchangeRate(
+  base: string,
+  target: string,
+  date?: string
+): Promise<number> {
+  // base = mena, ktorú máš, target = "USD"
+  // date je optional, formát "YYYY-MM-DD" pre historický kurz
+  const url = `https://api.exchangerate.host/${date ?? "latest"}?base=${base}&symbols=${target}`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Failed to fetch exchange rate: ${res.status}`)
+  const data = await res.json()
+  return data.rates[target]
+}
+
 const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
@@ -16,7 +31,7 @@ export async function GET(req: Request) {
   // 1. Find all savings to update today
   const savingsToUpdate = await prisma.savings.findMany({
     where: { countingDate: dayOfMonth },
-    select: { uuid: true, monthlyDeposited: true },
+    select: { uuid: true, monthlyDeposited: true, currency: true },
   })
 
   let totalUpdated = 0
@@ -39,6 +54,17 @@ export async function GET(req: Request) {
 
       totalUpdated++
     }
+
+    const rate = await getExchangeRate(saving.currency, "USD")
+    await prisma.contributionHistory.create({
+      data: {
+        savingId: saving.uuid,
+        date: new Date(),
+        currentValue: saving.monthlyDeposited,
+        exchangeRate: rate,
+        currency: saving.currency,
+      },
+    })
   }
 
   return NextResponse.json({
