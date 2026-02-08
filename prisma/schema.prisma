@@ -29,6 +29,7 @@ model Savings {
   totalSaved       Int            @map("total_saved")
   countingDate     Int?           @map("counting_date")
   currency         String
+  endDateSource    String
 
   // relations
   user             User           @relation(fields: [userId], references: [firebaseUid])
@@ -66,16 +67,17 @@ model items {
 }
 
 
-model ContributionHistory {
-  primaryId    Int      @id @default(autoincrement()) @map("primaryid")
-  savingId     String   @map("savingid")
+model contributionHistory {
+  primaryId    Int      @id @default(autoincrement()) @map("primaryId")
+  savingId     String   // odstrániť @map, lebo DB stĺpec sa volá presne takto
   date         DateTime @map("date") @db.Date
-  currentValue Int      @map("currentvalue")
+  currentValue Int      @map("currentValue")
   exchangeRate Decimal? @map("exchangerate") 
-  currency     String?   @map("currency")
+  currency     String?  @map("currency")
 
-  @@map("contributionhistory")
+  @@map("contributionHistory")
 }
+
 
 
 

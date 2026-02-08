@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server"
 import { adminAuth } from "@/firebase/admin"
 import { PrismaClient } from "@prisma/client"
+import {
+  calculateAverage,
+  calculateMedian,
+  getLastXMontshlyValues,
+} from "@/components/lib/statisticFunctions"
 
 const prisma = new PrismaClient()
 
@@ -24,6 +29,8 @@ interface ChangeSaving {
   countingDate: number | null
   currency: string
   signedAllowedUsers: AllowedUser[]
+  average: number
+  median: number
 }
 
 interface ChangeItems {
@@ -122,6 +129,10 @@ export async function POST(req: Request) {
       })
     )
 
+    const sortedSavingMonthly = await getLastXMontshlyValues(uuid || "", 12)
+    const average = calculateAverage(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+    const median = calculateMedian(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+
     const changeSaving: ChangeSaving = {
       uuid: currentSaving.uuid,
       selectedSaving: currentSaving.name, // replace with actual name if backend provides
@@ -131,6 +142,8 @@ export async function POST(req: Request) {
       countingDate: currentSaving.countingDate,
       currency: currentSaving.currency,
       signedAllowedUsers: signedAllowedUsers,
+      average: average ? average : currentSaving.monthlyDeposited,
+      median: median ? median : currentSaving.monthlyDeposited,
     }
 
     const currentItems = await prisma.items.findMany({

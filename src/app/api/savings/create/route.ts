@@ -3,6 +3,11 @@ import { adminAuth } from "@/firebase/admin"
 import { PrismaClient } from "@prisma/client"
 import { randomUUID } from "crypto"
 import { buildAllowedUsers } from "@/components/lib/server/allowedUsers"
+import {
+  calculateAverage,
+  calculateMedian,
+  getLastXMontshlyValues,
+} from "@/components/lib/statisticFunctions"
 
 const prisma = new PrismaClient()
 
@@ -11,6 +16,7 @@ interface RequestBody {
   shortDescription: string
   monthlySaved: number
   nextCounting: number
+  endDateSource: string
 }
 
 interface AllowedUser {
@@ -29,6 +35,8 @@ interface ChangeSaving {
   countingDate: number | null
   currency: string
   signedAllowedUsers: AllowedUser[]
+  average: number
+  median: number
 }
 
 interface ChangeItems {
@@ -58,7 +66,7 @@ export async function POST(req: Request) {
     const firebaseUid = decodedToken.uid
     if (!firebaseUid) return NextResponse.json({ error: "Invalid user token" }, { status: 401 })
 
-    const { savingName, shortDescription, monthlySaved, nextCounting } =
+    const { savingName, shortDescription, monthlySaved, nextCounting, endDateSource } =
       (await req.json()) as RequestBody
 
     const newUuid = randomUUID()
@@ -73,6 +81,7 @@ export async function POST(req: Request) {
         description: shortDescription,
         currency: "€",
         countingDate: nextCounting,
+        endDateSource: endDateSource,
       },
     })
 
@@ -134,6 +143,10 @@ export async function POST(req: Request) {
 
     const signedAllowedUsers = await buildAllowedUsers(accessList)
 
+    const sortedSavingMonthly = await getLastXMontshlyValues(newUuid || "", 12)
+    const average = calculateAverage(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+    const median = calculateMedian(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+
     let newSavingObject: ChangeSaving = {
       uuid: newUuid,
       selectedSaving: responseNewSaving.name,
@@ -143,6 +156,8 @@ export async function POST(req: Request) {
       countingDate: responseNewSaving.countingDate,
       currency: responseNewSaving.currency,
       signedAllowedUsers: signedAllowedUsers,
+      average: average ? average : responseNewSaving.monthlyDeposited,
+      median: median ? median : responseNewSaving.monthlyDeposited,
     }
 
     // 6. Map shortName from user info

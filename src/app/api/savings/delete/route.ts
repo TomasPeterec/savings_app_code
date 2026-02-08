@@ -2,6 +2,11 @@ import { NextResponse } from "next/server"
 import { adminAuth } from "@/firebase/admin"
 import { PrismaClient } from "@prisma/client"
 import { buildAllowedUsers } from "@/components/lib/server/allowedUsers"
+import {
+  calculateAverage,
+  calculateMedian,
+  getLastXMontshlyValues,
+} from "@/components/lib/statisticFunctions"
 
 const prisma = new PrismaClient()
 
@@ -25,6 +30,8 @@ interface ChangeSaving {
   countingDate: number | null
   currency: string
   signedAllowedUsers: AllowedUser[]
+  average: number
+  median: number
 }
 
 interface ChangeItems {
@@ -120,6 +127,8 @@ export async function DELETE(req: Request) {
       where: { uuid: chosenUuid },
     })
 
+    const sortedSavingMonthly = await getLastXMontshlyValues(chosenSaving?.uuid || "", 12)
+
     const newSavingObj: ChangeSaving = {
       uuid: chosenSaving?.uuid || "",
       selectedSaving: chosenSaving?.name || "",
@@ -129,6 +138,8 @@ export async function DELETE(req: Request) {
       countingDate: chosenSaving?.countingDate || null,
       currency: chosenSaving?.currency || "€",
       signedAllowedUsers: [],
+      average: calculateAverage(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0,
+      median: calculateMedian(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0,
     }
 
     const itemList = await prisma.items.findMany({

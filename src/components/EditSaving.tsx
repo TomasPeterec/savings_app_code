@@ -4,8 +4,12 @@ import "@/styles/SavingDetails.css"
 import { useState, useEffect } from "react"
 import { ItemData, SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
+import EndDateSourceSelect from "./lib/EndDateSourceSelect"
+import { EndDateSource } from "./lib/EndDateSourceSelect"
 
 interface EditSavingProps {
+  endDateSource: EndDateSource | ""
+  setEndDateSource: React.Dispatch<React.SetStateAction<EndDateSource | "">>
   setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
   setItemsData: React.Dispatch<React.SetStateAction<ItemData[]>>
   setItemsDataCopy: React.Dispatch<React.SetStateAction<ItemData[]>>
@@ -27,6 +31,8 @@ interface Email {
 }
 
 export default function EditSaving({
+  endDateSource,
+  setEndDateSource,
   setSavingData,
   setItemsData,
   setItemsDataCopy,
@@ -142,6 +148,7 @@ export default function EditSaving({
       curency: savingData?.currency,
       totalSaved: totalSaved,
       description,
+      endDateSource: endDateSource || undefined,
     }
 
     const currentUser = auth.currentUser
@@ -324,6 +331,7 @@ export default function EditSaving({
                 <div className="form-half-separator-down"></div>
               </label>
             </div>
+            <EndDateSourceSelect value={endDateSource} onChange={setEndDateSource} />
           </div>
           {/* --- END OF OPENED FORM --- */}
 

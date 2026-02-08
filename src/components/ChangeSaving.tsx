@@ -7,6 +7,8 @@ import { useState, useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { SavingData } from "@/app/dashboard/page"
 import { ItemData } from "@/app/dashboard/page"
+import EndDateSourceSelect from "./lib/EndDateSourceSelect"
+import { EndDateSource } from "./lib/EndDateSourceSelect"
 
 type ChangeSavingProps = {
   setCountOfSavings: (value: number) => void
@@ -43,6 +45,9 @@ const ChangeSaving = ({
   const [savingName, setSavingName] = useState<string>("")
   const [shortDescription, setShortDescription] = useState<string>("")
   const [monthlySaved, setMonthlySaved] = useState<number>(0)
+  const [endDateSource, setEndDateSource] = useState<EndDateSource | "">(
+    "Current monthly saved value"
+  )
 
   useEffect(() => {
     setLoadingNow(true)
@@ -98,6 +103,7 @@ const ChangeSaving = ({
           shortDescription: shortDescription,
           monthlySaved: monthlySaved,
           nextCounting: nextCounting,
+          endDateSource: endDateSource,
         }),
       })
 
@@ -268,7 +274,7 @@ const ChangeSaving = ({
           <div data-testid="saving-form-collapsable" className={"colapsableCenterOpen"}>
             <label>
               <div className="form-half-separator-up vertical-align-bottom">
-                <p className="form-label inverseFontColor">Saving name</p>
+                <p className="form-label inverseFontColor">Name of new</p>
               </div>
               <div className="imput-plus-nest">
                 <input
@@ -357,6 +363,7 @@ const ChangeSaving = ({
                   <div className="form-half-separator-down"></div>
                 </label>
               </div>
+              <EndDateSourceSelect value={endDateSource} onChange={setEndDateSource} />
             </div>
 
             {/* --- END OF COLAPSABLE PART --- */}

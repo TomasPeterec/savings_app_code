@@ -11,6 +11,7 @@ import ItemDetails from "@/components/ItemDetails"
 import NewItem from "@/components/NewItem"
 import EditSaving from "@/components/EditSaving"
 import ChangeSaving from "@/components/ChangeSaving"
+import { EndDateSource } from "@/components/lib/EndDateSourceSelect"
 
 // Define allowed user structure
 interface AllowedUser {
@@ -22,6 +23,8 @@ interface AllowedUser {
 
 // Define shape of saving data
 export interface SavingData {
+  average?: number | null
+  median?: number | null
   uuid: string | null
   selectedSaving: string | null
   description: string | null
@@ -118,11 +121,17 @@ export default function Dashboard() {
   const [owner, setOwner] = useState<boolean>(false)
 
   const [countOfSavings, setCountOfSavings] = useState<number>(0)
+  const [endDateSource, setEndDateSource] = useState<EndDateSource | "">(
+    "" //
+  )
 
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
   useEffect(() => {
+    console.log("Method chosen:", endDateSource)
+    console.log("average :", savingData?.average)
+    console.log("median :", savingData?.median)
     if (newItemVisible === true) {
       setItemsData(prevItems => {
         const fullPercent = 100
@@ -161,7 +170,11 @@ export default function Dashboard() {
             item.endDate = calculateEndDate(
               itemsDataCopy[index]?.price ?? 0,
               itemsDataCopy[index]?.saved ?? 0,
-              savingData?.monthlyDeposited ?? 0,
+              endDateSource === "Current monthly saved value"
+                ? (savingData?.monthlyDeposited ?? 0)
+                : endDateSource === "12 month average"
+                  ? (savingData?.average ?? 0)
+                  : (savingData?.median ?? 0),
               item.priority ?? 0
             )
           })
@@ -173,7 +186,16 @@ export default function Dashboard() {
       setItemsData(itemsDataCopy2)
       setItemsDataCopy(itemsDataCopy2)
     }
-  }, [newItemToSave, itemsDataCopy, savingData?.monthlyDeposited, newItemVisible, itemsDataCopy2])
+  }, [
+    newItemToSave,
+    itemsDataCopy,
+    savingData?.monthlyDeposited,
+    newItemVisible,
+    endDateSource,
+    itemsDataCopy2,
+    savingData?.average,
+    savingData?.median,
+  ])
 
   // -----------------------------------------
   // Fetch saving data and items on first load
@@ -214,6 +236,7 @@ export default function Dashboard() {
         setItemsDataCopy2(data.itemsData || [])
         setEditor(data.editor || false)
         setOwner(data.owner || false)
+        setEndDateSource(data.endDateSource || false)
 
         setCountOfSavings(data.countOfSavings || 0)
 
@@ -232,6 +255,8 @@ export default function Dashboard() {
           countingDate: data.countingDate || null,
           currency: data.currency || null,
           signedAllowedUsers: data.allowedUsers || null,
+          average: data.average || null,
+          median: data.median || null,
         })
       } catch (err) {
         console.error("Backend error:", err)
@@ -418,6 +443,8 @@ export default function Dashboard() {
 
         {togleEditSaving && (
           <EditSaving
+            endDateSource={endDateSource}
+            setEndDateSource={setEndDateSource}
             setSavingData={setSavingData}
             setItemsData={setItemsData}
             setItemsDataCopy={setItemsDataCopy}

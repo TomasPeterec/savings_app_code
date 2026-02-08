@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import { adminAuth } from "@/firebase/admin"
+import {
+  calculateAverage,
+  calculateMedian,
+  getLastXMontshlyValues,
+} from "@/components/lib/statisticFunctions"
 
 const prisma = new PrismaClient()
 
@@ -74,6 +79,7 @@ export async function POST(req: Request) {
     let userOfSelectedSaving: string | null = null
     let editor: boolean = false
     let owner: boolean = false
+    let endDateSource: string | null = null
 
     if (selectedSavingAccess) {
       // 6a. Fetch saving details
@@ -87,6 +93,7 @@ export async function POST(req: Request) {
           currency: true,
           countingDate: true,
           userId: true,
+          endDateSource: true,
         },
       })
 
@@ -99,6 +106,7 @@ export async function POST(req: Request) {
         savingCurrency = saving.currency
         countingDate = saving.countingDate
         userOfSelectedSaving = saving.userId
+        endDateSource = saving.endDateSource
       }
 
       editor = selectedSavingAccess.editor ?? false
@@ -179,6 +187,11 @@ export async function POST(req: Request) {
       )
     }
 
+    console.log("Fetching last monthly values for savingId:", uuid, "count:", 12)
+    const sortedSavingMonthly = await getLastXMontshlyValues(uuid || "", 12)
+    const average = calculateAverage(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+    const median = calculateMedian(sortedSavingMonthly.map(i => Number(i.currentValue))) || 0
+
     // 7. Return JSON response
     return NextResponse.json({
       countOfSavings: await prisma.savings.count({
@@ -197,6 +210,9 @@ export async function POST(req: Request) {
       countingDate: countingDate,
       allowedUsers,
       itemsData,
+      endDateSource: endDateSource,
+      average: average ? average : savingMonthlyDeposited,
+      median: median ? median : savingMonthlyDeposited,
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error)
