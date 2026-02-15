@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 
-let currencieList: Record<string, number> = {}
-
 export default async function loadCurrencies() {
   const url =
     "https://api.frankfurter.app/latest?base=USD&symbols=AUD,BRL,CAD,CHF,CNY,CZK,DKK,EUR,GBP,HKD,HUF,IDR,ILS,INR,ISK,JPY,KRW,MXN,MYR,NOK,NZD,PHP,PLN,RON,SEK,SGD,THB,TRY,ZAR"
@@ -13,23 +11,26 @@ export default async function loadCurrencies() {
   // Mapovanie symbolov na ISO kódy
   const symbolMap: Record<string, string> = {
     "€": "EUR",
-    "$": "USD",
+    $: "USD",
   }
 
   // Prekopíruj iba tie, ktoré sú v rates
-  currencieList = Object.fromEntries(Object.entries(data.rates).map(([key, value]) => [key, value]))
+  const curList = Object.fromEntries(Object.entries(data.rates).map(([key, value]) => [key, value]))
 
   // Pridaj symboly, ak potrebuješ
   for (const [symbol, iso] of Object.entries(symbolMap)) {
-    if (currencieList[iso]) {
-      currencieList[symbol] = currencieList[iso]
+    if (curList[iso]) {
+      curList[symbol] = curList[iso]
     }
   }
+  return curList
 }
 
 const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
+  const currencieList: Record<string, number> = await loadCurrencies()
+
   const today = new Date()
   const dayOfMonth = today.getDate() // returns a number from 1 to 31
 
