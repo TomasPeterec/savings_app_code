@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 
-export default async function loadCurrencies() {
+async function loadCurrencies() {
   const url =
     "https://api.frankfurter.app/latest?base=USD&symbols=AUD,BRL,CAD,CHF,CNY,CZK,DKK,EUR,GBP,HKD,HUF,IDR,ILS,INR,ISK,JPY,KRW,MXN,MYR,NOK,NZD,PHP,PLN,RON,SEK,SGD,THB,TRY,ZAR"
 
@@ -68,6 +68,11 @@ export async function GET(req: Request) {
     }
 
     const rate = currencieList[saving.currency]
+    const currencyMap: Record<string, string> = {
+      "€": "EUR",
+      $: "USD",
+    }
+
     try {
       await prisma.contributionHistory.create({
         data: {
@@ -75,7 +80,7 @@ export async function GET(req: Request) {
           date: new Date(),
           currentValue: saving.monthlyDeposited,
           exchangeRate: rate,
-          currency: saving.currency,
+          currency: currencyMap[saving.currency] ?? saving.currency,
         },
       })
     } catch (e) {
