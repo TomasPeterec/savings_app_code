@@ -13,7 +13,7 @@ export default async function loadCurrencies() {
   // Mapovanie symbolov na ISO kódy
   const symbolMap: Record<string, string> = {
     "€": "EUR",
-    $: "USD",
+    "$": "USD",
   }
 
   // Prekopíruj iba tie, ktoré sú v rates
