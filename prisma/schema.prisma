@@ -64,12 +64,13 @@ model items {
   saved    Decimal
   priority Decimal
   locked   Boolean?
+  description String?
 }
 
 
 model contributionHistory {
   primaryId    Int      @id @default(autoincrement()) @map("primaryId")
-  savingId     String   // odstrániť @map, lebo DB stĺpec sa volá presne takto
+  savingId     String   // odstrániť @map
   date         DateTime @map("date") @db.Date
   currentValue Int      @map("currentValue")
   exchangeRate Decimal? @map("exchangerate") 
