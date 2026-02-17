@@ -22,8 +22,16 @@ export async function POST(req: Request) {
     const userId = decodedToken.uid
 
     // 4️Save subscription to Neon DB linked to this user
-    await prisma.pushSubscription.create({
-      data: {
+    // 4️Save subscription to Neon DB linked to this user
+    await prisma.pushSubscription.upsert({
+      where: {
+        userId_endpoint: {
+          userId,
+          endpoint: subscription.endpoint,
+        },
+      },
+      update: {}, // NOTHING WILL BE CHANGED IF THE RECORD EXISTS
+      create: {
         userId,
         endpoint: subscription.endpoint,
         p256dh: subscription.keys.p256dh,
