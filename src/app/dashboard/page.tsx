@@ -12,6 +12,7 @@ import NewItem from "@/components/NewItem"
 import EditSaving from "@/components/EditSaving"
 import ChangeSaving from "@/components/ChangeSaving"
 import { EndDateSource } from "@/components/lib/EndDateSourceSelect"
+import NotificationCheck from "@/components/lib/NotificationCheck"
 
 // Define allowed user structure
 interface AllowedUser {
@@ -401,6 +402,7 @@ export default function Dashboard() {
   return (
     <div className="base-container">
       <Header />
+      <NotificationCheck />
       <div className="main-container-after-loging">
         <MainSavingsDetails
           owner={owner}

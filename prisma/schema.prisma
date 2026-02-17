@@ -67,7 +67,6 @@ model items {
   description String?
 }
 
-
 model contributionHistory {
   primaryId    Int      @id @default(autoincrement()) @map("primaryId")
   savingId     String   // odstrániť @map
@@ -78,6 +77,16 @@ model contributionHistory {
 
   @@map("contributionHistory")
 }
+
+model pushSubscription {
+  id         String   @id @default(uuid())  // changed from cuid()
+  userId     String
+  endpoint   String
+  p256dh     String
+  auth       String
+  createdAt  DateTime @default(now())
+}
+
 
 
 

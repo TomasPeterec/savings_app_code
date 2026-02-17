@@ -57,3 +57,6 @@ next-env.d.ts
 
 # optional: node fetch/polyfill logs (ak používame jest + firebase)
 /node-fetch.log*
+
+
+sw.js
