@@ -22,7 +22,6 @@ export async function POST(req: Request) {
     const userId = decodedToken.uid
 
     // 4️Save subscription to Neon DB linked to this user
-    // 4️Save subscription to Neon DB linked to this user
     await prisma.pushSubscription.upsert({
       where: {
         userId_endpoint: {

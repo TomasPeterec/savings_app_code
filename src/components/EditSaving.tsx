@@ -4,8 +4,8 @@ import "@/styles/SavingDetails.css"
 import { useState, useEffect } from "react"
 import { ItemData, SavingData } from "@/app/dashboard/page"
 import type { Auth } from "firebase/auth"
-import EndDateSourceSelect from "./lib/EndDateSourceSelect"
-import { EndDateSource } from "./lib/EndDateSourceSelect"
+import EndDateSourceSelect from "@/lib/EndDateSourceSelect"
+import { EndDateSource } from "@/lib/EndDateSourceSelect"
 
 interface EditSavingProps {
   endDateSource: EndDateSource | ""

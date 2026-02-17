@@ -6,7 +6,7 @@ import Header from "@/components/Header"
 import { auth, googleProvider } from "@/firebase/firebase"
 import { signInWithPopup, signInWithEmailAndPassword, AuthError } from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
-import { myEmailValidation } from "@/components/lib/emailValidation"
+import { myEmailValidation } from "@/lib/emailValidation"
 // import '@/styles/theme.css'
 
 export default function Home() {

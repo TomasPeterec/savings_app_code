@@ -7,8 +7,8 @@ import { useState, useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { SavingData } from "@/app/dashboard/page"
 import { ItemData } from "@/app/dashboard/page"
-import EndDateSourceSelect from "./lib/EndDateSourceSelect"
-import { EndDateSource } from "./lib/EndDateSourceSelect"
+import EndDateSourceSelect from "@/lib/EndDateSourceSelect"
+import { EndDateSource } from "@/lib/EndDateSourceSelect"
 
 type ChangeSavingProps = {
   setCountOfSavings: (value: number) => void

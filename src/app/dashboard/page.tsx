@@ -11,8 +11,8 @@ import ItemDetails from "@/components/ItemDetails"
 import NewItem from "@/components/NewItem"
 import EditSaving from "@/components/EditSaving"
 import ChangeSaving from "@/components/ChangeSaving"
-import { EndDateSource } from "@/components/lib/EndDateSourceSelect"
-import NotificationCheck from "@/components/lib/NotificationCheck"
+import { EndDateSource } from "@/lib/EndDateSourceSelect"
+import NotificationCheck from "@/lib/NotificationCheck"
 
 // Define allowed user structure
 interface AllowedUser {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
+import webpush from "@/lib/server/webPush" // use centralized web-push setup
 
 async function loadCurrencies() {
   const url =
@@ -15,15 +16,17 @@ async function loadCurrencies() {
   }
 
   // Prekopíruj iba tie, ktoré sú v rates
-  const curList = Object.fromEntries(Object.entries(data.rates).map(([key, value]) => [key, value]))
+  const currList = Object.fromEntries(
+    Object.entries(data.rates).map(([key, value]) => [key, value])
+  )
 
   // Pridaj symboly, ak potrebuješ
   for (const [symbol, iso] of Object.entries(symbolMap)) {
-    if (curList[iso]) {
-      curList[symbol] = curList[iso]
+    if (currList[iso]) {
+      currList[symbol] = currList[iso]
     }
   }
-  return curList
+  return currList
 }
 
 const prisma = new PrismaClient()
@@ -43,7 +46,7 @@ export async function GET(req: Request) {
   // 1. Find all savings to update today
   const savingsToUpdate = await prisma.savings.findMany({
     where: { countingDate: dayOfMonth },
-    select: { uuid: true, monthlyDeposited: true, currency: true },
+    select: { uuid: true, monthlyDeposited: true, currency: true, userId: true },
   })
 
   let totalUpdated = 0
@@ -54,6 +57,32 @@ export async function GET(req: Request) {
       where: { savingId: saving.uuid },
       select: { itemId: true, saved: true, priority: true },
     })
+
+    const subscriptions = await prisma.pushSubscription.findMany({
+      where: { userId: saving.userId }, // fetch subscriptions for the user of this saving
+      select: { endpoint: true, p256dh: true, auth: true },
+    })
+
+    for (const subscription of subscriptions) {
+      try {
+        await webpush.sendNotification(
+          {
+            endpoint: subscription.endpoint,
+            keys: {
+              p256dh: subscription.p256dh,
+              auth: subscription.auth,
+            },
+          },
+          JSON.stringify({
+            title: "Credited amount",
+            body: `The amount of ${saving.monthlyDeposited} ${saving.currency} has been credited to your virtual account.`,
+            data: { savingId: saving.uuid },
+          })
+        )
+      } catch (err) {
+        console.error("Failed to send push notification:", err)
+      }
+    }
 
     // 3. Update each item individually
     for (const item of items) {
@@ -66,6 +95,15 @@ export async function GET(req: Request) {
 
       totalUpdated++
     }
+
+    const overallSum = items.reduce((sum, item) => sum + Number(item.saved), 0)
+
+    await prisma.savings.update({
+      where: { uuid: saving.uuid },
+      data: {
+        totalSaved: overallSum,
+      },
+    })
 
     const rate = currencieList[saving.currency]
     const currencyMap: Record<string, string> = {
