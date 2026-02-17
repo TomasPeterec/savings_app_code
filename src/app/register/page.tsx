@@ -10,7 +10,7 @@ import {
   User,
 } from "firebase/auth"
 import { auth } from "@/firebase/firebase"
-import { myEmailValidation, validatePassword } from "@/components/lib/emailValidation"
+import { myEmailValidation, validatePassword } from "@/lib/emailValidation"
 import "@/styles/theme.css" // import new CSS
 
 export default function RegistrationPage() {

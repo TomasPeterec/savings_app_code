@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server"
 import { adminAuth } from "@/firebase/admin"
 import { PrismaClient } from "@prisma/client"
-import {
-  calculateAverage,
-  calculateMedian,
-  getLastXMontshlyValues,
-} from "@/components/lib/statisticFunctions"
+import { calculateAverage, calculateMedian, getLastXMontshlyValues } from "@/lib/statisticFunctions"
 
 const prisma = new PrismaClient()
 
