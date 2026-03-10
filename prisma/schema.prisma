@@ -30,6 +30,7 @@ model Savings {
   countingDate     Int?           @map("counting_date")
   currency         String
   endDateSource    String
+  undistributed    Int            @default(0)
 
   // relations
   user             User           @relation(fields: [userId], references: [firebaseUid])

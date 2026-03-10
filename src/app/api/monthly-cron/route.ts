@@ -1,68 +1,78 @@
 import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
-import webpush from "@/lib/server/webPush" // use centralized web-push setup
-
-async function loadCurrencies() {
-  const url =
-    "https://api.frankfurter.app/latest?base=USD&symbols=AUD,BRL,CAD,CHF,CNY,CZK,DKK,EUR,GBP,HKD,HUF,IDR,ILS,INR,ISK,JPY,KRW,MXN,MYR,NOK,NZD,PHP,PLN,RON,SEK,SGD,THB,TRY,ZAR"
-
-  const response = await fetch(url)
-  const data: { rates: Record<string, number> } = await response.json()
-
-  // Mapovanie symbolov na ISO kódy
-  const symbolMap: Record<string, string> = {
-    "€": "EUR",
-    $: "USD",
-  }
-
-  // Prekopíruj iba tie, ktoré sú v rates
-  const currList = Object.fromEntries(
-    Object.entries(data.rates).map(([key, value]) => [key, value])
-  )
-
-  // Pridaj symboly, ak potrebuješ
-  for (const [symbol, iso] of Object.entries(symbolMap)) {
-    if (currList[iso]) {
-      currList[symbol] = currList[iso]
-    }
-  }
-  return currList
-}
+import webpush from "@/lib/server/webPush"
+import { loadCurrencies } from "@/lib/server/loadCurrencies"
+import { updateSavingItems } from "@/lib/server/updateSavings"
 
 const prisma = new PrismaClient()
+
+// Type for savings to update
+type SavingForUpdate = {
+  uuid: string
+  monthlyDeposited: number
+  currency: string
+  userId: string
+  undistributed: number
+}
+
+// Type for items to update
+type ItemForUpdate = {
+  itemId: string
+  saved: number
+  priority: number
+  price: number
+  itemName: string
+}
 
 export async function GET(req: Request) {
   const currencieList: Record<string, number> = await loadCurrencies()
 
   const today = new Date()
-  const dayOfMonth = today.getDate() // returns a number from 1 to 31
+  const dayOfMonth = today.getDate() // returns 1–31
 
-  // protection – Vercel cron only
+  // Cron authorization check (Vercel only)
   const auth = req.headers.get("authorization")
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Unauthorized", { status: 401 })
   }
 
-  // 1. Find all savings to update today
-  const savingsToUpdate = await prisma.savings.findMany({
+  // 1. Get all savings that need to be updated today
+  const savingsToUpdate: SavingForUpdate[] = await prisma.savings.findMany({
     where: { countingDate: dayOfMonth },
-    select: { uuid: true, monthlyDeposited: true, currency: true, userId: true },
+    select: {
+      uuid: true,
+      monthlyDeposited: true,
+      currency: true,
+      userId: true,
+      undistributed: true,
+    },
   })
 
   let totalUpdated = 0
 
   // 2. Loop through each saving
   for (const saving of savingsToUpdate) {
-    const items = await prisma.items.findMany({
-      where: { savingId: saving.uuid },
-      select: { itemId: true, saved: true, priority: true },
-    })
+    // fetch items for this saving and convert Decimal → number
+    const items: ItemForUpdate[] = (
+      await prisma.items.findMany({
+        where: { savingId: saving.uuid },
+        select: { itemId: true, saved: true, priority: true, price: true, itemName: true },
+      })
+    ).map(item => ({
+      itemId: item.itemId,
+      saved: Number(item.saved),
+      priority: Number(item.priority),
+      price: Number(item.price),
+      itemName: item.itemName ?? "",
+    }))
 
+    // fetch subscriptions for the user
     const subscriptions = await prisma.pushSubscription.findMany({
-      where: { userId: saving.userId }, // fetch subscriptions for the user of this saving
+      where: { userId: saving.userId },
       select: { endpoint: true, p256dh: true, auth: true },
     })
 
+    // send push notifications
     for (const subscription of subscriptions) {
       try {
         await webpush.sendNotification(
@@ -74,8 +84,8 @@ export async function GET(req: Request) {
             },
           },
           JSON.stringify({
-            title: "Credited amount",
-            body: `The amount of ${saving.monthlyDeposited} ${saving.currency} has been credited to your virtual account.`,
+            title: "Credited virtual amount",
+            body: `${saving.monthlyDeposited} ${saving.currency} has been virtually distributed to your savings items.`,
             data: { savingId: saving.uuid },
           })
         )
@@ -84,46 +94,8 @@ export async function GET(req: Request) {
       }
     }
 
-    // 3. Update each item individually
-    for (const item of items) {
-      const increment = (saving.monthlyDeposited * Number(item.priority)) / 100
-
-      await prisma.items.update({
-        where: { itemId: item.itemId },
-        data: { saved: Number(item.saved) + increment },
-      })
-
-      totalUpdated++
-    }
-
-    const overallSum = items.reduce((sum, item) => sum + Number(item.saved), 0)
-
-    await prisma.savings.update({
-      where: { uuid: saving.uuid },
-      data: {
-        totalSaved: overallSum,
-      },
-    })
-
-    const rate = currencieList[saving.currency]
-    const currencyMap: Record<string, string> = {
-      "€": "EUR",
-      $: "USD",
-    }
-
-    try {
-      await prisma.contributionHistory.create({
-        data: {
-          savingId: saving.uuid,
-          date: new Date(),
-          currentValue: saving.monthlyDeposited,
-          exchangeRate: rate,
-          currency: currencyMap[saving.currency] ?? saving.currency,
-        },
-      })
-    } catch (e) {
-      console.error("ContributionHistory insert failed:", e)
-    }
+    // 3. Update items, savings, and contributionHistory
+    totalUpdated += await updateSavingItems(saving, items, currencieList)
   }
 
   return NextResponse.json({
