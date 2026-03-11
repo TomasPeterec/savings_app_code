@@ -11,7 +11,6 @@ type SavingForUpdate = {
   uuid: string
   monthlyDeposited: number
   currency: string
-  userId: string
   undistributed: number
 }
 
@@ -43,7 +42,6 @@ export async function GET(req: Request) {
       uuid: true,
       monthlyDeposited: true,
       currency: true,
-      userId: true,
       undistributed: true,
     },
   })
@@ -66,9 +64,17 @@ export async function GET(req: Request) {
       itemName: item.itemName ?? "",
     }))
 
-    // fetch subscriptions for the user
+    // fetch subscriptions for the use
+
+    const sharingUsers = await prisma.savingAccess.findMany({
+      where: { savingUuid: saving.uuid },
+      select: { userId: true },
+    })
+
+    const allSharingUserIds = [...new Set(sharingUsers.map(su => su.userId))]
+
     const subscriptions = await prisma.pushSubscription.findMany({
-      where: { userId: saving.userId },
+      where: { userId: { in: allSharingUserIds } },
       select: { endpoint: true, p256dh: true, auth: true },
     })
 

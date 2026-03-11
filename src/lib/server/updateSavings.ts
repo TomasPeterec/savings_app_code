@@ -8,7 +8,6 @@ export async function updateSavingItems(
     uuid: string
     monthlyDeposited: number
     currency: string
-    userId: string //string according to Prisma model
     undistributed: number
   },
   items: { itemId: string; saved: number; priority: number; price: number; itemName: string }[],
@@ -86,38 +85,45 @@ export async function updateSavingItems(
 
   const fullfiledItems = items.filter(i => i.saved === i.price)
 
-  const selectedItemsNames = fullfiledItems.map(item => item.itemName).join(", ")
-
   if (fullfiledItems.length > 0) {
-    try {
-      const subscriptions = await prisma.pushSubscription.findMany({
-        where: { userId: saving.userId },
-        select: { endpoint: true, p256dh: true, auth: true },
-      })
+    const selectedItemsNames = fullfiledItems.map(item => item.itemName).join(", ")
 
-      // send push notifications
-      for (const subscription of subscriptions) {
-        try {
-          await webpush.sendNotification(
-            {
-              endpoint: subscription.endpoint,
-              keys: {
-                p256dh: subscription.p256dh,
-                auth: subscription.auth,
+    const listOfUsers = await prisma.savingAccess.findMany({
+      where: { savingUuid: saving.uuid },
+      select: { userId: true },
+    })
+
+    for (const user of listOfUsers) {
+      try {
+        const subscriptions = await prisma.pushSubscription.findMany({
+          where: { userId: user.userId },
+          select: { endpoint: true, p256dh: true, auth: true },
+        })
+
+        // send push notifications
+        for (const subscription of subscriptions) {
+          try {
+            await webpush.sendNotification(
+              {
+                endpoint: subscription.endpoint,
+                keys: {
+                  p256dh: subscription.p256dh,
+                  auth: subscription.auth,
+                },
               },
-            },
-            JSON.stringify({
-              title: "Credited amount",
-              body: `On ${fullfiledItems.length < 2 ? "item" : "items"} ${selectedItemsNames} has been achieved the price.`,
-              data: { savingId: saving.uuid },
-            })
-          )
-        } catch (err) {
-          console.error("Failed to send push notification:", err)
+              JSON.stringify({
+                title: "Credited amount",
+                body: `On ${fullfiledItems.length < 2 ? "item" : "items"} ${selectedItemsNames} has been achieved the price.`,
+                data: { savingId: saving.uuid },
+              })
+            )
+          } catch (err) {
+            console.error("Failed to send push notification:", err)
+          }
         }
+      } catch (e) {
+        console.error("Failed to fetch subscriptions:", e)
       }
-    } catch (e) {
-      console.error("Failed to fetch subscriptions:", e)
     }
   }
 
