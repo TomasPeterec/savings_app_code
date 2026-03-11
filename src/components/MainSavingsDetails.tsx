@@ -22,6 +22,8 @@ interface SavingData {
 }
 
 interface MainSavingsDetailsProps {
+  bottomSheetOpen: boolean | null
+  setBottomSheetOpen: (value: boolean) => void
   editor: boolean | null
   owner: boolean | null
   setToggleChangeSaving: (value: boolean) => void
@@ -32,6 +34,8 @@ interface MainSavingsDetailsProps {
 }
 
 export default function MainSavingsDetails({
+  bottomSheetOpen,
+  setBottomSheetOpen,
   editor,
   owner,
   setToggleChangeSaving,
@@ -43,10 +47,13 @@ export default function MainSavingsDetails({
   const openBottomSheet = () => {
     setNewItemVisible(true)
     setToggleAddOrEdit(true)
+    setBottomSheetOpen(true)
   }
 
   const openBottomSheetForEdit = () => {
     setToggleEditSaving && setToggleEditSaving(true)
+    setToggleAddOrEdit(true)
+    setBottomSheetOpen(true)
   }
 
   const getNextCountingDate = (dayOfMonth: number | null) => {
@@ -73,6 +80,7 @@ export default function MainSavingsDetails({
 
   const toggleChangeSavingOn = () => {
     setToggleChangeSaving(true)
+    setBottomSheetOpen(true)
   }
 
   return (
@@ -132,25 +140,33 @@ export default function MainSavingsDetails({
         </div>
 
         <div className="main-savings-details-right">
-          <button className="button-secondary smal-button" onClick={() => toggleChangeSavingOn()}>
-            <img className="button-icone" src="/icons/change.svg" alt="change" />
+          <button
+            disabled={bottomSheetOpen ? true : false}
+            className="button-secondary smal-button"
+            onClick={() => toggleChangeSavingOn()}
+          >
+            <img
+              className={`button-icone ${owner && !bottomSheetOpen ? "" : "disabled-icone"}`}
+              src="/icons/change.svg"
+              alt="change"
+            />
           </button>
 
           <button
-            disabled={!owner ? true : false}
+            disabled={!owner || bottomSheetOpen ? true : false}
             className="button-secondary smal-button"
             onClick={() => openBottomSheetForEdit()}
           >
             <img
-              className={`button-icone ${owner ? "" : "disabled-icone"}`}
+              className={`button-icone ${owner && !bottomSheetOpen ? "" : "disabled-icone"}`}
               src="/icons/edit.svg"
               alt="edit"
             />
           </button>
 
           <button
-            disabled={!editor ? true : false}
-            className={`smal-button ${editor ? "button-primary" : "smal-button-primary-muted"}`}
+            disabled={!editor || bottomSheetOpen ? true : false}
+            className={`smal-button ${editor && !bottomSheetOpen ? "button-primary" : "smal-button-primary-muted"}`}
             onClick={() => openBottomSheet()}
           >
             <img className={`button-icone`} src="/icons/cross.svg" alt="add new item" />

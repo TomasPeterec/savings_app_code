@@ -11,6 +11,7 @@ import EndDateSourceSelect from "@/lib/EndDateSourceSelect"
 import { EndDateSource } from "@/lib/EndDateSourceSelect"
 
 type ChangeSavingProps = {
+  setBottomSheetOpen: (value: boolean) => void
   setCountOfSavings: (value: number) => void
   setOwner: (value: boolean) => void
   setEditor: (value: boolean) => void
@@ -28,6 +29,7 @@ type SavingItem = {
 }
 
 const ChangeSaving = ({
+  setBottomSheetOpen,
   setOwner,
   setToggleChangeSaving,
   setSavingData,
@@ -132,6 +134,8 @@ const ChangeSaving = ({
 
   const cancelBottomsheet = () => {
     setToggleChangeSaving(false)
+    // handling the bottom sheet open/close state signalisation
+    setBottomSheetOpen(false)
   }
 
   const loadChosen = async (savingObject: SavingItem) => {

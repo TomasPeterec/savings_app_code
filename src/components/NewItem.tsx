@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import { ItemData } from "@/app/dashboard/page"
 
 interface NewItemProps {
+  setBottomSheetOpen: (value: boolean) => void
   itemsDataLength?: number
   setToggleAddOrEdit?: (value: boolean) => void
   actualSliderClamp?: number | null
@@ -25,6 +26,7 @@ interface NewItemProps {
 }
 
 export default function NewItem({
+  setBottomSheetOpen,
   itemsDataLength,
   setToggleAddOrEdit,
   setActualSliderClamp,
@@ -134,6 +136,8 @@ export default function NewItem({
   const cancelNewItemDialog = () => {
     reset()
     setNewItemVisible(false)
+    // handling the bottom sheet open/close state signalisation
+    setBottomSheetOpen(false)
   }
 
   //distribute the data of selected item to the form when in edit mode

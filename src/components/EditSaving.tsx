@@ -8,6 +8,7 @@ import EndDateSourceSelect from "@/lib/EndDateSourceSelect"
 import { EndDateSource } from "@/lib/EndDateSourceSelect"
 
 interface EditSavingProps {
+  setBottomSheetOpen: (value: boolean) => void
   endDateSource: EndDateSource | ""
   setEndDateSource: React.Dispatch<React.SetStateAction<EndDateSource | "">>
   setSavingData: React.Dispatch<React.SetStateAction<SavingData | null>>
@@ -31,6 +32,7 @@ interface Email {
 }
 
 export default function EditSaving({
+  setBottomSheetOpen,
   endDateSource,
   setEndDateSource,
   setSavingData,
@@ -61,6 +63,8 @@ export default function EditSaving({
 
   const closeEditSaving = () => {
     setToggleEditSaving && setToggleEditSaving(false)
+    // handling the bottom sheet open/close state signalisation
+    setBottomSheetOpen(false)
   }
 
   useEffect(() => {

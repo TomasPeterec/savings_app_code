@@ -126,6 +126,9 @@ export default function Dashboard() {
     "" //
   )
 
+  // handling the bottom sheet open/close state signalisation
+  const [bottomSheetOpen, setBottomSheetOpen] = useState<boolean>(false)
+
   // -----------------------------------------
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
@@ -399,6 +402,10 @@ export default function Dashboard() {
     setSavingData(updated)
   }
 
+  useEffect(() => {
+    console.log("bottomSheetOpen changed to:", bottomSheetOpen)
+  }, [bottomSheetOpen]) // This effect runs whenever savingData changes, can be used for debugging or side effects
+
   return (
     <div className="base-container">
       <Header />
@@ -412,10 +419,13 @@ export default function Dashboard() {
           setToggleAddOrEdit={setToggleAddOrEdit}
           savingData={savingData}
           setNewItemVisible={setNewItemVisible}
+          setBottomSheetOpen={setBottomSheetOpen}
+          bottomSheetOpen={bottomSheetOpen}
         />
 
         {newItemVisible && (
           <NewItem
+            setBottomSheetOpen={setBottomSheetOpen}
             itemsDataLength={itemsData.length}
             setActualSliderClamp={setActualSliderClamp}
             actualSliderClamp={actualSliderClamp}
@@ -432,6 +442,7 @@ export default function Dashboard() {
 
         {toggleChangeSaving && (
           <ChangeSaving
+            setBottomSheetOpen={setBottomSheetOpen}
             setEditor={setEditor}
             setOwner={setOwner}
             setCountOfSavings={setCountOfSavings}
@@ -445,6 +456,7 @@ export default function Dashboard() {
 
         {togleEditSaving && (
           <EditSaving
+            setBottomSheetOpen={setBottomSheetOpen}
             endDateSource={endDateSource}
             setEndDateSource={setEndDateSource}
             setSavingData={setSavingData}
@@ -463,6 +475,8 @@ export default function Dashboard() {
 
         {itemsData.map(item => (
           <ItemDetails
+            bottomSheetOpen={bottomSheetOpen}
+            setBottomSheetOpen={setBottomSheetOpen}
             editor={editor}
             removeItemTemporarily={removeItemTemporarily}
             setNewItemToSave={setNewItemToSave}

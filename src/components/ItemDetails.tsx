@@ -15,6 +15,8 @@ interface ItemData {
 }
 
 interface ItemDetailsProps {
+  bottomSheetOpen?: boolean | null
+  setBottomSheetOpen: (value: boolean) => void
   editor?: boolean | null
   removeItemTemporarily?: (itemId: string) => void
   setNewItemToSave: (value: ItemData) => void
@@ -25,6 +27,8 @@ interface ItemDetailsProps {
 }
 
 export default function ItemDetails({
+  bottomSheetOpen,
+  setBottomSheetOpen,
   editor,
   removeItemTemporarily,
   setNewItemToSave,
@@ -42,6 +46,7 @@ export default function ItemDetails({
     removeItemTemporarily && removeItemTemporarily(item.itemId)
     setNewItemVisible(true)
     setToggleAddOrEdit(false)
+    setBottomSheetOpen(true)
   }
 
   return (
@@ -76,12 +81,12 @@ export default function ItemDetails({
               alt="change"
             />
             <button
-              disabled={!editor ? true : false}
+              disabled={!editor || bottomSheetOpen ? true : false}
               className="button-secondary smal-button"
               onClick={openBotomSheet}
             >
               <img
-                className={`button-icone ${editor ? "" : "disabled-icone"}`}
+                className={`button-icone ${editor && !bottomSheetOpen ? "" : "disabled-icone"}`}
                 src="/icons/edit.svg"
                 alt="change"
               />
