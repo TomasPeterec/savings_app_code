@@ -122,13 +122,15 @@ const ChangeSaving = ({
         setCountOfSavings(data.countOfSavings)
         setEditor(data.editor)
         setOwner(data.owner)
-        console.log("New saving created successfully.", data)
+        console.log("New saving created successfully.")
       }
     } catch (err) {
       console.error("Error creating new saving:", err)
     }
 
     setToggleChangeSaving(false)
+    // handling the bottom sheet open/close state signalisation
+    setBottomSheetOpen(false)
   }
   // Create new saving function end
 

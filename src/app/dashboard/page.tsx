@@ -133,9 +133,6 @@ export default function Dashboard() {
   // Update items priorities and end dates when a new item is added
   // -----------------------------------------
   useEffect(() => {
-    console.log("Method chosen:", endDateSource)
-    console.log("average :", savingData?.average)
-    console.log("median :", savingData?.median)
     if (newItemVisible === true) {
       setItemsData(prevItems => {
         const fullPercent = 100
@@ -402,9 +399,7 @@ export default function Dashboard() {
     setSavingData(updated)
   }
 
-  useEffect(() => {
-    console.log("bottomSheetOpen changed to:", bottomSheetOpen)
-  }, [bottomSheetOpen]) // This effect runs whenever savingData changes, can be used for debugging or side effects
+  useEffect(() => {}, [bottomSheetOpen]) // This effect runs whenever savingData changes, can be used for debugging or side effects
 
   return (
     <div className="base-container">

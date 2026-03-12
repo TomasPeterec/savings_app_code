@@ -195,12 +195,14 @@ body {
   font-weight: 800; /* extrabold */
   line-height: var(--lineHeight);
   color: white;
-  margin-bottom: 1vw;
   text-align: center;
   font-family: var(--font-onest);
   font-size: clamp(var(--headingMobileMin), var(--headingMobile), var(--headingMobileMax));
   padding-right:5vw;
   padding-left: 5vw;
+  margin: 0;
+  margin-bottom: 1vw;
+  box-sizing: border-box;
 }
 
 /* Perex / Intro text */
@@ -214,6 +216,8 @@ body {
   padding-right: 10vw;
   padding-left: 10vw;
   font-size: clamp(var(--perexMobileMin), var(--perexMobile), var(--perexMobileMax));
+  margin: 0;
+  box-sizing: border-box;
 }
 
 
@@ -512,12 +516,14 @@ html, body {
     font-size: clamp(var(--headingMidMin), var(--headingMid), var(--headingMidMax));
     padding-right:2vw;
     padding-left: 2vw;
+    box-sizing: border-box;
 
   }
   .perex {
     font-size: clamp(var(--perexMidMin), var(--perexMid), var(--perexMidMax));
     padding-right: 4vw;
     padding-left: 4vw;
+    box-sizing: border-box;
   }
 
 
@@ -554,6 +560,7 @@ html, body {
   .hero-section {
     padding-top: calc(5.1vw / (var(--fS) * var(--fS) * var(--fS)));
     padding-bottom: 0vw;
+    box-sizing: border-box;
   }
 }
 
@@ -563,11 +570,13 @@ html, body {
     font-size: clamp(var(--headingDesktopMin), var(--headingDesktop), var(--headingDesktopMax));
     padding-right:2vw;
     padding-left: 2vw;
+    box-sizing: border-box;
   }
   .perex {
     font-size: clamp(var(--perexDesktopMin), var(--perexDesktop), var(--perexDesktopMax));
     padding-right: 4vw;
     padding-left: 4vw;
+    box-sizing: border-box;
   }
   .input-field {
     height: clamp(0rem, calc((36vw * var(--pixToVw)) / (var(--fS)*var(--fS))), calc((36rem * 0.115) / (var(--fS)*var(--fS))));
