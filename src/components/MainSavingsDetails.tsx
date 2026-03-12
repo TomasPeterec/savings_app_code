@@ -146,7 +146,7 @@ export default function MainSavingsDetails({
             onClick={() => toggleChangeSavingOn()}
           >
             <img
-              className={`button-icone ${owner && !bottomSheetOpen ? "" : "disabled-icone"}`}
+              className={`button-icone ${!bottomSheetOpen ? "" : "disabled-icone"}`}
               src="/icons/change.svg"
               alt="change"
             />
