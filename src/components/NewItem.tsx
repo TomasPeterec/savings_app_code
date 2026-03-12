@@ -130,6 +130,8 @@ export default function NewItem({
     sendNewItemToBackend(actionType)
     reset()
     setNewItemVisible(false)
+    // handling the bottom sheet open/close state signalisation    setBottomSheetOpen(false)
+    setBottomSheetOpen(false)
   }
 
   // Cancel and close the bottom sheet
