@@ -60,10 +60,10 @@ export default function RegistrationPage() {
       await sendEmailVerification(user)
 
       // Reset form
-      setEmail("")
-      setPassword("")
-      setConfirmpassword("")
-      setDisplayname("")
+      // setEmail("")
+      // setPassword("")
+      // setConfirmpassword("")
+      // setDisplayname("")
       router.push("/verify-email")
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error)

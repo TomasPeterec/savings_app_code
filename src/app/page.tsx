@@ -4,7 +4,12 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Header from "@/components/Header"
 import { auth, googleProvider } from "@/firebase/firebase"
-import { signInWithPopup, signInWithEmailAndPassword, AuthError } from "firebase/auth"
+import {
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  AuthError,
+  sendEmailVerification,
+} from "firebase/auth"
 import { useAuthStore } from "@/store/authStore"
 import { myEmailValidation } from "@/lib/emailValidation"
 // import '@/styles/theme.css'
@@ -15,6 +20,7 @@ export default function Home() {
   const [password, setPassword] = useState("")
   const [emailError, setEmailError] = useState("")
   const [loginError, setLoginError] = useState("")
+  const [showVerifyModal, setShowVerifyModal] = useState(false)
 
   const setUser = useAuthStore(state => state.setUser)
 
@@ -42,7 +48,14 @@ export default function Home() {
     setLoginError("")
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      setUser(userCredential.user)
+      const user = userCredential.user // ← toto musíš definovať
+
+      if (!user.emailVerified) {
+        // namiesto alertu
+        setShowVerifyModal(true) // zobrazi modal s info + tlačidlom
+        return
+      }
+      setUser(user)
       router.push("/dashboard")
     } catch (error: unknown) {
       const e = error as AuthError
@@ -75,6 +88,24 @@ export default function Home() {
   return (
     <div className="base-container">
       <Header />
+      {showVerifyModal && (
+        <div className="verify-modal">
+          <p>Please verify your email before signing in.</p>
+          <p>{auth.currentUser?.email}</p>
+          <p>{auth.currentUser?.emailVerified ? "Email verified" : "Email not verified"}</p>
+          <button
+            onClick={async () => {
+              if (auth.currentUser) {
+                await sendEmailVerification(auth.currentUser)
+                alert("Verification email sent!")
+              }
+            }}
+          >
+            Resend verification email
+          </button>
+          <button onClick={() => setShowVerifyModal(false)}>Close</button>
+        </div>
+      )}
 
       <div className="hero-section">
         <h1 className="heading">Manage your savings easily</h1>
