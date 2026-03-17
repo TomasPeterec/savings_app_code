@@ -5,6 +5,7 @@ import { auth } from "@/firebase/firebase"
 import { signOut as firebaseSignOut } from "firebase/auth"
 import { useRouter } from "next/navigation"
 import { useState, useRef } from "react"
+import ColapsableMenu from "./ColapsableMenu"
 import "@/styles/theme.css"
 
 export default function Header() {
@@ -23,41 +24,28 @@ export default function Header() {
 
   const authMenuItems: colapsMenuType[] = [
     { label: "Dashboard", path: "/dashboard", submenu: [] },
-    { label: "Friends", path: "/friends", submenu: [] },
     {
       label: "Settings",
       path: "",
       submenu: [
         { label: "Profile", path: "/settings/profile" },
         { label: "Change Password", path: "/settings/change-password" },
-        { label: "Notifications", path: "/settings/notifications" },
+        { label: "Cancel Account", path: "/settings/cancel-account" },
       ],
     },
   ]
 
-  type MenuState = { [key: string]: boolean | null }
-
-  // inicialisation of calasing state for menu items with submenu (true = open, false = closed, null = no submenu)
-  const [authMenuOpen, setAuthMenuOpen] = useState<MenuState>(() => {
-    const state: MenuState = {}
-    authMenuItems.forEach(item => {
-      if (item.submenu.length > 0) {
-        state[item.label] = false // submenu does exist, colapsed
-      } else {
-        state[item.label] = null // submenu does not exist, no state needed
-      }
-    })
-    return state
-  })
-
   const commonMenuItems: colapsMenuType[] = [
+    { label: "About", path: "/about", submenu: [] },
     {
       label: "Learn",
       path: "",
       submenu: [
-        { label: "About", path: "/about" },
-        { label: "Tutorials", path: "/tutorials" },
-        { label: "FAQ", path: "/faq" },
+        { label: "Getting Started", path: "/learn/getting-started" },
+        { label: "Features", path: "/learn/features" },
+        { label: "Tutorials", path: "/learn/tutorials" },
+        { label: "FAQ", path: "/learn/faq" },
+        { label: "Tips @ Best Practices", path: "/learn/tips" },
       ],
     },
     {
@@ -67,38 +55,10 @@ export default function Header() {
     },
   ]
 
-  const [commonMenuOpen, setCommonMenuOpen] = useState<MenuState>(() => {
-    const state: MenuState = {}
-
-    commonMenuItems.forEach(item => {
-      if (item.submenu.length > 0) {
-        state[item.label] = false
-      } else {
-        state[item.label] = null
-      }
-    })
-
-    return state
-  })
-
   const legalMenuItems: colapsMenuType[] = [
     { label: "Terms of Service", path: "/terms", submenu: [] },
     { label: "Privacy Policy", path: "/privacy", submenu: [] },
   ]
-
-  const [legalMenuOpen, setLegalMenuOpen] = useState<MenuState>(() => {
-    const state: MenuState = {}
-
-    legalMenuItems.forEach(item => {
-      if (item.submenu.length > 0) {
-        state[item.label] = false
-      } else {
-        state[item.label] = null
-      }
-    })
-
-    return state
-  })
 
   const signOut = async () => {
     try {
@@ -145,144 +105,20 @@ export default function Header() {
           <img className="burger-menu" src="/icons/close.svg" alt="Close menu" />
         </button>
 
-        {user &&
-          authMenuItems.map(item => (
-            <div key={item.label}>
-              <button
-                onClick={() => {
-                  if (item.submenu.length === 0) {
-                    navigateAfterClose(item.path)
-                  } else {
-                    setAuthMenuOpen(prev => {
-                      const newState: MenuState = {}
-
-                      Object.keys(prev).forEach(key => {
-                        newState[key] = false
-                      })
-
-                      newState[item.label] = !prev[item.label]
-
-                      return newState
-                    })
-                  }
-                }}
-                className="menu-item-button"
-              >
-                {item.label}
-              </button>
-              {item.submenu.length > 0 && (
-                <div
-                  className="submenu"
-                  style={{ display: authMenuOpen[item.label] ? "block" : "none" }}
-                >
-                  {item.submenu.map(sub => (
-                    <button
-                      key={sub.label}
-                      onClick={() => navigateAfterClose(sub.path)}
-                      className="submenu-item-button"
-                    >
-                      {sub.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+        {user && <ColapsableMenu items={authMenuItems} navigateAfterClose={navigateAfterClose} />}
         <br />
         <div className="menu-separator"></div>
-        {commonMenuItems.map(item => (
-          <div key={item.label}>
-            <button
-              onClick={() => {
-                if (item.submenu.length === 0) {
-                  navigateAfterClose(item.path)
-                } else {
-                  setCommonMenuOpen(prev => {
-                    const newState: MenuState = {}
-
-                    Object.keys(prev).forEach(key => {
-                      newState[key] = false
-                    })
-
-                    newState[item.label] = !prev[item.label]
-
-                    return newState
-                  })
-                }
-              }}
-              className="menu-item-button"
-            >
-              {item.label}
-            </button>
-            {item.submenu.length > 0 && (
-              <div
-                className="submenu"
-                style={{ display: commonMenuOpen[item.label] ? "block" : "none" }}
-              >
-                {item.submenu.map(sub => (
-                  <button
-                    key={sub.label}
-                    onClick={() => navigateAfterClose(sub.path)}
-                    className="submenu-item-button"
-                  >
-                    {sub.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        {<ColapsableMenu items={commonMenuItems} navigateAfterClose={navigateAfterClose} />}
         <br />
         <div className="menu-separator"></div>
         <br />
-        {legalMenuItems.map(item => (
-          <div key={item.label}>
-            <button
-              onClick={() => {
-                if (item.submenu.length === 0) {
-                  navigateAfterClose(item.path)
-                } else {
-                  setLegalMenuOpen(prev => {
-                    const newState: MenuState = {}
-
-                    Object.keys(prev).forEach(key => {
-                      newState[key] = false
-                    })
-
-                    newState[item.label] = !prev[item.label]
-
-                    return newState
-                  })
-                }
-              }}
-              className="menu-item-button"
-            >
-              {item.label}
-            </button>
-            {item.submenu.length > 0 && (
-              <div
-                className="submenu"
-                style={{ display: legalMenuOpen[item.label] ? "block" : "none" }}
-              >
-                {item.submenu.map(sub => (
-                  <button
-                    key={sub.label}
-                    onClick={() => navigateAfterClose(sub.path)}
-                    className="submenu-item-button"
-                  >
-                    {sub.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))} 
+        {<ColapsableMenu items={legalMenuItems} navigateAfterClose={navigateAfterClose} />}
         <br />
         <div className="menu-separator"></div>
         <br />
+        {/* start of sign out / sign in buttons  */}
         {user ? (
           <div>
-            {/* Sign out button */}
             <button onClick={signOut} className="sign-out-button">
               Sign out
             </button>
@@ -297,6 +133,7 @@ export default function Header() {
             </button>
           </div>
         )}
+        {/* end of sign out / sign in buttons  */}
       </div>
     </header>
   )

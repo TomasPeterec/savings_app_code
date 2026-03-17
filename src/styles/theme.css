@@ -683,3 +683,22 @@ html, body {
   gap: 1rem;
   align-items: center;
 }
+
+
+.menu-item-button  {
+  font-size: clamp(var(--fieldMessageMobileMin), calc(var(--fieldMessageMobile)*var(--fS)), cal(var(--fieldMessageMobileMax)* var(--fS)));
+  background: none;
+  border: none;
+  padding: 0rem;
+  cursor: pointer;
+  color: white;
+  text-align: left;
+  width: 100%;
+  height: 1.5rem;
+}
+
+
+
+.submenu-item-button {
+  margin-left: 1rem;
+}
