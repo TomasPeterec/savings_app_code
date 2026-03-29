@@ -10,7 +10,7 @@ export default function RegistrationPage() {
       <Header />
 
       <div className="hero-section">
-        <h1 className="heading">Welcome to the Cancel Account Page</h1>
+        <h1 className="heading">Cancel Account</h1>
       </div>
 
       <div className="actions-section">

@@ -91,6 +91,17 @@ model pushSubscription {
 }
 
 
+model faq {
+  id         Int      @id @default(autoincrement()) // no @map
+  question   String
+  answer     String
+  helpful    Int      @default(0)
+  unhelpful  Int      @default(0)
+}
+
+
+
+
 
 
 

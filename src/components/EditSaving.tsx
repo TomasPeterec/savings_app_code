@@ -263,7 +263,7 @@ export default function EditSaving({
               <input
                 type="text"
                 placeholder="Name"
-                value={savingData?.selectedSaving || name}
+                value={name}
                 onChange={e => setName(e.target.value)}
                 className="input-field"
               />
