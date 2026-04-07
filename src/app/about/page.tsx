@@ -1,13 +1,16 @@
 import Header from "@/components/Header"
+import { getSiteUrl } from "@/lib/site-url"
+import { createMetadata } from "@/lib/seo"
 
 import "@/styles/theme.css" // import new CSS
 
 // SEO metadata
-export const metadata = {
-  title: "About | Wishetto – Plan Savings, Achieve Goals Faster",
-  description:
-    "Turn your financial goals into a clear plan. Wishetto helps you prioritize savings, track progress, and plan future expenses like holidays, bills, and personal goals with confidence.",
-}
+export const metadata = createMetadata(
+  "About | Wishetto – Plan Savings, Achieve Goals Faster",
+  "Learn more about Wishetto and how it can help you achieve your financial goals.",
+  "/about"
+)
+
 
 export default function AboutPage() {
   return (
@@ -15,7 +18,8 @@ export default function AboutPage() {
       <Header />
 
       <div className="hero-section">
-        <h1 className="heading">About</h1>
+        <h1 className="heading">About Wishetto</h1>
+        <p className="perex">Smart Saving & Goal Planning Made Simple</p>
       </div>
 
       <div className="text-section">
@@ -25,7 +29,7 @@ export default function AboutPage() {
           because other expenses always felt more important?{" "}
         </p>
 
-        <h3 className="subheading">Turn Your Intentions Into Real Progress</h3>
+        <h2 className="subheading">Turn Your Intentions Into Real Progress</h2>
         <p className="paragraph">
           At <strong className="strong-text">Wishetto</strong>, your goals become clear and
           structured. Instead of keeping your plans in your head, you organize them in one place and
@@ -33,7 +37,7 @@ export default function AboutPage() {
           move forward with purpose.{" "}
         </p>
 
-        <h3 className="subheading">Saving That Follows Your Priorities</h3>
+        <h2 className="subheading">Saving That Follows Your Priorities</h2>
         <p className="paragraph">
           Each goal can be assigned a percentage based on your monthly contribution using simple
           sliders. Your monthly deposit is automatically divided across all goals according to these
@@ -42,7 +46,7 @@ export default function AboutPage() {
           consistent and predictable.
         </p>
 
-        <h3 className="subheading">Plan Your Expenses With Confidence</h3>
+        <h2 className="subheading">Plan Your Expenses With Confidence</h2>
         <p className="paragraph">
           <strong className="strong-text">Wishetto</strong> is not only for saving toward goals. It
           also helps you organize your household or family budget. You can plan longer time
@@ -53,7 +57,7 @@ export default function AboutPage() {
           and stay in control of your finances.
         </p>
 
-        <h3 className="subheading">Clear and Realistic Projections</h3>
+        <h2 className="subheading">Clear and Realistic Projections</h2>
         <p className="paragraph">
           As you adjust the priority of an item, the system immediately updates the estimated time
           needed to reach each goal. If your monthly savings vary or are irregular, you can choose
@@ -62,7 +66,7 @@ export default function AboutPage() {
           achieved.
         </p>
 
-        <h3 className="subheading">Focus on What Truly Matters</h3>
+        <h2 className="subheading">Focus on What Truly Matters</h2>
         <p className="paragraph">
           Many goals feel out of reach not because they are impossible, but because they lack
           structure. With a clear system and defined priorities, saving becomes intentional. Instead

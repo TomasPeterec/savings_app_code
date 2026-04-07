@@ -1,6 +1,7 @@
-// app/learn/faq/page.tsx
 import Header from "@/components/Header"
 import "@/styles/theme.css"
+import { createMetadata } from "@/lib/seo"
+import { getSiteUrl } from "@/lib/site-url"
 
 type FAQItem = {
   id: number
@@ -8,36 +9,25 @@ type FAQItem = {
   answer: string
 }
 
-// SEO metadata
-const isProduction = process.env.VERCEL_ENV === "production"
+// SEO metadata for the FAQ page
+export const metadata = createMetadata(
+  "FAQ | Wishetto – Plan Savings, Achieve Goals Faster",
+  "Find answers to the most frequently asked questions about Wishetto.",
+  "/learn/faq"
+)
 
-export const metadata = {
-  title: "FAQ | Wishetto – Plan Savings, Achieve Goals Faster",
-  description: "Find answers to the most frequently asked questions about Wishetto.",
-  robots: {
-    index: isProduction,
-    follow: isProduction,
-  },
-}
-
-const getBaseUrl = (): string => {
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return "http://localhost:3000"
-}
+const siteUrl = getSiteUrl()
 
 const fetchFAQ = async (): Promise<FAQItem[]> => {
   try {
-    const baseUrl = getBaseUrl()
-    const response = await fetch(`${baseUrl}/api/faq`, {
+    const response = await fetch(`${siteUrl}/api/faq`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
     })
 
     if (!response.ok) {
-      console.error("Failed to fetch FAQ from backend:", response.statusText)
+      console.error("Failed to fetch FAQ:", response.statusText)
       return []
     }
 
@@ -83,7 +73,7 @@ export default async function FAQPage() {
         {faqItems.length > 0 ? (
           faqItems.map(item => (
             <div key={item.id} className="faq-item">
-              <h3 className="faq-question">{item.question}</h3>
+              <h2 className="faq-question">{item.question}</h2>
               <p className="faq-answer">{item.answer}</p>
             </div>
           ))

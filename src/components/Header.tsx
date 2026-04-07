@@ -45,7 +45,6 @@ export default function Header() {
         { label: "Features", path: "/learn/features" },
         { label: "Tutorials", path: "/learn/tutorials" },
         { label: "FAQ", path: "/learn/faq" },
-        { label: "Tips @ Best Practices", path: "/learn/tips" },
       ],
     },
     {
@@ -56,7 +55,7 @@ export default function Header() {
   ]
 
   const legalMenuItems: colapsMenuType[] = [
-    { label: "Terms of Service", path: "/terms", submenu: [] },
+    { label: "Terms of Use", path: "/terms", submenu: [] },
     { label: "Privacy Policy", path: "/privacy", submenu: [] },
   ]
 

@@ -109,7 +109,7 @@ export default function MainSavingsDetails({
 
           <div className="properties-box">
             <div className="property-box">
-              <div className="property-label">Monthly deposited:</div>
+              <div className="property-label">Monthly update:</div>
               <div className="property-value">
                 {savingData?.monthlyDeposited
                   ? `${savingData.monthlyDeposited} ${savingData.currency}`
