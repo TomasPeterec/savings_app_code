@@ -1,5 +1,4 @@
 import Header from "@/components/Header"
-import { getSiteUrl } from "@/lib/site-url"
 import { createMetadata } from "@/lib/seo"
 
 import "@/styles/theme.css"
@@ -10,8 +9,6 @@ export const metadata = createMetadata(
   "How Wishetto collects, uses, and protects your data.",
   "/privacy"
 )
-
-const siteUrl = getSiteUrl()
 
 export default function PrivacyPage() {
   return (

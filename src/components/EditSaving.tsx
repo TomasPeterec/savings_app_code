@@ -291,7 +291,7 @@ export default function EditSaving({
                 </div>
                 <input
                   type="number"
-                  value={monthlyDeposited}
+                  value={monthlyDeposited === 0 ? "" : monthlyDeposited}
                   onChange={e => setMonthlyDeposited(Number(e.target.value))}
                   placeholder="0"
                   className="input-field halfOfRow"

@@ -1,5 +1,4 @@
 import Header from "@/components/Header"
-import { getSiteUrl } from "@/lib/site-url"
 import { createMetadata } from "@/lib/seo"
 
 import "@/styles/theme.css" // import new CSS
@@ -10,7 +9,6 @@ export const metadata = createMetadata(
   "Learn more about Wishetto and how it can help you achieve your financial goals.",
   "/about"
 )
-
 
 export default function AboutPage() {
   return (
