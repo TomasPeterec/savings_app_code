@@ -3,8 +3,8 @@ import Link from "next/link"
 import { createMetadata } from "@/lib/seo"
 
 export const metadata = createMetadata(
-  "Getting Started Tutorial | Wishetto",
-  "Learn step by step how to create your first wish and start saving with Wishetto.",
+  "Getting Started Tutorial | Dreamfinery",
+  "Learn step by step how to create your first dream and start saving with Dreamfinery.",
   "/learn/tutorials/getting-started"
 )
 
@@ -15,11 +15,11 @@ export default function GettingStartedTutorialPage() {
 
       <div className="hero-section" style={{ marginBottom: "2rem" }}>
         <h1 className="heading">Getting Started Tutorial</h1>
-        <p className="perex">Create your first wish and start saving step by step.</p>
+        <p className="perex">Create your first dream and start saving step by step.</p>
       </div>
 
       <div className="text-section">
-        <h2 className="subheading">1. Create Your First Wish</h2>
+        <h2 className="subheading">1. Create Your First dream</h2>
         <p className="paragraph">
           Start by adding something you want to achieve — for example a vacation or new furniture.
         </p>
@@ -29,7 +29,7 @@ export default function GettingStartedTutorialPage() {
 
         <h2 className="subheading">3. Add to Your Plan</h2>
         <p className="paragraph">
-          Wishetto will help you distribute your savings across your wishes.
+          Dreamfinery will help you distribute your savings across your dreams.
         </p>
 
         <h2 className="subheading">4. Stay Consistent</h2>

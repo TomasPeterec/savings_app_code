@@ -5,8 +5,8 @@ import "@/styles/theme.css"
 
 // SEO metadata
 export const metadata = createMetadata(
-  "Privacy Policy | Wishetto",
-  "How Wishetto collects, uses, and protects your data.",
+  "Privacy Policy | Dreamfinery",
+  "How Dreamfinery collects, uses, and protects your data.",
   "/privacy"
 )
 
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <div className="text-section">
         <h2 className="subheading">Introduction</h2>
         <p className="paragraph">
-          This Privacy Policy explains how <strong className="strong-text">Wishetto</strong>{" "}
+          This Privacy Policy explains how <strong className="strong-text">Dreamfinery</strong>{" "}
           collects, uses, and protects your personal data in accordance with applicable data
           protection laws, including the GDPR.
         </p>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
           If you have any questions about this Privacy Policy or your data, contact us at:
         </p>
         <p className="paragraph">
-          <strong className="strong-text">support@wishetto.com</strong>
+          <strong className="strong-text">support@dreamfinery.com</strong>
         </p>
       </div>
     </div>

@@ -29,7 +29,7 @@ export const createMetadata = (title: string, description: string, path: string)
       title,
       description,
       url: canonicalUrl,
-      siteName: "Wishetto",
+      siteName: "Dreamfinery",
       type: "website",
     },
 

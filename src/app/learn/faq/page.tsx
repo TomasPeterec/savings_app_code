@@ -11,8 +11,8 @@ type FAQItem = {
 
 // SEO metadata for the FAQ page
 export const metadata = createMetadata(
-  "FAQ | Wishetto – Plan Savings, Achieve Goals Faster",
-  "Find answers to the most frequently asked questions about Wishetto.",
+  "FAQ | Dreamfinery – Plan Savings and Achieve Goals Faster",
+  "Find answers to frequently asked questions about Dreamfinery and learn how to plan your goals and savings effectively.",
   "/learn/faq"
 )
 
@@ -23,7 +23,7 @@ const fetchFAQ = async (): Promise<FAQItem[]> => {
     const response = await fetch(`${siteUrl}/api/faq`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      cache: "no-store",
+      next: { revalidate: 3600 }, // ISR: revalidate every hour
     })
 
     if (!response.ok) {
@@ -78,11 +78,12 @@ export default async function FAQPage() {
             </div>
           ))
         ) : (
-          <p>No FAQ items available at the moment.</p>
+          <p>No FAQ items are available at the moment.</p>
         )}
       </div>
     </div>
   )
 }
 
-export const revalidate = 86400
+// Revalidate page every hour
+export const revalidate = 3600

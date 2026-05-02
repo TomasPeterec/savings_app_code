@@ -3,26 +3,26 @@ import Link from "next/link"
 import { createMetadata } from "@/lib/seo"
 
 export const metadata = createMetadata(
-  "Tutorials | Wishetto – Learn How It Works",
-  "Step-by-step guides to help you get the most out of Wishetto.",
+  "Tutorials | Dreamfinery – Learn How It Works",
+  "Step-by-step guides to help you get the most out of Dreamfinery.",
   "/learn/tutorials"
 )
 
 const tutorials = [
   {
     title: "Getting Started",
-    description: "Learn how to create your first wish and start planning.",
+    description: "Learn how to create your first dreams and start planning.",
     slug: "getting-started",
   },
   {
     title: "How Saving Works",
-    description: "Understand how Wishetto distributes your savings.",
+    description: "Understand how Dreamfinery distributes your savings.",
     slug: "saving",
   },
   {
-    title: "Managing Multiple Wishes",
+    title: "Managing Multiple Dreams",
     description: "Organize and prioritize your financial goals.",
-    slug: "multiple-wishes",
+    slug: "multiple-dreams",
   },
 ]
 
@@ -33,7 +33,7 @@ export default function TutorialsPage() {
 
       <div className="hero-section">
         <h1 className="heading">Tutorials</h1>
-        <p className="perex">Learn how to use Wishetto step by step.</p>
+        <p className="perex">Learn how to use Dreamfinery step by step.</p>
       </div>
 
       <div className="actions-section">

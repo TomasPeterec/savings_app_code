@@ -2,8 +2,8 @@ import Header from "@/components/Header"
 import { createMetadata } from "@/lib/seo"
 
 export const metadata = createMetadata(
-  "Contact | Wishetto",
-  "Get in touch with the Wishetto team. We are happy to help with any questions or feedback.",
+  "Contact | Dreamfinery",
+  "Get in touch with the Dreamfinery team. We are happy to help with any questions or feedback.",
   "/contact"
 )
 
@@ -20,18 +20,18 @@ export default function ContactPage() {
       <div className="text-section">
         <h2 className="subheading">Get in Touch</h2>
         <p className="paragraph">
-          If you have any questions, ideas, or feedback about Wishetto, feel free to reach out.
+          If you have any questions, ideas, or feedback about Dreamfinery, feel free to reach out.
         </p>
 
         <h2 className="subheading">Email</h2>
         <p className="paragraph">You can contact us directly at:</p>
         <p className="paragraph">
-          <strong className="strong-text">support@wishetto.com</strong>
+          <strong className="strong-text">support@dreamfinery.com</strong>
         </p>
 
         <h2 className="subheading">Feedback</h2>
         <p className="paragraph">
-          We are constantly improving Wishetto and your feedback is very valuable.
+          We are constantly improving Dreamfinery and your feedback is very valuable.
         </p>
 
         <h2 className="subheading">Bug Reports</h2>

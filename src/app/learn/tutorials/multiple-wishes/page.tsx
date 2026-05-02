@@ -3,35 +3,35 @@ import Link from "next/link"
 import { createMetadata } from "@/lib/seo"
 
 export const metadata = createMetadata(
-  "Multiple Wishes Tutorial | Wishetto",
-  "Learn how to manage and prioritize multiple wishes in Wishetto.",
-  "/learn/tutorials/multiple-wishes"
+  "Multiple Dreams Tutorial | Dreamfinery",
+  "Learn how to manage and prioritize multiple dreams in Dreamfinery.",
+  "/learn/tutorials/multiple-dreams"
 )
 
-export default function MultipleWishesTutorialPage() {
+export default function MultipleDreamsTutorialPage() {
   return (
     <div className="text-page-container">
       <Header />
 
       <div className="hero-section" style={{ marginBottom: "2rem" }}>
-        <h1 className="heading">Managing Multiple Wishes</h1>
+        <h1 className="heading">Managing Multiple dreams</h1>
         <p className="perex">Learn how to organize and prioritize multiple goals.</p>
       </div>
 
       <div className="text-section">
-        <h2 className="subheading">1. Add More Wishes</h2>
+        <h2 className="subheading">1. Add More dreams</h2>
         <p className="paragraph">
-          You can create multiple wishes at any time — each representing a goal you want to achieve.
+          You can create multiple dreams at any time — each representing a goal you want to achieve.
         </p>
 
         <h2 className="subheading">2. Set Priorities</h2>
         <p className="paragraph">
-          Decide which wishes matter most and organize them based on importance.
+          Decide which dreams matter most and organize them based on importance.
         </p>
 
         <h2 className="subheading">3. Balance Your Plan</h2>
         <p className="paragraph">
-          Wishetto distributes your savings across your wishes in a structured way.
+          Dreamfinery distributes your savings across your dreams in a structured way.
         </p>
 
         <h2 className="subheading">4. Adjust Anytime</h2>

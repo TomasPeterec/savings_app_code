@@ -2,8 +2,8 @@ import Header from "@/components/Header"
 import { createMetadata } from "@/lib/seo"
 
 export const metadata = createMetadata(
-  "Features | Wishetto – Plan Savings, Achieve Goals Faster",
-  "Discover all features that help you plan, save, and achieve your financial goals.",
+  "Features | Dreamfinery – Plan Savings and Achieve Goals Faster",
+  "Discover features that help you organize your goals, plan your savings, and stay on track.",
   "/features"
 )
 
@@ -13,20 +13,20 @@ export default function FeaturesPage() {
       <Header />
 
       <div className="hero-section" style={{ marginBottom: "2rem" }}>
-        <h1 className="heading">Features of Wishetto</h1>
-        <p className="perex">The simple tool you need to plan and save.</p>
+        <h1 className="heading">Dreamfinery Features</h1>
+        <p className="perex">A simple way to organize your goals and plan your savings.</p>
       </div>
 
       <div className="text-section">
         <p className="paragraph">
-          Turn your financial goals into a clear plan. Know exactly when you’ll reach them.
+          Turn your goals into a clear plan and see when you may be able to reach them.
         </p>
 
         <h2 className="subheading">Goal Planning</h2>
         <p className="paragraph">
-          At <strong className="strong-text">Wishetto</strong>, you can organize your financial
-          goals in one place — whether you are saving for something personal, planning a gift, or
-          preparing for future expenses.
+          With <strong className="strong-text">Dreamfinery</strong>, you can organize your saving
+          goals in one place — whether you are planning something personal, preparing for a gift, or
+          setting money aside for future expenses.
         </p>
         <p className="paragraph">
           Keep your plans structured and always know what you are working toward.
@@ -34,26 +34,26 @@ export default function FeaturesPage() {
 
         <h2 className="subheading">Smart Saving</h2>
         <p className="paragraph">
-          Your savings are virtually organized across your goals based on the priorities you set.
-          You define your monthly plan, and <strong className="strong-text">Wishetto</strong> takes
-          care of the rest.
+          Your monthly amount is virtually organized across your goals based on the priorities you
+          set. You define your plan, and <strong className="strong-text">Dreamfinery</strong> helps
+          keep everything structured.
         </p>
         <p className="paragraph">
-          By adjusting priorities, you can instantly see how your savings are organized and stay
-          within your budget while progressing toward your goals.
+          By adjusting priorities, you can instantly see how your monthly amount is distributed and
+          stay within your planned budget while moving toward your goals.
         </p>
         <p className="paragraph">
-          You also get a clear estimate of when each goal can be achieved, helping you stay focused
+          You also get a clear estimate of when each goal may be achieved, helping you stay focused
           and confident in your progress.
         </p>
 
         <h2 className="subheading">Plan Your Expenses With Confidence</h2>
         <p className="paragraph">
-          Plan both one-time and future expenses in advance so you are always prepared for what’s
-          coming.
+          Plan one-time, recurring, and future expenses in advance so you are better prepared for
+          what is coming.
         </p>
         <p className="paragraph">
-          <strong className="strong-text">Wishetto</strong> helps you stay organized and avoid
+          <strong className="strong-text">Dreamfinery</strong> helps you stay organized and avoid
           unexpected financial pressure.
         </p>
 
@@ -65,21 +65,21 @@ export default function FeaturesPage() {
 
         <h2 className="subheading">Progress Estimates</h2>
         <p className="paragraph">
-          <strong className="strong-text">Wishetto</strong> adapts to how you save. If you
-          contribute a fixed amount each month, your progress is calculated automatically.
+          <strong className="strong-text">Dreamfinery</strong> adapts to the way you save. If you
+          use the same monthly amount, your progress is calculated automatically.
         </p>
         <p className="paragraph">
           If your savings vary, you can choose how your progress is estimated. Use a simple average
-          or a more realistic median based on your last 12 months of saving.
+          or a more realistic median based on your recent saving history.
         </p>
         <p className="paragraph">
-          This gives you a clear and reliable view of when your goals can be achieved.
+          This gives you a clearer view of when your goals may be achieved.
         </p>
 
-        <h2 className="subheading">Multiple Virtual Savings</h2>
+        <h2 className="subheading">Multiple Saving Plans</h2>
         <p className="paragraph">
-          Create separate savings for different areas of your life and keep everything organized in
-          one place.
+          Create separate saving plans for different areas of your life and keep everything
+          organized in one place.
         </p>
         <p className="paragraph">
           Manage personal goals, shared plans, or family finances with full flexibility.
@@ -87,21 +87,21 @@ export default function FeaturesPage() {
 
         <h2 className="subheading">Share and Collaborate</h2>
         <p className="paragraph">
-          Add other users to your virtual savings using their email address. You can choose whether
+          Add other users to your saving plans using their email address. You can choose whether
           they can view or edit your goals and priorities.
         </p>
         <p className="paragraph">
-          Stay in control while allowing others to help manage your goals — such as adding items or
+          Stay in control while allowing others to help manage your plans — such as adding items or
           adjusting priorities — when you give them permission.
         </p>
 
         <h2 className="subheading">Scheduled Updates & Notifications</h2>
         <p className="paragraph">
-          Choose a specific day each month when your virtual savings are updated across your goals.
-          This keeps your planning consistent and predictable.
+          Choose a specific day each month when your saving plan is updated across your goals. This
+          keeps your planning consistent and predictable.
         </p>
         <p className="paragraph">
-          You will receive a notification when this update happens, so you always stay informed via
+          You will receive a notification when this update happens, so you can stay informed by
           email or optional web alerts.
         </p>
       </div>

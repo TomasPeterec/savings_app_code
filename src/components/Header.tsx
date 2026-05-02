@@ -87,7 +87,7 @@ export default function Header() {
     <header className="header">
       <div className="header-content">
         <div className="logo-box">
-          <img className="header-logo" src="/images/DreamSaveLogo.svg" alt="Dream Save Logo" />
+          <img className="header-logo" src="/images/dreamfinery_logo.svg" alt="Dream Save Logo" />
         </div>
         <div></div>
         <div className="menu-box">

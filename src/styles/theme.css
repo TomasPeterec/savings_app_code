@@ -316,7 +316,7 @@ body {
 
 .header-logo {
   height: clamp(0rem, calc(30vw * var(--pixToVw)), calc(30rem * 0.115 * var(--header-exponent)));
-  width: clamp(0rem, calc(142vw * var(--pixToVw)), calc(142rem * 0.115 * var(--header-exponent)));
+  width: clamp(0rem, calc(153.43vw * var(--pixToVw)), calc(153.43rem * 0.115 * var(--header-exponent)));
 }
 
 .burger-menu {
