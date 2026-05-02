@@ -1,6 +1,7 @@
 import "./globals.css"
-import { ReactNode } from "react"
 import "@/styles/theme.css"
+
+import { ReactNode } from "react"
 
 export const metadata = {
   title: "Savings App",

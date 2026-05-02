@@ -1,23 +1,22 @@
 // src/components/lib/emailValidation.ts
 
 export function myEmailValidation(value: string): string {
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-    if (!isValid && value !== "") {
-      return "Invalid email."
-    } else {
-      return ""
-    }
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+  if (!isValid && value !== "") {
+    return "Invalid email."
+  } else {
+    return ""
+  }
 }
-
 
 // src/lib/passwordValidation.ts
 
 /**
  * Validates password strength.
- * 
+ *
  * Returns an error message if the password is weak,
  * or an empty string if it meets all conditions.
- * 
+ *
  * Rules:
  * - at least 8 characters
  * - at least one uppercase letter
@@ -27,7 +26,7 @@ export function myEmailValidation(value: string): string {
  */
 export function validatePassword(password: string): string {
   if (password.length < 8) return "Min 8 chars."
-  
+
   const hasUpper = /[A-Z]/.test(password)
   const hasLower = /[a-z]/.test(password)
   const hasNum = /[0-9]/.test(password)
@@ -40,4 +39,3 @@ export function validatePassword(password: string): string {
 
   return ""
 }
-

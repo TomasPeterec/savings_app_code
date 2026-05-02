@@ -8,10 +8,101 @@ datasource db {
 }
 
 model User {
-  firebase_uid String   @id
-  email        String
-  display_name String?
-  created_at   DateTime @default(now())  // <-- auto-set timestamp
+  firebaseUid  String          @id @map("firebase_uid") @db.VarChar(128)
+  email        String?         @db.VarChar(255)
+  displayName  String?         @map("display_name") @db.VarChar(255)
+  createdAt    DateTime?       @default(now()) @map("created_at") @db.Timestamp(6)
 
-  @@map("users") // Maps this Prisma model to the existing 'users' table in Neon
+  // relations
+  savingAccess SavingAccess[]
+  savings      Savings[]
+
+  @@map("users")
 }
+
+model Savings {
+  uuid             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String
+  description      String
+  userId           String         @map("userid")
+  monthlyDeposited Int            @map("monthly_deposited")
+  totalSaved       Int            @map("total_saved")
+  countingDate     Int?           @map("counting_date")
+  currency         String
+  endDateSource    String
+  undistributed    Int            @default(0)
+
+  // relations
+  user             User           @relation(fields: [userId], references: [firebaseUid])
+  savingAccess     SavingAccess[]
+
+  @@map("savings")
+}
+
+model SavingAccess {
+  id         Int      @id @default(autoincrement())
+  savingUuid String   @map("savinguuid") @db.Uuid
+  userId     String   @map("userid")
+  editor     Boolean? @default(true)
+  owner      Boolean? @default(true)
+  isSelected Boolean? @map("isselected") @default(false)
+
+  // relations
+  savings    Savings  @relation(fields: [savingUuid], references: [uuid])
+  user       User     @relation(fields: [userId], references: [firebaseUid])
+
+  @@unique([savingUuid, userId]) // composite unique
+  @@map("saving_access")
+}
+
+model items {
+  itemId   String   @id @map("item_id") @db.Uuid
+  savingId String   @map("saving_id") @db.Uuid
+  itemName String?  @map("item_name") @db.VarChar(255)
+  link     String?
+  price    Decimal
+  endDate  DateTime @map("end_date") @db.Date
+  saved    Decimal
+  priority Decimal
+  locked   Boolean?
+  description String?
+}
+
+model contributionHistory {
+  primaryId    Int      @id @default(autoincrement()) @map("primaryId")
+  savingId     String   // odstrániť @map
+  date         DateTime @map("date") @db.Date
+  currentValue Int      @map("currentValue")
+  exchangeRate Decimal? @map("exchangerate") 
+  currency     String?  @map("currency")
+
+  @@map("contributionHistory")
+}
+
+model pushSubscription {
+  id       String   @id @default(uuid())
+  userId   String
+  endpoint String
+  p256dh   String
+  auth     String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, endpoint])
+}
+
+
+model faq {
+  id         Int      @id @default(autoincrement()) // no @map
+  question   String
+  answer     String
+  helpful    Int      @default(0)
+  unhelpful  Int      @default(0)
+}
+
+
+
+
+
+
+
+
