@@ -263,7 +263,7 @@ export default function EditSaving({
               <input
                 type="text"
                 placeholder="Name"
-                value={savingData?.selectedSaving || name}
+                value={name}
                 onChange={e => setName(e.target.value)}
                 className="input-field"
               />
@@ -287,11 +287,11 @@ export default function EditSaving({
             <div className="twoInRow">
               <label>
                 <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                  <p className="form-label inverseFontColor">Monthly saved:</p>
+                  <p className="form-label inverseFontColor">Monthly update:</p>
                 </div>
                 <input
                   type="number"
-                  value={monthlyDeposited}
+                  value={monthlyDeposited === 0 ? "" : monthlyDeposited}
                   onChange={e => setMonthlyDeposited(Number(e.target.value))}
                   placeholder="0"
                   className="input-field halfOfRow"

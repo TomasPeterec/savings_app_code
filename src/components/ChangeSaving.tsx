@@ -321,7 +321,7 @@ const ChangeSaving = ({
               <div className="twoInRow">
                 <label>
                   <div className="form-half-separator-up vertical-align-bottom halfOfRow">
-                    <p className="form-label inverseFontColor">Monthly saved:</p>
+                    <p className="form-label inverseFontColor">Monthly update:</p>
                   </div>
                   <input
                     type="number"
